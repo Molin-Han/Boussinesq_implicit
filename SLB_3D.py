@@ -52,59 +52,68 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         dtc = appctx_PC["dt"]
         delta = appctx_PC["shift"]
         W = u.function_space()
-        velo, b = split(u)
-        w, q = split(v)
+        uxz, uy, b = split(u)
+        wxz, wy, q = split(v)
+        velo = vector_3D(uxz, uy)
+        w = vector_3D(wxz, wy)
         p = - Constant(1.0) / delta * div(velo)
-        Jp = lhs(utils.SLB_velocity(velo, p, b, w, dtc, twoD=True))
-        Jp += lhs(utils.SLB_buoyancy(velo, b, q, dtc, twoD=True))
-        # k = as_vector([0., 1.])
+        Jp = lhs(utils.SLB_velocity(velo, p, b, w, dtc, twoD=False))
+        Jp += lhs(utils.SLB_buoyancy(velo, b, q, dtc, twoD=False))
+        # k = as_vector([0., 0., 1.])
         # Jp = (inner(velo, w) + dt / shift * div(velo) * div(w))*dx # TODO: The delta shifting parameter enters here.
         # Jp -= dt * inner(w, k) * b * dx
         # Jp += q * b *dx + dt * q * inner(k, velo) * dx
         #  Boundary conditions
-        bc1 = DirichletBC(W.sub(0), as_vector([0., 0.]), "top")
-        bc2 = DirichletBC(W.sub(0), as_vector([0., 0.]), "bottom")
+        bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
+        bc2 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "bottom")
         bcs = [bc1, bc2]
         return (Jp, bcs)
 
 
 distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 2)}
-m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
-mesh = ExtrudedMesh(m, nz, layer_height=height/nz)
-
-x, z = SpatialCoordinate(mesh)
 deg = 2
+m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
+mesh_old = ExtrudedMesh(m, nz, layer_height=height/nz)
+x, z = SpatialCoordinate(mesh_old)
+coord_fs = VectorFunctionSpace(mesh_old, "DG", deg-1, dim=3)
+new_coord = assemble(interpolate(as_vector([x, 0, z]), coord_fs))
+mesh = Mesh(new_coord)
+mesh.init_cell_orientations(utils.j())
+x, y, z = SpatialCoordinate(mesh)
+
 V_2D = utils.extrude_RT(mesh, k=deg) # RT2
 DG_km1 = FunctionSpace(mesh, 'DG', deg-1) # DG1
-# Vy = DG_km1
+Vy = DG_km1
 Pressure = DG_km1
 Vb = utils.W_theta(mesh, k=deg)
-W = V_2D * Vb * Pressure
+W = V_2D * Vy * Vb * Pressure
 
 U = Function(W)
 
-uxz, b, p = split(U)
-wxz, q, phi = TestFunctions(W)
+uxz, uy, b, p = split(U)
+wxz, wy, q, phi = TestFunctions(W)
+u = vector_3D(uxz, uy)
+w = vector_3D(wxz, wy)
 
-f = Function(V_2D).project(as_vector([sin(2 * pi * x), sin(2* pi * z / height)]))
+f = Function(V_2D).project(as_vector([sin(2 * pi * x), 0.0, sin(2* pi * z / height)]))
 g = Function(DG_km1).interpolate(sin(2*pi*x) + sin(2*pi*z))
 
 # DiricheletBC
-bc1 = DirichletBC(W.sub(0), as_vector([0., 0.]), "top")
-bc2 = DirichletBC(W.sub(0), as_vector([0., 0.]), "bottom")
+bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
+bc2 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "bottom")
 bcs = [bc1, bc2]
 
-eqn = utils.SLB_velocity(uxz, p, b, wxz, dt, twoD=True)
-eqn -= inner(wxz, f) * dx
-eqn += utils.SLB_buoyancy(uxz, b, q, dt, twoD=True)
+eqn = utils.SLB_velocity(u, p, b, w, dt, twoD=False)
+eqn -= inner(w, f) * dx
+eqn += utils.SLB_buoyancy(u, b, q, dt, twoD=False)
 eqn -= g * q * dx
-eqn += utils.SLB_pressure(uxz, phi)
+eqn += utils.SLB_pressure(u, phi)
 shift_eqn = eqn + shift * p * phi * dx
 Jp = derivative(shift_eqn, U)
 
 # Pressure Nullspace
 v_basis = VectorSpaceBasis(constant=True, comm=COMM_WORLD)
-nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), v_basis])
+nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), W.sub(2), v_basis])
 
 if args.direct:
     params_schur= {
@@ -119,8 +128,8 @@ if args.direct:
             'pc_fieldsplit_type': 'schur',
             'pc_fieldsplit_schur_fact_type': 'full',
             'pc_fieldsplit_schur_precondition': 'full',
-            'pc_fieldsplit_0_fields': '2',
-            'pc_fieldsplit_1_fields': '0,1',
+            'pc_fieldsplit_0_fields': '3',
+            'pc_fieldsplit_1_fields': '0,1,2',
             'fieldsplit_0': {
                 'ksp_type': 'preonly',
                 'pc_type': 'bjacobi',
@@ -168,8 +177,8 @@ else:
         'pc_fieldsplit_type': 'schur',
         'pc_fieldsplit_schur_fact_type': 'full',
         'pc_fieldsplit_schur_precondition': 'full',
-        'pc_fieldsplit_0_fields': '2',
-        'pc_fieldsplit_1_fields': '0,1',
+        'pc_fieldsplit_0_fields': '3',
+        'pc_fieldsplit_1_fields': '0,1,2',
         'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
             'ksp_type': 'preonly',
             'pc_type': 'bjacobi',
@@ -197,10 +206,11 @@ nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_paramete
 nsolver.solve()
 name = 'SLB_slice'
 file_slb = VTKFile(name+'.pvd')
-u, b, p = U.subfunctions
-u.rename("in-plane-vel")
+uxz, uy, b, p = U.subfunctions
+uxz.rename("in-plane-vel")
+uy.rename("y-vel")
 b.rename("buoyancy")
 p.rename("pressure")
 f.rename("f_RHS")
 g.rename("g_RHS")
-file_slb.write(u, b, p, f, g)
+file_slb.write(uxz, uy, b, p, f, g)
