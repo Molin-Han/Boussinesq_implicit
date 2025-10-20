@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 from argparse import ArgumentDefaultsHelpFormatter
 
 parser = ArgumentParser(
-    description='Shifted Poisson equation.',
+    description= 'Poisson equation.',
     formatter_class=ArgumentDefaultsHelpFormatter
 )
 
@@ -162,6 +162,7 @@ if args.direct:
                 'sub_pc_type': 'ilu',
             },
             'fieldsplit_1': {
+                'mat_view':':matPoissonpetsc.txt',
                 'ksp_type': 'preonly',
                 'ksp_monitor': None,
                 'pc_type': 'lu',
@@ -201,6 +202,7 @@ else:
         },
         'fieldsplit_1': {
             'ksp_type': 'preonly',
+            'mat_view':':matPoisson.txt',
             'ksp_monitor': None,
             'pc_type': 'python',
             'pc_python_type': __name__ + '.HDivSchurPC',

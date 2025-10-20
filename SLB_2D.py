@@ -52,6 +52,7 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         p = - Constant(1.0) / delta * div(velo)
         Jp = lhs(utils.SLB_velocity(velo, p, b, w, dtc, twoD=True))
         Jp += lhs(utils.SLB_buoyancy(velo, b, q, dtc, twoD=True))
+        # Jp_d = derivative(Jp, u)
         # k = as_vector([0., 1.])
         # Jp = (inner(velo, w) + dt / shift * div(velo) * div(w))*dx # TODO: The delta shifting parameter enters here.
         # Jp -= dt * inner(w, k) * b * dx
@@ -59,7 +60,8 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         #  Boundary conditions
         bc1 = DirichletBC(W.sub(0), as_vector([0., 0.]), "top")
         bc2 = DirichletBC(W.sub(0), as_vector([0., 0.]), "bottom")
-        bcs = [bc1, bc2]
+        # bcs = [bc1, bc2]
+        bcs = None
         return (Jp, bcs)
 
 
@@ -68,7 +70,7 @@ m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_paramet
 mesh = ExtrudedMesh(m, nz, layer_height=height/nz)
 
 x, z = SpatialCoordinate(mesh)
-deg = 2
+deg = 1
 V_2D = utils.extrude_RT(mesh, k=deg) # RT2
 DG_km1 = FunctionSpace(mesh, 'DG', deg-1) # DG1
 # Vy = DG_km1
@@ -87,7 +89,8 @@ g = Function(DG_km1).interpolate(sin(2*pi*x) + sin(2*pi*z))
 # DiricheletBC
 bc1 = DirichletBC(W.sub(0), as_vector([0., 0.]), "top")
 bc2 = DirichletBC(W.sub(0), as_vector([0., 0.]), "bottom")
-bcs = [bc1, bc2]
+# bcs = [bc1, bc2]
+bcs = None
 
 eqn = utils.SLB_velocity(uxz, p, b, wxz, dt, twoD=True)
 eqn -= inner(wxz, f) * dx
@@ -127,7 +130,7 @@ if args.direct:
             'fieldsplit_1': {
                 'ksp_type': 'preonly',
                 'ksp_monitor': None,
-                'mat_view':':mat2.txt',
+                'mat_view':':matpetsc.txt',
                 # 'pc_type': 'lu',
                 # 'pc_factor_mat_solver_type': 'petsc',
                 'pc_type':'ksp',
@@ -141,7 +144,7 @@ if args.direct:
 
 else:
     pc_params = {
-        'mat_view':':mat.txt',
+        'mat_view':':matAuxPC.txt',
         'pc_type':'ksp',
         'ksp_ksp_type': 'preonly',
         'ksp_pc_type':'lu',
@@ -187,7 +190,9 @@ if args.shiftpc:
 else:
     nprob = NonlinearVariationalProblem(shift_eqn, U, bcs=bcs)
     print("================Solving the shifted equation.=====================")
-nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_parameters=params_schur, appctx=appctx)
+nsolver = NonlinearVariationalSolver(nprob, 
+                                     #nullspace=nullspace, 
+                                     solver_parameters=params_schur, appctx=appctx)
 
 nsolver.solve()
 name = 'SLB_slice'

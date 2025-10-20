@@ -63,13 +63,13 @@ def SLB_velocity(u, p, b, w, dt, twoD=False):
     return (
         inner(w, u) * dx
         - dt * div(w) * p * dx 
-        - dt * inner(w, k(twoD=twoD)) * b * dx 
+        # - dt * inner(w, k(twoD=twoD)) * b * dx 
         )
 
 def SLB_buoyancy(u, b, q, dt, twoD=False):
     return (
         q * b * dx
-        + dt * q * inner(u, k(twoD=twoD)) * dx
+        # + dt * q * inner(u, k(twoD=twoD)) * dx
         )
 
 def SLB_pressure(u, phi):

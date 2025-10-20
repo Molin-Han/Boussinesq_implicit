@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 from argparse import ArgumentDefaultsHelpFormatter
 
 parser = ArgumentParser(
-    description='Shifted simplified steady Linear Boussinesq equation.',
+    description='Shifted simplified steady Linear Boussinesq equation on 3D embedded mesh.',
     formatter_class=ArgumentDefaultsHelpFormatter
 )
 
@@ -141,7 +141,7 @@ if args.direct:
             'fieldsplit_1': {
                 'ksp_type': 'preonly',
                 'ksp_monitor': None,
-                'mat_view':':mat2.txt',
+                'mat_view':':matpetsc3D.txt',
                 # 'pc_type': 'lu',
                 # 'pc_factor_mat_solver_type': 'petsc',
                 'pc_type':'ksp',
@@ -155,7 +155,7 @@ if args.direct:
 
 else:
     pc_params = {
-        'mat_view':':mat.txt',
+        'mat_view':':matAuxPC3D.txt',
         'pc_type':'ksp',
         'ksp_ksp_type': 'preonly',
         'ksp_pc_type':'lu',
