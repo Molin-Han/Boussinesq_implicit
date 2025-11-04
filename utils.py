@@ -28,7 +28,7 @@ def Coriolis_param(no_rotation=False):
 
 def high_dim_mesh_hierarchy(mh, dim=3):
     '''
-    Create a embedded mesh with the same structure in a higher dimension.
+    Create a embedded mesh with the same structure in a higher dimension given a mesh hierarchy.
     '''
     meshes = []
     for m in mh:
@@ -62,14 +62,14 @@ def W_theta(mesh, k=0):
 def SLB_velocity(u, p, b, w, dt, twoD=False):
     return (
         inner(w, u) * dx
-        - dt * div(w) * p * dx 
-        # - dt * inner(w, k(twoD=twoD)) * b * dx 
+        - dt * div(w) * p * dx
+        - dt / 2 * inner(w, k(twoD=twoD)) * b * dx
         )
 
 def SLB_buoyancy(u, b, q, dt, twoD=False):
     return (
         q * b * dx
-        # + dt * q * inner(u, k(twoD=twoD)) * dx
+        + dt * buo_freq() / 2 * q * inner(u, k(twoD=twoD)) * dx
         )
 
 def SLB_pressure(u, phi):
@@ -78,18 +78,25 @@ def SLB_pressure(u, phi):
         )
 
 
-def LB_velocity(unp1, un, unph, w, bnph, pnp1, dt):
-    return (
-            inner(w, (unp1 - un)) * dx 
-            + dt * inner(w, 2 * cross(Coriolis_param(), unph)) * dx
-            - dt * div(w) * pnp1 * dx
-            - dt * inner(w, k()) * bnph * dx
-        )
+def LB_velocity(unp1, un, unph, w, bnph, pnp1, dt, no_rotation=False, twoD=False):
+    if no_rotation:
+        return (
+                inner(w, (unp1 - un)) * dx 
+                - dt * div(w) * pnp1 * dx
+                - dt * inner(w, k(twoD=twoD)) * bnph * dx
+            )
+    else:
+        return (
+                inner(w, (unp1 - un)) * dx 
+                + dt * inner(w, 2 * cross(Coriolis_param(), unph)) * dx
+                - dt * div(w) * pnp1 * dx
+                - dt * inner(w, k(twoD=twoD)) * bnph * dx
+            )
 
-def LB_buoyancy(bnp1, bn, q, unph, dt):
+def LB_buoyancy(bnp1, bn, q, unph, dt, twoD=False):
     return (
             q * (bnp1 - bn) * dx
-            + dt * buo_freq() * q * inner(k(), unph) * dx
+            + dt * buo_freq() * q * inner(k(twoD=twoD), unph) * dx
         )
 
 def LB_pressure(unp1, phi):

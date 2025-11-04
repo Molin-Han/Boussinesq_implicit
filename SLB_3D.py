@@ -46,7 +46,7 @@ def vector_3D(u, uy):
 
 class HDivSchurPC(AuxiliaryOperatorPC):
     _prefix = "helmholtzschurpc_"
-    def form(self, pc, u, v):
+    def form(self, pc, v, u):
         print("HDivSchurPC.form() is being called!")
         appctx_PC = self.get_appctx(pc)
         dtc = appctx_PC["dt"]
@@ -59,14 +59,8 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         p = - Constant(1.0) / delta * div(velo)
         Jp = lhs(utils.SLB_velocity(velo, p, b, w, dtc, twoD=False))
         Jp += lhs(utils.SLB_buoyancy(velo, b, q, dtc, twoD=False))
-        # k = as_vector([0., 0., 1.])
-        # Jp = (inner(velo, w) + dt / shift * div(velo) * div(w))*dx # TODO: The delta shifting parameter enters here.
-        # Jp -= dt * inner(w, k) * b * dx
-        # Jp += q * b *dx + dt * q * inner(k, velo) * dx
         #  Boundary conditions
-        bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
-        bc2 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "bottom")
-        bcs = [bc1, bc2]
+        _, bcs = super().form(pc, u, v)
         return (Jp, bcs)
 
 

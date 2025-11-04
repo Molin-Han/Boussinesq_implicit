@@ -47,21 +47,19 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         dtc = appctx_PC["dt"]
         delta = appctx_PC["shift"]
         W = u.function_space()
-        velo, b = split(u)
-        w, q = split(v)
+        # velo, b = split(u)
+        # w, q = split(v)
+        w, q = split(u)
+        velo, b = split(v)
         p = - Constant(1.0) / delta * div(velo)
         Jp = lhs(utils.SLB_velocity(velo, p, b, w, dtc, twoD=True))
         Jp += lhs(utils.SLB_buoyancy(velo, b, q, dtc, twoD=True))
-        # Jp_d = derivative(Jp, u)
         # k = as_vector([0., 1.])
-        # Jp = (inner(velo, w) + dt / shift * div(velo) * div(w))*dx # TODO: The delta shifting parameter enters here.
-        # Jp -= dt * inner(w, k) * b * dx
-        # Jp += q * b *dx + dt * q * inner(k, velo) * dx
-        #  Boundary conditions
-        bc1 = DirichletBC(W.sub(0), as_vector([0., 0.]), "top")
-        bc2 = DirichletBC(W.sub(0), as_vector([0., 0.]), "bottom")
-        # bcs = [bc1, bc2]
-        bcs = None
+        # Jp = (inner(velo, w) + dtc / delta * div(velo) * div(w))*dx
+        # # Jp -= dtc * inner(w, k) * b * dx # Changed the + - sign will fix.
+        # Jp += q * b * dx
+        # Jp -= dt * q * inner(k, velo) * dx
+        _, bcs = super().form(pc, u, v)
         return (Jp, bcs)
 
 
@@ -76,6 +74,7 @@ DG_km1 = FunctionSpace(mesh, 'DG', deg-1) # DG1
 # Vy = DG_km1
 Pressure = DG_km1
 Vb = utils.W_theta(mesh, k=deg)
+# Vb = DG_km1
 W = V_2D * Vb * Pressure
 
 U = Function(W)
@@ -84,13 +83,12 @@ uxz, b, p = split(U)
 wxz, q, phi = TestFunctions(W)
 
 f = Function(V_2D).project(as_vector([sin(2 * pi * x), sin(2* pi * z / height)]))
-g = Function(DG_km1).interpolate(sin(2*pi*x) + sin(2*pi*z))
+g = Function(Vb).interpolate(sin(2*pi*x) + sin(2*pi*z))
 
 # DiricheletBC
 bc1 = DirichletBC(W.sub(0), as_vector([0., 0.]), "top")
 bc2 = DirichletBC(W.sub(0), as_vector([0., 0.]), "bottom")
-# bcs = [bc1, bc2]
-bcs = None
+bcs = [bc1, bc2]
 
 eqn = utils.SLB_velocity(uxz, p, b, wxz, dt, twoD=True)
 eqn -= inner(wxz, f) * dx
@@ -110,6 +108,7 @@ if args.direct:
             'snes_type':'ksponly', 
             'ksp_type': 'gmres', 
             'ksp_view': ':SLB2D.txt',
+            'mat_view':':fullmat_petsc.txt',
             'snes_monitor':None, 
             'ksp_monitor':None, 
             'ksp_error_if_not_converged': None,
@@ -122,35 +121,40 @@ if args.direct:
             'fieldsplit_0': {
                 'ksp_type': 'preonly',
                 'pc_type': 'bjacobi',
-                'sub_pc_type': 'ilu',
-                # 'ksp_type': 'preonly',
-                # 'pc_type': 'lu',
-                # 'pc_factor_mat_solver_type': 'petsc',
             },
             'fieldsplit_1': {
                 'ksp_type': 'preonly',
                 'ksp_monitor': None,
                 'mat_view':':matpetsc.txt',
-                # 'pc_type': 'lu',
-                # 'pc_factor_mat_solver_type': 'petsc',
                 'pc_type':'ksp',
                 'ksp_ksp_type': 'preonly',
                 'ksp_pc_type':'lu',
                 'ksp_ksp_monitor': None,
                 'ksp_pc_factor_mat_solver_type':'petsc',
+
+                # 'pc_type':'fieldsplit',
+                # 'pc_fieldsplit_type':'additive',
+                # 'fieldsplit':{'pc_type':'lu',},
+                # 'fieldsplit_0_mat_view':':matPETSc_0.txt',
+                # 'fieldsplit_1_mat_view':':matPETSc_1.txt',
                 },
     }
     print("==========================The Schur complement is provided using PETSc.==============")
 
 else:
     pc_params = {
-        'mat_view':':matAuxPC.txt',
+        'mat_view':':matSchurAuxPC.txt',
         'pc_type':'ksp',
         'ksp_ksp_type': 'preonly',
         'ksp_pc_type':'lu',
         'ksp_ksp_monitor': None,
         # 'pc_type': 'lu',
         'ksp_pc_factor_mat_solver_type': 'petsc',
+        # 'pc_type':'fieldsplit',
+        # 'pc_fieldsplit_type':'additive',
+        # 'fieldsplit':{'pc_type':'lu'},
+        # 'fieldsplit_0_mat_view':':matAux_0.txt',
+        # 'fieldsplit_1_mat_view':':matAux_1.txt',
     }
 
     params_schur = {
@@ -159,13 +163,14 @@ else:
         'snes_type':'ksponly',
         # 'ksp_atol': 0,
         # 'ksp_rtol': 1e-8,
+        'mat_view':':fullmat_aux.txt',
         'ksp_view': ':SLB2D.txt',
         'snes_monitor': None,
         'ksp_monitor_true_residual': None,
         'pc_type': 'fieldsplit',
         'pc_fieldsplit_type': 'schur',
         'pc_fieldsplit_schur_fact_type': 'full',
-        'pc_fieldsplit_schur_precondition': 'full',
+        # 'pc_fieldsplit_schur_precondition': 'full',
         'pc_fieldsplit_0_fields': '2',
         'pc_fieldsplit_1_fields': '0,1',
         'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
@@ -177,6 +182,7 @@ else:
         'fieldsplit_1': {
             'ksp_type': 'preonly',
             'ksp_monitor': None,
+            'mat_view':':field_1_mat_aux.txt',
             'pc_type': 'python',
             'pc_python_type': __name__ + '.HDivSchurPC',
             'helmholtzschurpc': pc_params,
