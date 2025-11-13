@@ -51,6 +51,9 @@ def vector_3D(u, uy):
 class HDivSchurPC(AuxiliaryOperatorPC):
     _prefix = "helmholtzschurpc_"
     def form(self, pc, v, u):
+        appctx_PC = self.get_appctx(pc)
+        dtc = appctx_PC["dt"]
+        delta = appctx_PC["shift"]
         W = u.function_space()
         One = as_vector([1., 1., 1.])
         uxz, uy, b = split(u)
@@ -59,9 +62,9 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         unph = Constant(0.5) * (velo + One)
         bnph = Constant(0.5) * (b + Constant(1.))
         w = vector_3D(wxz, wy)
-        pnp1 = - Constant(1.) / shift * div(velo)
-        Jp = lhs(utils.LB_velocity(velo, One, unph, w, bnph, pnp1, dt, no_rotation=True, twoD=False))
-        Jp += lhs(utils.LB_buoyancy(b, Constant(1.), q, unph, dt, twoD=False))
+        pnp1 = - Constant(1.) / delta * div(velo)
+        Jp = lhs(utils.LB_velocity(velo, One, unph, w, bnph, pnp1, dtc, no_rotation=True, twoD=False))
+        Jp += lhs(utils.LB_buoyancy(b, Constant(1.), q, unph, dtc, twoD=False))
         #  Boundary conditions
         _, bcs = super().form(pc, u, v)
         return (Jp, bcs)
@@ -130,8 +133,8 @@ v_basis = VectorSpaceBasis(constant=True, comm=COMM_WORLD)
 nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), W.sub(2), v_basis])
 
 # helmholtz_schur_pc_params = {
-#         'ksp_type': 'preonly',
-#         'ksp_max_its': 30,
+#         # 'ksp_type': 'preonly',
+#         # 'ksp_max_its': 30,
 #         'pc_type': 'mg',
 #         'pc_mg_type': 'full',
 #         'pc_mg_cycle_type':'v',
@@ -140,7 +143,7 @@ nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), W.sub(2), v_basis])
 #             'ksp_type':'richardson',
 #             # 'ksp_type': 'chebyshev',
 #             'ksp_richardson_scale': 0.2,
-#             'ksp_max_it': 2,
+#             'ksp_max_it': 1,
 #             # 'ksp_monitor':None,
 #             "pc_type": "python",
 #             "pc_python_type": "firedrake.ASMStarPC",
@@ -167,8 +170,8 @@ params_schur = {
     # 'mat_type': 'aij',
     'ksp_type': 'gmres',
     'snes_type':'ksponly',
-    # 'ksp_atol': 0,
-    # 'ksp_rtol': 1e-6,
+    'ksp_atol': 0,
+    'ksp_rtol': 1e-7,
     'ksp_view': ':slice3D.txt',
     'snes_monitor': None,
     # 'ksp_monitor': None,
