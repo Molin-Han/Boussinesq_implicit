@@ -197,11 +197,11 @@ params_schur = {
         'helmholtzschurpc': helmholtz_schur_pc_params,
         },
 }
-
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 # TODO: shifted equation is solve right now.
 nprob = NonlinearVariationalProblem(eqn, Unp1, bcs=bcs, Jp=Jp)
 # nprob = NonlinearVariationalProblem(shift_eqn, Unp1, bcs=bcs)
-nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_parameters=params_schur)
+nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_parameters=params_schur, appctx=appctx)
 
 
 # Time Stepping

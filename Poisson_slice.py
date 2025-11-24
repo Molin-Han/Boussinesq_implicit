@@ -7,7 +7,7 @@ print = PETSc.Sys.Print
 
 
 # TODO: How to make it a intrinsic variable:
-dt_pc = 100
+dt_pc = 1000
 dtc = Constant(dt_pc)
 k = as_vector([0., 0., 1.])
 Omega = 7.292e-5
@@ -15,7 +15,7 @@ theta = pi / 3
 omega = as_vector([0, Omega * sin(theta), Omega * cos(theta)])
 N=1.0e-2
 # delta_pc = Constant(dt_pc/2) # TODO: delta = 0.01 will work for simple algorithm.
-delta_pc = Constant(1e-5) # TODO: choice of the delta needs to be tuned.
+delta_pc = Constant(1.0) # TODO: choice of the delta needs to be tuned.
 
 class HDivHelmholtzSchurPC(AuxiliaryOperatorPC):
     _prefix = "helmholtzschurpc_"
@@ -142,7 +142,7 @@ def solve_LB_Slice(nx=10, length=1.0, height=1e-3, nlayers=20, delta=Constant(1.
         return (
             inner(w, (unp1 - un)) * dx 
             - dtc * div(w) * pnph * dx
-            - inner(f, w) * dx
+            - dtc * inner(f, w) * dx
         )
 
     def p_eqn(unp1):
@@ -231,7 +231,7 @@ def solve_LB_Slice(nx=10, length=1.0, height=1e-3, nlayers=20, delta=Constant(1.
             # 'ksp_type':'gmres',
             # 'ksp_max_it':'30',
             'ksp_type':'preonly', #TODO: This will cause the first KSP residual increase!!!! using gmres will be fine ???
-            'ksp_monitor_true_residual': None,
+            # 'ksp_monitor_true_residual': None,
 
             # 'pc_type': 'lu',
             # 'mat_type': 'aij',
@@ -276,5 +276,5 @@ if __name__ == "__main__":
     length = 3.0e5
     # height = 3.0e5
     height = 1.0e2
-    solve_LB_Slice(nx=20, length=length, height=height, nlayers=20, delta=delta, dt=dt, tmax=300.0, xtest=False, ztest=False, artest=False)
+    solve_LB_Slice(nx=20, length=length, height=height, nlayers=20, delta=delta, dt=dt, tmax=1500.0, xtest=False, ztest=False, artest=False)
     
