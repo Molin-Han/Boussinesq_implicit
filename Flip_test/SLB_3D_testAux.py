@@ -7,6 +7,7 @@ import utils
 from argparse import ArgumentParser
 from argparse import ArgumentDefaultsHelpFormatter
 
+
 parser = ArgumentParser(
     description='Shifted simplified steady Linear Boussinesq equation on 3D embedded mesh.',
     formatter_class=ArgumentDefaultsHelpFormatter
@@ -89,7 +90,8 @@ wxz, wy, q, phi = TestFunctions(W)
 u = vector_3D(uxz, uy)
 w = vector_3D(wxz, wy)
 
-f = Function(V_2D).project(as_vector([sin(2 * pi * x), 0.0, sin(2* pi * z / height)]))
+# f = Function(V_2D).project(as_vector([sin(2 * pi * x), 0.0, sin(2* pi * z / height)]))
+f = Function(V_2D).project(as_vector([0.0, 0.0, sin(pi * z / height)**2]))
 g = Function(DG_km1).interpolate(sin(2*pi*x) + sin(2*pi*z))
 
 # DiricheletBC
@@ -99,6 +101,7 @@ bcs = [bc1, bc2]
 
 eqn = utils.SLB_velocity(u, p, b, w, dt, twoD=False)
 eqn -= inner(w, f) * dx
+# eqn -= dt / 2 * g * inner(w, as_vector([0., 0., 1.])) * dx
 eqn += utils.SLB_buoyancy(u, b, q, dt, twoD=False)
 eqn -= g * q * dx
 eqn += utils.SLB_pressure(u, phi)
@@ -153,7 +156,7 @@ else:
         'pc_type':'ksp',
         'ksp_ksp_type': 'preonly',
         'ksp_pc_type':'lu',
-        'ksp_ksp_monitor': None,
+        # 'ksp_ksp_monitor': None,
         # 'pc_type': 'lu',
         'ksp_pc_factor_mat_solver_type': 'petsc',
     }
@@ -163,7 +166,7 @@ else:
         'ksp_type': 'gmres',
         'snes_type':'ksponly',
         'ksp_atol': 0,
-        'ksp_rtol': 1e-6,
+        'ksp_rtol': 1e-8,
         'ksp_view': ':SLB2D.txt',
         'snes_monitor': None,
         'ksp_monitor_true_residual': None,
@@ -181,7 +184,7 @@ else:
         },
         'fieldsplit_1': {
             'ksp_type': 'preonly',
-            'ksp_monitor': None,
+            # 'ksp_monitor': None,
             'pc_type': 'python',
             'pc_python_type': __name__ + '.HDivSchurPC',
             'helmholtzschurpc': pc_params,

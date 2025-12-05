@@ -4,7 +4,7 @@ nz = 100
 nx = 100
 length = 3.0e5
 height = 1.0e3
-dt = Constant(100)
+dt = Constant(10000)
 shift = Constant(1.0)
 Nsq = Constant(1.0e-4)
 
@@ -60,41 +60,14 @@ bc2 = DirichletBC(W.sub(0), as_vector([0., 0.]), "bottom")
 bcs = [bc1, bc2]
 
 problem = NonlinearVariationalProblem(eqn, U, bcs=bcs, Jp=Jp) # TODO: modification here.
-# params = {
-#     'snes_type':'ksponly',
-#     'snes_monitor': None,
-#     'ksp_monitor': None,
-#     'mat_type':'aij',
-#     'ksp_type': 'gmres',
-#     'pc_type': 'lu',
-#     'pc_factor_mat_solver_type': 'mumps'
-# }
-
-params= {
-    # 'mat_type': 'aij',
-    'snes_type':'ksponly', 
-    'ksp_type': 'gmres', 
-    'snes_monitor':None, 
-    'ksp_monitor':None, 
-    'pc_type':'fieldsplit',
-    'pc_fieldsplit_type': 'schur',
-    'pc_fieldsplit_schur_fact_type': 'full',
-    'pc_fieldsplit_schur_precondition': 'full',
-    'pc_fieldsplit_0_fields': '2',
-    'pc_fieldsplit_1_fields': '0,1',
-    'fieldsplit_0': {
-        'ksp_type': 'preonly',
-        'pc_type': 'bjacobi',
-        'sub_pc_type': 'ilu',
-    },
-    'fieldsplit_1': {
-        'ksp_type': 'preonly',
-        # 'ksp_monitor': None,
-        'pc_type':'lu',
-        'pc_factor_mat_solver_type':'superlu_dist',
-    },
+params = {
+    'snes_type':'ksponly',
+    'snes_monitor': None,
+    'ksp_monitor_true_residual': None,
+    'mat_type':'aij',
+    'ksp_type': 'gmres',
+    'pc_type': 'lu',
+    'pc_factor_mat_solver_type': 'mumps'
 }
-
-
 solver = NonlinearVariationalSolver(problem, solver_parameters=params)
 solver.solve()
