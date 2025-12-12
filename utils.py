@@ -62,15 +62,15 @@ def W_theta(mesh, k=0):
 def SLB_velocity(u, p, b, w, dt, twoD=False):
     return (
         inner(w, u) * dx
-        + dt ** 2 * buo_freq() / 4 * inner(outer(k(twoD=twoD), k(twoD=twoD)) * u, w) * dx
+        # + dt ** 2 * buo_freq() / 4 * inner(outer(k(twoD=twoD), k(twoD=twoD)) * u, w) * dx
         - dt * div(w) * p * dx
-        # - dt / 2 * inner(w, k(twoD=twoD)) * b * dx
+        - dt / 2 * inner(w, k(twoD=twoD)) * b * dx
         )
 
 def SLB_buoyancy(u, b, q, dt, twoD=False):
     return (
         q * b * dx
-        # + dt * buo_freq() / 2 * q * inner(u, k(twoD=twoD)) * dx
+        + dt * buo_freq() / 2 * q * inner(u, k(twoD=twoD)) * dx
         )
 
 def SLB_pressure(u, phi):

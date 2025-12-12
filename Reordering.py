@@ -1,14 +1,14 @@
 from firedrake import *
 
-nz = 50
-nx = 50
+nz = 120
+nx = 2
 length = 3.0e5
 height = 1.0e3
 dt = Constant(100)
 shift = Constant(1.0)
 Nsq = Constant(1.0e-4)
 
-m = PeriodicIntervalMesh(nx, length)
+m = IntervalMesh(nx, length)
 mesh = ExtrudedMesh(m, nz, layer_height=height/nz)
 
 x, z = SpatialCoordinate(mesh)
@@ -48,8 +48,10 @@ eqn = (
     + q*div(u)*dt
     + inner(V, U0)
     )*dx
-
-A = assemble(lhs(eqn)).petscmat
+bc1 = DirichletBC(W.sub(0), as_vector([0., 0.]), "top")
+bc2 = DirichletBC(W.sub(0), as_vector([0., 0.]), "bottom")
+bcs = [bc1, bc2]
+A = assemble(lhs(eqn), bcs=bcs).petscmat
 indptr_A, indices_A, vals_A = A.getValuesCSR()
 bandwidth_A = 0
 for i in range(len(indptr_A)-1):

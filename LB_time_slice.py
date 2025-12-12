@@ -132,39 +132,39 @@ Jp = derivative(shift_eqn, Unp1)
 v_basis = VectorSpaceBasis(constant=True, comm=COMM_WORLD)
 nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), W.sub(2), v_basis])
 
-# helmholtz_schur_pc_params = {
-#         # 'ksp_type': 'preonly',
-#         # 'ksp_max_its': 30,
-#         'pc_type': 'mg',
-#         'pc_mg_type': 'full',
-#         'pc_mg_cycle_type':'v',
-#         'mg_levels': {
-#             # 'ksp_type': 'gmres',
-#             'ksp_type':'richardson',
-#             # 'ksp_type': 'chebyshev',
-#             'ksp_richardson_scale': 0.2,
-#             'ksp_max_it': 1,
-#             # 'ksp_monitor':None,
-#             "pc_type": "python",
-#             "pc_python_type": "firedrake.ASMStarPC",
-#             "pc_star_construct_dim": 0,
-#             "pc_star_sub_sub_pc_type": "lu",
-#             # "pc_star_sub_sub_pc_type": "svd",
-#             # "pc_star_sub_sub_pc_svd_monitor": None,
-#         },
-#         'mg_coarse': {
-#             'ksp_type': 'preonly',
-#             'pc_type': 'lu',
-#         },
-#     }
-
 helmholtz_schur_pc_params = {
-    'pc_type':'ksp',
-    'ksp_ksp_type': 'preonly',
-    'mat_view':':matSchurAuxPC.txt',
-    'ksp_pc_type':'lu',
-    'ksp_ksp_monitor': None,
-}
+        # 'ksp_type': 'preonly',
+        # 'ksp_max_its': 30,
+        'pc_type': 'mg',
+        'pc_mg_type': 'full',
+        'pc_mg_cycle_type':'v',
+        'mg_levels': {
+            # 'ksp_type': 'gmres',
+            'ksp_type':'richardson',
+            # 'ksp_type': 'chebyshev',
+            'ksp_richardson_scale': 0.2,
+            'ksp_max_it': 1,
+            # 'ksp_monitor':None,
+            "pc_type": "python",
+            "pc_python_type": "firedrake.ASMStarPC",
+            "pc_star_construct_dim": 0,
+            "pc_star_sub_sub_pc_type": "lu",
+            # "pc_star_sub_sub_pc_type": "svd",
+            # "pc_star_sub_sub_pc_svd_monitor": None,
+        },
+        'mg_coarse': {
+            'ksp_type': 'preonly',
+            'pc_type': 'lu',
+        },
+    }
+
+# helmholtz_schur_pc_params = {
+#     'pc_type':'ksp',
+#     'ksp_ksp_type': 'preonly',
+#     'mat_view':':matSchurAuxPC.txt',
+#     'ksp_pc_type':'lu',
+#     'ksp_ksp_monitor': None,
+# }
 
 params_schur = {
     # 'mat_type': 'aij',
@@ -198,10 +198,26 @@ params_schur = {
         },
 }
 print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-# TODO: shifted equation is solve right now.
 nprob = NonlinearVariationalProblem(eqn, Unp1, bcs=bcs, Jp=Jp)
 # nprob = NonlinearVariationalProblem(shift_eqn, Unp1, bcs=bcs)
 nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_parameters=params_schur, appctx=appctx)
+
+# Set checkpointing for saving the data.
+error_list = []
+sol_it = Function(W, name='sol_it')
+with CheckpointFile('sol_mesh.h5', 'w') as chk:
+    chk.save_mesh(mesh)
+
+def monitor(ksp, iteration_number, norm0):
+    sol = ksp.buildSolution()
+    with sol_it.dat.vec_wo as it_vec:
+        sol.copy(result=it_vec)
+    if iteration_number == 0:
+        with CheckpointFile('sol_its.h5', 'w') as chk:
+            chk.save_function(sol_it, idx=iteration_number, name=f'sol_{iteration_number}')
+    else:
+        with CheckpointFile('sol_its.h5', 'a') as chk:
+            chk.save_function(sol_it, idx=iteration_number, name=f'sol_{iteration_number}')
 
 
 # Time Stepping
@@ -223,7 +239,21 @@ while t < tmax - 0.5 * args.dt:
     t += args.dt
     tdump += args.dt
     i += 1
-    nsolver.solve()
+    if i == 0:
+        nsolver.solve()
+    else:
+        nsolver.snes.ksp.setMonitor(monitor)
+        nsolver.solve()
+        converged_it_num = nsolver.snes.ksp.getIterationNumber()
+        with CheckpointFile('sol_its.h5', 'r') as chk:
+            mesh = chk.load_mesh(name=finest_mesh_name, distribution_parameters=distribution_parameters)
+        with CheckpointFile('sol_its.h5', 'r') as chk:
+            sol_final = chk.load_function(mesh, f'sol_{converged_it_num}', idx=converged_it_num)
+            for i in range(converged_it_num):
+                sol_i = chk.load_function(mesh, f'sol_{i}', idx=i)
+                err_i = norm(sol_i - sol_final) / norm(sol_final)
+                error_list.append(err_i)
+        print(f"Monitor is on and working on time step{i}")
     Un.assign(Unp1)
     if tdump > dumpt - args.dt*0.5:
         file_lb.write(un, uny, bn, pn)

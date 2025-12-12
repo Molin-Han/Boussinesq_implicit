@@ -108,55 +108,49 @@ v_basis = VectorSpaceBasis(constant=True, comm=COMM_WORLD)
 nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), W.sub(2), v_basis])
 
 # * Direct solve on Schur complement
-# pc_params = {
-#     # 'mat_view':':matAuxPC3D.txt',
-#     'pc_type':'ksp',
-#     'ksp_ksp_type': 'preonly',
-#     'ksp_pc_type':'lu',
-#     'ksp_ksp_monitor_true_residual': None,
-#     # 'pc_type': 'lu',
-#     'ksp_pc_factor_mat_solver_type': 'petsc',
-# }
+pc_params = {
+    # 'mat_view':':matAuxPC3D.txt',
+    'pc_type':'ksp',
+    'ksp_ksp_type': 'preonly',
+    'ksp_pc_type':'lu',
+    'ksp_ksp_monitor_true_residual': None,
+    # 'pc_type': 'lu',
+    'ksp_pc_factor_mat_solver_type': 'petsc',
+}
 
 # * MG smoother on Schur complement solve.
 # ! Need to tune the MG parameters to work.
-pc_params = {
-    # 'ksp_type': 'preonly',
-    # 'ksp_max_its': 30,
-    # 'ksp_monitor_true_residual': None,
-    'pc_type': 'mg',
-    'pc_mg_type': 'full',
-    'pc_mg_cycle_type':'v',
-    'mg_levels': {
-        # 'ksp_type': 'gmres',
-        'ksp_type':'richardson',
-        # 'ksp_type': 'chebyshev',
-        # 'ksp_richardson_scale': 0.2,
-        'ksp_richardson_self_scale':None,
-        # * -info <file_name>.txt:ksp will save the scale info for this.
-        'ksp_max_it': 3,
-        # 'ksp_monitor':None,
-        "pc_type": "python",
-        "pc_python_type": "firedrake.ASMStarPC",
-        "pc_star_construct_dim": 0,
-        "pc_star_sub_sub_pc_type": "lu",
-        "pc_star_sub_sub_ksp_monitor_true_residual":':patch_ksp_rcm_monitor.txt',
-        # "pc_star_sub_sub_pc_factor_nonzeros_along_diagonal":1e-5,
-        'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
-        'pc_star_sub_sub_pc_factor_mat_solver_type': 'mumps',
-        # "pc_star_sub_sub_pc_type": "svd",
-        # "pc_star_sub_sub_pc_svd_monitor": None,
-    },
-    'mg_coarse': {
-        'ksp_type': 'preonly',
-        'pc_type': 'lu',
-    },
-}
+# pc_params = {
+#     # 'ksp_type': 'preonly',
+#     # 'ksp_max_its': 30,
+#     'pc_type': 'mg',
+#     'pc_mg_type': 'full',
+#     'pc_mg_cycle_type':'v',
+#     'mg_levels': {
+#         # 'ksp_type': 'gmres',
+#         'ksp_type':'richardson',
+#         # 'ksp_type': 'chebyshev',
+#         'ksp_richardson_scale': 0.2,
+#         'ksp_max_it': 1,
+#         # 'ksp_monitor':None,
+#         "pc_type": "python",
+#         "pc_python_type": "firedrake.ASMStarPC",
+#         "pc_star_construct_dim": 0,
+#         "pc_star_sub_sub_pc_type": "lu",
+#         # 'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
+#         # "pc_star_sub_sub_pc_type": "svd",
+#         # "pc_star_sub_sub_pc_svd_monitor": None,
+#     },
+#     'mg_coarse': {
+#         'ksp_type': 'preonly',
+#         'pc_type': 'lu',
+#     },
+# }
 
 
 params_schur = {
     'mat_type': 'aij',
-    'ksp_type': 'fgmres',
+    'ksp_type': 'gmres',
     'snes_type':'ksponly',
     'ksp_atol': 0,
     'ksp_rtol': 1e-8,
@@ -176,7 +170,7 @@ params_schur = {
         # 'pc_factor_mat_solver_type': 'mumps',
     },
     'fieldsplit_1': {
-        'ksp_type': 'fgmres',
+        'ksp_type': 'preonly',
         # 'ksp_monitor': None,
         'ksp_monitor_true_residual': None,
         'pc_type': 'python',
@@ -185,7 +179,6 @@ params_schur = {
         },
 }
 
-# nprob = NonlinearVariationalProblem(eqn, U, bcs=bcs, Jp=Jp)
 nprob = NonlinearVariationalProblem(eqn, U, bcs=bcs, Jp=Jp)
 nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_parameters=params_schur, appctx=appctx)
 

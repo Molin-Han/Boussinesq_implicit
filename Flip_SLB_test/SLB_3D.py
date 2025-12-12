@@ -18,6 +18,8 @@ parser.add_argument('--length', type=float, default=1.0, help='Horizontal length
 parser.add_argument('--height', type=float, default=1.0, help='Height of our solution domain.')
 parser.add_argument('--dt', type=float, default=1.0, help='Time stepping parameter.')
 parser.add_argument('--shift', type=float, default=1.0, help='Shift parameter for the shift preconditioner.')
+parser.add_argument('--direct', action='store_true', help='If the direct PETSc solver is used to solve the Schur complement.')
+parser.add_argument('--shiftpc', action='store_true', help='If True, the equation is preconditioned using the shift preconditioner, if False, the shifted equation is solved.')
 parser.add_argument('--show_args', action='store_true', help='Print all the arguments when the script starts.')
 
 args = parser.parse_known_args()
@@ -107,86 +109,92 @@ Jp = derivative(shift_eqn, U)
 v_basis = VectorSpaceBasis(constant=True, comm=COMM_WORLD)
 nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), W.sub(2), v_basis])
 
-# * Direct solve on Schur complement
-# pc_params = {
-#     # 'mat_view':':matAuxPC3D.txt',
-#     'pc_type':'ksp',
-#     'ksp_ksp_type': 'preonly',
-#     'ksp_pc_type':'lu',
-#     'ksp_ksp_monitor_true_residual': None,
-#     # 'pc_type': 'lu',
-#     'ksp_pc_factor_mat_solver_type': 'petsc',
-# }
+if args.direct:
+    params_schur= {
+            'mat_type': 'aij',
+            'snes_type':'ksponly', 
+            'ksp_type': 'gmres', 
+            'ksp_view': ':SLB2D.txt',
+            'snes_monitor':None, 
+            'ksp_monitor':None, 
+            'ksp_error_if_not_converged': None,
+            'pc_type':'fieldsplit',
+            'pc_fieldsplit_type': 'schur',
+            'pc_fieldsplit_schur_fact_type': 'full',
+            'pc_fieldsplit_schur_precondition': 'full',
+            'pc_fieldsplit_0_fields': '3',
+            'pc_fieldsplit_1_fields': '0,1,2',
+            'fieldsplit_0': {
+                'ksp_type': 'preonly',
+                'pc_type': 'bjacobi',
+                'sub_pc_type': 'ilu',
+                # 'ksp_type': 'preonly',
+                # 'pc_type': 'lu',
+                # 'pc_factor_mat_solver_type': 'petsc',
+            },
+            'fieldsplit_1': {
+                'ksp_type': 'preonly',
+                'ksp_monitor': None,
+                'mat_view':':matpetsc3D.txt',
+                # 'pc_type': 'lu',
+                # 'pc_factor_mat_solver_type': 'petsc',
+                'pc_type':'ksp',
+                'ksp_ksp_type': 'preonly',
+                'ksp_pc_type':'lu',
+                'ksp_ksp_monitor': None,
+                'ksp_pc_factor_mat_solver_type':'petsc',
+                },
+    }
+    print("==========================The Schur complement is provided using PETSc.==============")
 
-# * MG smoother on Schur complement solve.
-# ! Need to tune the MG parameters to work.
-pc_params = {
-    # 'ksp_type': 'preonly',
-    # 'ksp_max_its': 30,
-    # 'ksp_monitor_true_residual': None,
-    'pc_type': 'mg',
-    'pc_mg_type': 'full',
-    'pc_mg_cycle_type':'v',
-    'mg_levels': {
-        # 'ksp_type': 'gmres',
-        'ksp_type':'richardson',
-        # 'ksp_type': 'chebyshev',
-        # 'ksp_richardson_scale': 0.2,
-        'ksp_richardson_self_scale':None,
-        # * -info <file_name>.txt:ksp will save the scale info for this.
-        'ksp_max_it': 3,
-        # 'ksp_monitor':None,
-        "pc_type": "python",
-        "pc_python_type": "firedrake.ASMStarPC",
-        "pc_star_construct_dim": 0,
-        "pc_star_sub_sub_pc_type": "lu",
-        "pc_star_sub_sub_ksp_monitor_true_residual":':patch_ksp_rcm_monitor.txt',
-        # "pc_star_sub_sub_pc_factor_nonzeros_along_diagonal":1e-5,
-        'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
-        'pc_star_sub_sub_pc_factor_mat_solver_type': 'mumps',
-        # "pc_star_sub_sub_pc_type": "svd",
-        # "pc_star_sub_sub_pc_svd_monitor": None,
-    },
-    'mg_coarse': {
-        'ksp_type': 'preonly',
-        'pc_type': 'lu',
-    },
-}
+else:
+    pc_params = {
+        'mat_view':':matAuxPC3D.txt',
+        'pc_type':'ksp',
+        'ksp_ksp_type': 'preonly',
+        'ksp_pc_type':'lu',
+        'ksp_ksp_monitor': None,
+        # 'pc_type': 'lu',
+        'ksp_pc_factor_mat_solver_type': 'petsc',
+    }
 
-
-params_schur = {
-    'mat_type': 'aij',
-    'ksp_type': 'fgmres',
-    'snes_type':'ksponly',
-    'ksp_atol': 0,
-    'ksp_rtol': 1e-8,
-    'ksp_view': ':SLB2D.txt',
-    'snes_monitor': None,
-    'ksp_monitor_true_residual': None,
-    'pc_type': 'fieldsplit',
-    'pc_fieldsplit_type': 'schur',
-    'pc_fieldsplit_schur_fact_type': 'full',
-    'pc_fieldsplit_schur_precondition': 'full',
-    'pc_fieldsplit_0_fields': '3',
-    'pc_fieldsplit_1_fields': '0,1,2',
-    'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
-        'ksp_type': 'preonly',
-        'pc_type': 'bjacobi',
-        'sub_pc_type': 'ilu',
-        # 'pc_factor_mat_solver_type': 'mumps',
-    },
-    'fieldsplit_1': {
-        'ksp_type': 'fgmres',
-        # 'ksp_monitor': None,
+    params_schur = {
+        'mat_type': 'aij',
+        'ksp_type': 'gmres',
+        'snes_type':'ksponly',
+        # 'ksp_atol': 0,
+        # 'ksp_rtol': 1e-8,
+        'ksp_view': ':SLB2D.txt',
+        'snes_monitor': None,
         'ksp_monitor_true_residual': None,
-        'pc_type': 'python',
-        'pc_python_type': __name__ + '.HDivSchurPC',
-        'helmholtzschurpc': pc_params,
+        'pc_type': 'fieldsplit',
+        'pc_fieldsplit_type': 'schur',
+        'pc_fieldsplit_schur_fact_type': 'full',
+        'pc_fieldsplit_schur_precondition': 'full',
+        'pc_fieldsplit_0_fields': '3',
+        'pc_fieldsplit_1_fields': '0,1,2',
+        'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
+            'ksp_type': 'preonly',
+            'pc_type': 'bjacobi',
+            'sub_pc_type': 'ilu',
+            # 'pc_factor_mat_solver_type': 'mumps',
         },
-}
+        'fieldsplit_1': {
+            'ksp_type': 'preonly',
+            'ksp_monitor': None,
+            'pc_type': 'python',
+            'pc_python_type': __name__ + '.HDivSchurPC',
+            'helmholtzschurpc': pc_params,
+            },
+    }
+    print("==========================The Schur complement is provided using AuxPC.==============")
 
-# nprob = NonlinearVariationalProblem(eqn, U, bcs=bcs, Jp=Jp)
-nprob = NonlinearVariationalProblem(eqn, U, bcs=bcs, Jp=Jp)
+if args.shiftpc:
+    nprob = NonlinearVariationalProblem(eqn, U, bcs=bcs, Jp=Jp)
+    print("================Solving the original equation using the shifted preconditioner.=====================")
+else:
+    nprob = NonlinearVariationalProblem(shift_eqn, U, bcs=bcs)
+    print("================Solving the shifted equation.=====================")
 nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_parameters=params_schur, appctx=appctx)
 
 nsolver.solve()
