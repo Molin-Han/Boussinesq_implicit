@@ -70,15 +70,20 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         return (Jp, bcs)
 
 distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 2)}
-m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
+old_m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
+x, = SpatialCoordinate(old_m)
+coord_fs = VectorFunctionSpace(old_m, "DG", 1, dim=2)
+new_coord = assemble(interpolate(as_vector([x, 0.]), coord_fs))
+m = Mesh(new_coord)
+m.init_cell_orientations(as_vector([0.,1.]))
 mh = MeshHierarchy(m, refinement_levels=args.refinement)
+# ? embedd the mesh first then create the mesh hierarchy. This will generate a topologically 2D mesh embedded in 3D.
 hierarchy = ExtrudedMeshHierarchy(mh, height, layers=[nz] * (args.refinement+1), extrusion_type='uniform')
-new_mh = utils.high_dim_mesh_hierarchy(hierarchy, dim=3)
-mesh = new_mh[-1]
+mesh = hierarchy[-1]
 finest_mesh_name = "finest"
 mesh.name = finest_mesh_name
 
-x, y, z = SpatialCoordinate(mesh)
+x, z = SpatialCoordinate(mesh) # ? This generate some problems.
 V_2D = utils.extrude_RT(mesh, k=deg)
 Vy = FunctionSpace(mesh, 'DG', deg-1)
 Pressure = FunctionSpace(mesh, 'DG', deg-1)

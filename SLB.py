@@ -131,8 +131,8 @@ pc_params = {
         # 'ksp_type': 'gmres',
         'ksp_type':'richardson',
         # 'ksp_type': 'chebyshev',
-        # 'ksp_richardson_scale': 0.2,
-        'ksp_richardson_self_scale':None,
+        'ksp_richardson_scale': 0.5,
+        # 'ksp_richardson_self_scale':None,
         # * -info <file_name>.txt:ksp will save the scale info for this.
         'ksp_max_it': 3,
         # 'ksp_monitor':None,
@@ -176,7 +176,7 @@ params_schur = {
         # 'pc_factor_mat_solver_type': 'mumps',
     },
     'fieldsplit_1': {
-        'ksp_type': 'fgmres',
+        'ksp_type': 'gmres',
         # 'ksp_monitor': None,
         'ksp_monitor_true_residual': None,
         'pc_type': 'python',

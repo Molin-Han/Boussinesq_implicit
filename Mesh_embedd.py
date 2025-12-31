@@ -18,3 +18,6 @@ mesh.name = finest_mesh_name
 
 with CheckpointFile('sol_mesh.h5', 'w') as chk:
     chk.save_mesh(mesh)
+
+x,y, = SpatialCoordinate(mesh)
+print(mesh)
