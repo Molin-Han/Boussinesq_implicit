@@ -38,6 +38,9 @@ nz=args.nz
 length=args.length
 height=args.height
 deg = args.degree
+ar = height / length
+deltax = length / nx
+deltaz = height / nz
 appctx = {
     "dt": dt,
     "shift":shift,
@@ -70,20 +73,15 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         return (Jp, bcs)
 
 distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 2)}
-old_m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
-x, = SpatialCoordinate(old_m)
-coord_fs = VectorFunctionSpace(old_m, "DG", 1, dim=2)
-new_coord = assemble(interpolate(as_vector([x, 0.]), coord_fs))
-m = Mesh(new_coord)
-m.init_cell_orientations(as_vector([0.,1.]))
+m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
 mh = MeshHierarchy(m, refinement_levels=args.refinement)
-# ? embedd the mesh first then create the mesh hierarchy. This will generate a topologically 2D mesh embedded in 3D.
 hierarchy = ExtrudedMeshHierarchy(mh, height, layers=[nz] * (args.refinement+1), extrusion_type='uniform')
-mesh = hierarchy[-1]
+new_mh = utils.high_dim_mesh_hierarchy(hierarchy, dim=3)
+mesh = new_mh[-1]
 finest_mesh_name = "finest"
 mesh.name = finest_mesh_name
 
-x, z = SpatialCoordinate(mesh) # ? This generate some problems.
+x, y, z = SpatialCoordinate(mesh) # ? This generate some problems.
 V_2D = utils.extrude_RT(mesh, k=deg)
 Vy = FunctionSpace(mesh, 'DG', deg-1)
 Pressure = FunctionSpace(mesh, 'DG', deg-1)
@@ -238,13 +236,13 @@ Unp1.assign(Un)
 t = 0.0
 dumpt = args.dt
 tdump = 0.
-i = 0
+j = 0
 while t < tmax - 0.5 * args.dt:
     print(f"=======================================The solver is currently solving for time:{t}==========================")
     t += args.dt
     tdump += args.dt
-    i += 1
-    if i == 0:
+    j += 1
+    if j == 0:
         nsolver.solve()
     else:
         nsolver.snes.ksp.setMonitor(monitor)
@@ -252,13 +250,15 @@ while t < tmax - 0.5 * args.dt:
         converged_it_num = nsolver.snes.ksp.getIterationNumber()
         with CheckpointFile('sol_its.h5', 'r') as chk:
             mesh = chk.load_mesh(name=finest_mesh_name, distribution_parameters=distribution_parameters)
+            mesh.init_cell_orientations(utils.j())
         with CheckpointFile('sol_its.h5', 'r') as chk:
             sol_final = chk.load_function(mesh, f'sol_{converged_it_num}', idx=converged_it_num)
             for i in range(converged_it_num):
                 sol_i = chk.load_function(mesh, f'sol_{i}', idx=i)
                 err_i = norm(sol_i - sol_final) / norm(sol_final)
                 error_list.append(err_i)
-        print(f"Monitor is on and working on time step{i}")
+        print(f"Monitor is on and working on time step {j}.")
+        np.savetxt(f'error_ar{ar}_dx{deltax}_dz{deltaz}.out', error_list)
     Un.assign(Unp1)
     if tdump > dumpt - args.dt*0.5:
         file_lb.write(un, uny, bn, pn)
