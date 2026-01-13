@@ -4,7 +4,7 @@ from petsc4py import PETSc
 print = PETSc.Sys.Print
 
 distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 2)}
-old_m = PeriodicIntervalMesh(10, 1.0,distribution_parameters=distribution_parameters)
+old_m = PeriodicIntervalMesh(10, 1.0, distribution_parameters=distribution_parameters)
 x, = SpatialCoordinate(old_m)
 coord_fs = VectorFunctionSpace(old_m, "DG", 1, dim=2)
 new_coord = assemble(interpolate(as_vector([x, 0.]), coord_fs))

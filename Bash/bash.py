@@ -1,20 +1,23 @@
 import numpy as np
-nxs = [50]
-nzs = [50]
+# nxs = (np.arange(12, 60, 5) * 5).tolist() # ? [60, 85, 110, 135, 160, 185, 210, 235, 260, 285]
+# nzs = (np.exp(np.arange(2, 8)* 2/5) * 20) .astype(int).tolist() # ? [44, 66, 99, 147, 220, 328]
+nxs = [60]
+nzs = [44]
 lengths = [3.0e5]
-heights = [1.0e3]
+# heights = (np.exp(np.arange(6, -3, -1.0))*10).astype(int).tolist() # ? [4034, 1484, 545, 200, 73, 27, 10, 3, 1]
+heights = [4034]
 dts = [1.0, 5.0, 10.0, 50.0, 100.0, 1000.0]
+# dts = [100.0]
 dts_array = np.array(dts)
 tmax_array = dts_array * 2
 tmaxs = tmax_array.tolist()
-shifts = (np.round(dts_array ** (-1.5),decimals=6)).tolist()
+# shifts = (np.round(dts_array ** (-1.5),decimals=6)).tolist()
 
 ncpus = [16]
 
 import subprocess, os
 
 rows = []
-index = 0
 for nx in nxs:
     for nz in nzs:
         for length in lengths:
@@ -28,9 +31,8 @@ for nx in nxs:
                             "height": height,
                             "dt": dt,
                             "tmax": 2 * dt,
-                            "shift": shifts[index],
+                            "shift": np.round(dt ** (-1.5), decimals=6),
                         }
-                        index += 1
                         args = []
                         for key, value in options.items():
                             args += ["--"+str(key), str(value)]
