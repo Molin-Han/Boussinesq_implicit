@@ -1,5 +1,7 @@
 #!/bin/bash
 # run_all.sh
+# chmod +x run_all.sh
+# to make it runable
 
 # AR test here:
 mpiexec -n 16 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 44 --length 300000.0 --height 4034 --dt 100.0 --tmax 200.0 --shift 0.001

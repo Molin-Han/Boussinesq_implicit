@@ -91,7 +91,7 @@ W = V_2D * Vy * Vb * Pressure
 Un = Function(W)
 Unp1 = Function(W)
 
-unxz, uny, bn, pn = split(Un)
+unxz, uny, bn, pn = split(Un) # ! split for writing the equations.
 unp1xz, unp1y, bnp1, pnp1 = split(Unp1)
 w_xz, wy, q, phi = TestFunctions(W)
 
@@ -99,9 +99,9 @@ w_xz, wy, q, phi = TestFunctions(W)
 xc = Constant(length/2)
 yc = Constant(length/2)
 a = Constant(5000)
-U = Constant(0.) # TODO: there is no background flow.
+U = Constant(0.)
 # This is a 4 components function.
-u0_slice, u0yic, b0ic, p0ic = Un.subfunctions
+u0_slice, u0yic, b0ic, p0ic = Un.subfunctions # ! subfunction for data assignment
 u1_slice, u1yic, b1ic, p1ic = Unp1.subfunctions
 b0ic.project(sin(pi*z/height)/(1+((x-xc)**2)/a**2))
 b1ic.project(sin(pi*z/height)/(1+((x-xc)**2)/a**2))
@@ -142,8 +142,8 @@ helmholtz_schur_pc_params = {
         'pc_mg_type': 'full',
         'pc_mg_cycle_type':'v',
         'mg_levels': {
-            # 'ksp_type': 'gmres',
-            'ksp_type':'richardson',
+            'ksp_type': 'gmres',
+            # 'ksp_type':'richardson',
             # 'ksp_type': 'chebyshev',
             # 'ksp_richardson_scale': 0.5,
             'ksp_richardson_self_scale':None,
@@ -172,7 +172,7 @@ helmholtz_schur_pc_params = {
 
 params_schur = {
     # 'mat_type': 'aij',
-    'ksp_type': 'gmres',
+    'ksp_type': 'fgmres', # ! this can also be tuned.
     'snes_type':'ksponly',
     'ksp_atol': 0,
     'ksp_rtol': 1e-7,
@@ -193,9 +193,11 @@ params_schur = {
         # 'pc_factor_mat_solver_type': 'mumps',
     },
     'fieldsplit_1': {
-        'ksp_type': 'preonly',
+        'ksp_type': 'fgmres', # ! need to tune this.
         'ksp_monitor': None,
-        'mat_view':':field_1_mat_aux.txt',
+        # 'ksp_atol': 0,
+        # 'ksp_rtol': 1e-7, # ? Do I need to set this?
+        # 'mat_view':':field_1_mat_aux.txt',
         'pc_type': 'python',
         'pc_python_type': __name__ + '.HDivSchurPC',
         'helmholtzschurpc': helmholtz_schur_pc_params,
@@ -242,7 +244,6 @@ while t < tmax - 0.5 * args.dt:
     print(f"=======================================The solver is currently solving for time:{t}==========================")
     t += args.dt
     tdump += args.dt
-    j += 1
     if j == 0:
         nsolver.solve()
     else:
@@ -261,6 +262,7 @@ while t < tmax - 0.5 * args.dt:
         print(f"Monitor is on and working on time step {j}.")
         np.savetxt(f'error_ar{ar}_dx{deltax}_dz{deltaz}.out', error_list)
     Un.assign(Unp1)
+    j += 1
     if tdump > dumpt - args.dt*0.5:
         file_lb.write(un, uny, bn, pn)
         tdump -= dumpt

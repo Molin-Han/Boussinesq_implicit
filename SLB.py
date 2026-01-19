@@ -143,7 +143,8 @@ pc_params = {
         "pc_star_sub_sub_ksp_monitor_true_residual":':patch_ksp_rcm_monitor.txt',
         # "pc_star_sub_sub_pc_factor_nonzeros_along_diagonal":1e-5,
         'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
-        'pc_star_sub_sub_pc_factor_mat_solver_type': 'mumps',
+        'pc_star_sub_sub_pc_factor_mat_solver_type': 'mumps', # ! can experiment with superlu. This will be much cheaper.
+        # ! warning: the package might not be using the reordering. This need to be checked. PETSc community can know how to do it.
         # "pc_star_sub_sub_pc_type": "svd",
         # "pc_star_sub_sub_pc_svd_monitor": None,
     },
