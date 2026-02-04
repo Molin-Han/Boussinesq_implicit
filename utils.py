@@ -79,17 +79,17 @@ def SLB_pressure(u, phi):
         )
 
 
-def LB_velocity(unp1, un, unph, w, bnph, pnp1, dt, no_rotation=False, twoD=False):
-    if no_rotation:
+def LB_velocity(unp1, un, unph, w, bnph, pnp1, dt, use_rotation=False, twoD=False):
+    if use_rotation:
         return (
                 inner(w, (unp1 - un)) * dx 
+                + dt * inner(w, 2 * cross(Coriolis_param(), unph)) * dx
                 - dt * div(w) * pnp1 * dx
                 - dt * inner(w, k(twoD=twoD)) * bnph * dx
             )
     else:
         return (
                 inner(w, (unp1 - un)) * dx 
-                + dt * inner(w, 2 * cross(Coriolis_param(), unph)) * dx
                 - dt * div(w) * pnp1 * dx
                 - dt * inner(w, k(twoD=twoD)) * bnph * dx
             )
