@@ -29,6 +29,7 @@ parser.add_argument('--dx_test', action='store_true', help='If true, save the er
 parser.add_argument('--dz_test', action='store_true', help='If true, save the error data storing dz parameters.')
 parser.add_argument('--rtol', type=float, default=1.0e-10, help='Relative tolerance for the ksp.')
 parser.add_argument('--direct', action='store_true', help='If true, solve the Schur complement using direct LU.')
+parser.add_argument('--storage_interval', type=int, default=5, help='The storage interval for the CheckpointFile.')
 
 args = parser.parse_known_args()
 args = args[0]
@@ -208,14 +209,11 @@ params_schur = {
     'ksp_atol': 0,
     'ksp_rtol': args.rtol,
     'ksp_view': ':slice3D.txt',
-    'ksp_max_it': 150,
-    'ksp_converged_maxits': None,
     'snes_monitor': None,
     # 'ksp_monitor': None,
     'ksp_converged_rate':None,
     'ksp_monitor_true_residual': None,
-    # "ksp_error_if_not_converged": False,
-    # "snes_error_if_not_converged": False,
+    'ksp_error_if_not_converged':None,
     'pc_type': 'fieldsplit',
     'pc_fieldsplit_type': 'schur',
     'pc_fieldsplit_schur_fact_type': 'full',
@@ -230,8 +228,7 @@ params_schur = {
     'fieldsplit_1': {
         'helmholtzschurpc_use_rotation':use_rotation,
         'ksp_type': 'fgmres', # ! need to tune this.
-        'ksp_monitor': None,
-        'ksp_converged_reason': f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt',
+        # 'ksp_monitor': None,
         # 'ksp_atol': 0,
         # 'ksp_rtol': 1e-7, # ? Do I need to set this?
         # 'mat_view':':field_1_mat_aux.txt',
@@ -248,18 +245,26 @@ nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_paramete
 # Set checkpointing for saving the data.
 error_list = []
 sol_it = Function(W, name='sol_it')
-sol_final = Function(W, name='sol_final')
-# with CheckpointFile('sol_mesh.h5', 'w') as chk:
-#     chk.save_mesh(mesh)
+with CheckpointFile('sol_mesh.h5', 'w') as chk:
+    chk.save_mesh(mesh)
 
 def monitor(ksp, iteration_number, norm0):
-    # print('The monitor starts to build the solution.')
+    print('The monitor starts to build the solution.')
     sol = ksp.buildSolution()
+    print('The monitor finishes building the solution.')
     with sol_it.dat.vec_wo as it_vec:
         sol.copy(result=it_vec)
-    # print('The monitor starts to calculate the error.')
-    error = norm(sol_it - sol_final) / norm(sol_final)
-    error_list.append(error)
+    if iteration_number == 0:
+        with CheckpointFile('sol_its.h5', 'w') as chk:
+            print('Checkpointing the first solution.')
+            chk.save_function(sol_it, idx=iteration_number, name=f'sol_{iteration_number}')
+            print('Checkpointed the first solution.')
+    elif iteration_number % args.storage_interval == 0:
+        with CheckpointFile('sol_its.h5', 'a') as chk:
+            print(f'Checkpointing the solution at iteration {iteration_number}.')
+            chk.save_function(sol_it, idx=iteration_number, name=f'sol_{iteration_number}')
+            print(f'Checkpointed the solution at iteration {iteration_number}.')
+
 
 # Time Stepping
 name = 'lb_slice_imp_ASM'
@@ -282,26 +287,27 @@ while t < tmax - 0.5 * args.dt:
     if j == 0:
         nsolver.solve()
     else:
-        U_restart = Unp1.copy(deepcopy=True)
-        nsolver.solve()
-        final_sol = nsolver.snes.ksp.buildSolution()
-        with sol_final.dat.vec_wo as final_vec:
-            final_sol.copy(result=final_vec)
-        Unp1.assign(U_restart) # ! Assign the original velocity to restart the solver.
         nsolver.snes.ksp.setMonitor(monitor)
         nsolver.solve()
-        reason = nsolver.snes.ksp.getConvergedReason()
-        print("*************************************************", reason)
         converged_it_num = nsolver.snes.ksp.getIterationNumber()
-        print(f"KSP is converged in {converged_it_num} iterations and monitor is working on time step {j}.")
+        with CheckpointFile('sol_its.h5', 'r') as chk:
+            mesh = chk.load_mesh(name=finest_mesh_name, distribution_parameters=distribution_parameters)
+            mesh.init_cell_orientations(utils.j())
+        with CheckpointFile('sol_its.h5', 'r') as chk:
+            sol_final = chk.load_function(mesh, f'sol_{converged_it_num}', idx=converged_it_num)
+            for i in range(0, converged_it_num, args.storage_interval):
+                sol_i = chk.load_function(mesh, f'sol_{i}', idx=i)
+                err_i = norm(sol_i - sol_final) / norm(sol_final)
+                error_list.append(err_i)
+        print(f"Monitor is on and working on time step {j}.")
         if args.dt_test:
             np.savetxt(f'error_dt{args.dt}_shift{args.shift}.out', error_list)
         if args.ar_test:
-            np.savetxt(f'error_dt{args.dt}_ar{ar}.out', error_list)
+            np.savetxt(f'error_ar{ar}.out', error_list)
         if args.dx_test:
-            np.savetxt(f'error_dt{args.dt}_nx{nx}.out', error_list)
+            np.savetxt(f'error_nx{nx}.out', error_list)
         if args.dz_test:
-            np.savetxt(f'error_dt{args.dt}_nz{nz}.out', error_list)
+            np.savetxt(f'error_nz{nz}.out', error_list)
     Un.assign(Unp1)
     j += 1
     if tdump > dumpt - args.dt*0.5:
