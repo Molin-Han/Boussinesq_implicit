@@ -27,7 +27,8 @@ parser.add_argument('--dt_test', action='store_true', help='If true, save the er
 parser.add_argument('--ar_test', action='store_true', help='If true, save the error data storing AR parameters.')
 parser.add_argument('--dx_test', action='store_true', help='If true, save the error data storing dx parameters.')
 parser.add_argument('--dz_test', action='store_true', help='If true, save the error data storing dz parameters.')
-parser.add_argument('--rtol', type=float, default=1.0e-10, help='Relative tolerance for the ksp.')
+parser.add_argument('--rtol', type=float, default=1.0e-10, help='Relative tolerance for the ksp of linear solver.')
+parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
 parser.add_argument('--direct', action='store_true', help='If true, solve the Schur complement using direct LU.')
 
 args = parser.parse_known_args()
@@ -208,8 +209,8 @@ params_schur = {
     'ksp_atol': 0,
     'ksp_rtol': args.rtol,
     'ksp_view': ':slice3D.txt',
-    'ksp_max_it': 150,
-    'ksp_converged_maxits': None,
+    'ksp_max_it': args.maxit,
+    'ksp_converged_maxits': None, # ! When max_it is reached, setting this will pass the convergence test and make the solver run, instead of raising a ConvergenceError. Distinguish the type of convergence in ConvergedReason instead!
     'snes_monitor': None,
     # 'ksp_monitor': None,
     'ksp_converged_rate':None,
