@@ -1,7 +1,7 @@
 import numpy as np
 
 ncpus = [2] # ! Change to 2 maybe faster.
-direct_solver = False # ! if True, use direct solver for Schur complement, else using ASMStar with MG.
+direct_solver = True # ! if True, use direct solver for Schur complement, else using ASMStar with MG.
 maxit = 150
 
 # test = 'dt_test'

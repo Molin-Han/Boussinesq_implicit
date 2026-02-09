@@ -1,143 +1,137 @@
-#!/bin/bash
-# run_all.sh
-# chmod +x run_all.sh
-# to make it runable
-
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 1.0 --tmax 2.0 --shift 0.001 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 100.0 --tmax 200.0 --shift 1e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 1.0 --tmax 2.0 --shift 0.001 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 100.0 --tmax 200.0 --shift 1e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 1.0 --tmax 2.0 --shift 0.001 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 100.0 --tmax 200.0 --shift 1e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 1.0 --tmax 2.0 --shift 0.001 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 100.0 --tmax 200.0 --shift 1e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 1.0 --tmax 2.0 --shift 0.001 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 100.0 --tmax 200.0 --shift 1e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 1.0 --tmax 2.0 --shift 0.001 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 100.0 --tmax 200.0 --shift 1e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 1.0 --tmax 2.0 --shift 0.001 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 100.0 --tmax 200.0 --shift 1e-06 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --ar_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --ar_test
-
-python ../Boussinesq_implicit/plot_ar.py
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 100.0 --tmax 200.0 --shift 1e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 12000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 100.0 --tmax 200.0 --shift 1e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 8000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 4000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 100.0 --tmax 200.0 --shift 1e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 2000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 100.0 --tmax 200.0 --shift 1e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 1000 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 100.0 --tmax 200.0 --shift 1e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 500 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 100.0 --tmax 200.0 --shift 1e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 100 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 2.0 --tmax 4.0 --shift 0.0003535533905933 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 5.0 --tmax 10.0 --shift 8.94427191e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 8.0 --tmax 16.0 --shift 4.41941738242e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 10.0 --tmax 20.0 --shift 3.16227766017e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 20.0 --tmax 40.0 --shift 1.11803398875e-05 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 50.0 --tmax 100.0 --shift 2.8284271247e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 80.0 --tmax 160.0 --shift 1.3975424859e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 100.0 --tmax 200.0 --shift 1e-06 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 200.0 --tmax 400.0 --shift 3.535533906e-07 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 500.0 --tmax 1000.0 --shift 8.94427191e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 1000.0 --tmax 2000.0 --shift 3.16227766e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 2000.0 --tmax 4000.0 --shift 1.11803399e-08 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 5000.0 --tmax 10000.0 --shift 2.8284271e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 10000.0 --tmax 20000.0 --shift 1e-09 --maxit150 --ar_test --direct
+# mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 20000.0 --tmax 40000.0 --shift 3.535534e-10 --maxit150 --ar_test --direct
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 40 --length 300000.0 --height 50 --dt 50000.0 --tmax 100000.0 --shift 8.94427e-11 --maxit150 --ar_test --direct
+python ../Boussinesq_implicit/plot_ar.py --maxit 150 --dts 1.0 2.0 5.0 8.0 10.0 20.0 50.0 80.0 100.0 200.0 500.0 1000.0 2000.0 5000.0 10000.0 20000.0 50000.0 --heights 12000 8000 4000 2000 1000 500 100 50 --C1 0.001 --length 300000.0

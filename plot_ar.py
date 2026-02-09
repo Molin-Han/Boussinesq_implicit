@@ -20,11 +20,6 @@ parser.add_argument('--length', type=float, default=3.0e5, help='The default len
 args = parser.parse_known_args()
 args = args[0]
 
-# dts = [1.0, 2.0, 5.0, 8.0, 10.0, 20.0, 50.0, 80.0, 100.0, 200.0, 500.0, 1000.0, 2000.0, 5000.0, 10000.0, 20000.0, 50000.0]
-# heights = [12000, 8000, 4000, 2000, 1000, 500, 100, 50]
-# C1 = 0.001
-# length = 3.0e5
-
 dts = args.dts
 heights = args.heights
 C1 = args.C1

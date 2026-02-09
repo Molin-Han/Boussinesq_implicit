@@ -20,10 +20,6 @@ parser.add_argument('--height', type=float, default=4000, help='The default heig
 args = parser.parse_known_args()
 args = args[0]
 
-# dts = [1.0, 2.0, 5.0, 8.0, 10.0, 20.0, 50.0, 80.0, 100.0, 200.0, 500.0, 1000.0, 2000.0, 5000.0, 10000.0, 20000.0, 50000.0]
-# nzs = [40, 60, 80, 100, 130, 160, 220, 280]
-# C1 = 0.001
-# height = 4000
 dts = args.dts
 nzs = args.nzs
 C1 = args.C1

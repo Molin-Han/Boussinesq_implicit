@@ -19,8 +19,6 @@ parser.add_argument('--C1_list',nargs='+', type=float, default=1.0, help='The C1
 args = parser.parse_known_args()
 args = args[0]
 
-# dts = [1.0, 2.0, 5.0, 8.0, 10.0, 20.0, 50.0, 80.0, 100.0, 200.0, 500.0, 1000.0, 2000.0, 5000.0, 10000.0, 20000.0, 50000.0]
-# C1_list = [5.0, 1.0 ,0.1, 0.01, 0.001, 0.0005, 0.0001, 0.00001]
 dts = args.dts
 C1_list = args.C1_list
 
