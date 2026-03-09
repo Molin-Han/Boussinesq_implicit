@@ -43,7 +43,7 @@ def high_dim_mesh_hierarchy(mh, dim=3):
                             mh.fine_to_coarse_cells,
                             mh.refinements_per_level, mh.nested)
 
-def extrude_RT(mesh, k=0):
+def extrude_RT(mesh, k=1):
     CG = FiniteElement("CG", interval, k)
     DG = FiniteElement("DG", interval, k-1)
     CG_DG = TensorProductElement(CG, DG)
@@ -105,3 +105,35 @@ def LB_pressure(unp1, phi):
             phi * div(unp1) * dx
         )
 
+
+def unn_tool(unph, n):
+    '''
+    Given the Facet normal and a vector, return the form that needed for DG forms.
+    '''
+    return (
+        0.5 * (dot(unph, n) + abs(dot(unph, n)))
+    )
+
+def Nonlinear_velocity(unp1, un, unph, w, bnph, pnp1, dt, n, use_rotation=False, twoD=False):
+    unn = unn_tool(unph, n)
+    eqn = inner(w, (unp1 - un)) * dx
+    if use_rotation:
+        eqn += + dt * inner(w, 2 * cross(Coriolis_param(), unph)) * dx
+    eqn -= dt * div(w) * pnp1 * dx
+    eqn -= dt * inner(w, k(twoD=twoD)) * bnph * dx
+    # Advective terms:
+    eqn -= dt * inner(div(outer(unph, w)), unph) * dx
+    # eqn += dt * dot(jump(w), unn('+') * unph('+') - unn('-') * unph('-')) * (dS_v + dS_h)
+    return eqn
+
+def Nonlinear_buoyancy(bnp1, bn, bnph, q, unph, dt, n, twoD=False):
+    unn = unn_tool(unph, n)
+    eqn = q * (bnp1 - bn) * dx
+    eqn -= dt * div(q * unph) * bnph * dx
+    # eqn += dt * jump(q) * (unn('+') * bnph('+') - unn('-') * bnph('-')) * (dS_v + dS_h)
+    return eqn
+
+def Nonlinear_pressure(unp1, phi):
+    return (
+            phi * div(unp1) * dx
+        )

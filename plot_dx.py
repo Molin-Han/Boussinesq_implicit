@@ -13,14 +13,14 @@ parser = ArgumentParser(
 
 parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
 parser.add_argument('--dts', nargs='+', type=float, default=1.0, help='The time step looping for.')
-parser.add_argument('--nxs', nargs='+', type=float, default=1.0, help='The number of elements horizontal-wise looping for.')
+parser.add_argument('--nxs', nargs='+', type=int, default=1.0, help='The number of elements horizontal-wise looping for.')
 parser.add_argument('--C1', type=float, default=0.001, help='The default shift constant.')
 parser.add_argument('--length', type=float, default=3.0e5, help='The default length of the domain.')
 
 args = parser.parse_known_args()
 args = args[0]
 
-dts = args.dt
+dts = args.dts
 nxs = args.nxs
 C1 = args.C1
 length = args.length
