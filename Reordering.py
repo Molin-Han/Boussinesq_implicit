@@ -61,7 +61,8 @@ for i in range(len(indptr_A)-1):
         bandwidth_A = max(bandwidth_A, abs(j - i))
 print(f"The bandwidth of the matrix A before reordering is {bandwidth_A}.")
 
-rperm, cperm = A.getOrdering("rcm") # Reordering here.
+ordering = 'amd'
+rperm, cperm = A.getOrdering(ordering) # Reordering here.
 Aperm = A.createSubMatrix(rperm, cperm)
 
 indptr, indices, vals = Aperm.getValuesCSR()
@@ -72,7 +73,7 @@ for i in range(len(indptr)-1):
     for j in cols:
         bandwidth = max(bandwidth, abs(j - i))
 
-print(f"The bandwidth of the matrix A after reordering is {bandwidth}.")
+print(f"The bandwidth of the matrix A after reordering is {bandwidth} using reordering method {ordering}.")
 
 J_shift = lhs(eqn + shift*q*p*dx)
 U1 = Function(W)

@@ -27,7 +27,7 @@ parser.add_argument('--dt_test', action='store_true', help='If true, save the er
 parser.add_argument('--ar_test', action='store_true', help='If true, save the error data storing AR parameters.')
 parser.add_argument('--dx_test', action='store_true', help='If true, save the error data storing dx parameters.')
 parser.add_argument('--dz_test', action='store_true', help='If true, save the error data storing dz parameters.')
-parser.add_argument('--rtol', type=float, default=1.0e-8, help='Relative tolerance for the ksp of linear solver.')
+parser.add_argument('--rtol', type=float, default=1.0e-10, help='Relative tolerance for the ksp of linear solver.')
 parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
 parser.add_argument('--direct', action='store_true', help='If true, solve the Schur complement using direct LU.')
 parser.add_argument('--timing', action='store_true', help='If true, run the code without monitoring and test for the time.')
@@ -110,7 +110,7 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         _, bcs = super().form(pc, u, v)
         return (Jp, bcs)
 
-distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 2)}
+distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 1)}
 m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
 mh = MeshHierarchy(m, refinement_levels=args.refinement)
 hierarchy = ExtrudedMeshHierarchy(mh, height, layers=[nz] * (args.refinement+1), extrusion_type='uniform')
@@ -261,8 +261,9 @@ if args.timing:
     }
     if args.richardson:
         params_schur.update({
-            'fieldsplit_1_ksp_type': 'richardson',
-            'fieldsplit_1_ksp_richardson_scale':1.0,
+            'fieldsplit_1_ksp_type':'preonly',
+            # 'fieldsplit_1_ksp_type': 'richardson',
+            # 'fieldsplit_1_ksp_richardson_scale':1.0,
         })
     else:
         params_schur.update({
@@ -317,8 +318,9 @@ else:
     }
     if args.richardson:
         params_schur.update({
-            'fieldsplit_1_ksp_type': 'richardson',
-            'fieldsplit_1_ksp_richardson_scale':1.0,
+            'fieldsplit_1_ksp_type':'preonly',
+            # 'fieldsplit_1_ksp_type': 'richardson',
+            # 'fieldsplit_1_ksp_richardson_scale':1.0,
         })
     else:
         params_schur.update({

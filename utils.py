@@ -2,6 +2,7 @@ from firedrake import *
 import numpy as np
 from petsc4py import PETSc
 print = PETSc.Sys.Print
+from irksome import GaussLegendre, Dt, MeshConstant, TimeStepper
 
 def i():
     return as_vector([1., 0., 0.])
@@ -79,6 +80,25 @@ def SLB_pressure(u, phi):
         )
 
 
+def LB_velocity_Irk(u, w, b, p, dt, twoD=False):
+    return (
+            inner(w, Dt(u)) * dx 
+            + dt * inner(w, 2 * cross(Coriolis_param(), u)) * dx
+            - dt * div(w) * p * dx
+            - dt * inner(w, k(twoD=twoD)) * b * dx
+        )
+
+def LB_buoyancy_Irk(b, q, u, dt, twoD=False):
+    return (
+            q * Dt(b) * dx
+            + dt * buo_freq() * q * inner(k(twoD=twoD), u) * dx
+        )
+
+def LB_pressure_Irk(u, phi):
+    return (
+            phi * div(u) * dx
+        )
+
 def LB_velocity(unp1, un, unph, w, bnph, pnp1, dt, use_rotation=False, twoD=False):
     if use_rotation:
         return (
@@ -123,17 +143,44 @@ def Nonlinear_velocity(unp1, un, unph, w, bnph, pnp1, dt, n, use_rotation=False,
     eqn -= dt * inner(w, k(twoD=twoD)) * bnph * dx
     # Advective terms:
     eqn -= dt * inner(div(outer(unph, w)), unph) * dx
-    # eqn += dt * dot(jump(w), unn('+') * unph('+') - unn('-') * unph('-')) * (dS_v + dS_h)
+    eqn += dt * dot(jump(w), unn('+') * unph('+') - unn('-') * unph('-')) * (dS_v + dS_h)
     return eqn
 
 def Nonlinear_buoyancy(bnp1, bn, bnph, q, unph, dt, n, twoD=False):
     unn = unn_tool(unph, n)
     eqn = q * (bnp1 - bn) * dx
     eqn -= dt * div(q * unph) * bnph * dx
-    # eqn += dt * jump(q) * (unn('+') * bnph('+') - unn('-') * bnph('-')) * (dS_v + dS_h)
+    eqn += dt * jump(q) * (unn('+') * bnph('+') - unn('-') * bnph('-')) * (dS_v + dS_h)
     return eqn
 
 def Nonlinear_pressure(unp1, phi):
     return (
             phi * div(unp1) * dx
         )
+
+
+
+def Nonlinear_velocity_Irk(u, w, b, p, dt, n, use_rotation=False, twoD=False):
+    unn = unn_tool(u, n)
+    eqn = inner(w, Dt(u)) * dx
+    if use_rotation:
+        eqn += + dt * inner(w, 2 * cross(Coriolis_param(), u)) * dx
+    eqn -= dt * div(w) * p * dx
+    eqn -= dt * inner(w, k(twoD=twoD)) * b * dx
+    # Advective terms:
+    eqn -= dt * inner(div(outer(u, w)), u) * dx
+    eqn += dt * dot(jump(w), unn('+') * u('+') - unn('-') * u('-')) * (dS_v + dS_h)
+    return eqn
+
+def Nonlinear_buoyancy_Irk(b, q, u, dt, n, twoD=False):
+    unn = unn_tool(u, n)
+    eqn = q * Dt(b) * dx
+    eqn -= dt * div(q * u) * b * dx
+    eqn += dt * jump(q) * (unn('+') * b('+') - unn('-') * b('-')) * (dS_v + dS_h)
+    return eqn
+
+def Nonlinear_pressure_Irk(u, phi):
+    return (
+            phi * div(u) * dx
+        )
+

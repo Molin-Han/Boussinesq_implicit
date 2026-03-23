@@ -1,0 +1,316 @@
+from firedrake import *
+from irksome import GaussLegendre, Dt, MeshConstant, TimeStepper, IRKAuxiliaryOperatorPC
+import numpy as np
+from firedrake.output import VTKFile
+from petsc4py import PETSc
+print = PETSc.Sys.Print
+import utils
+from argparse import ArgumentParser
+from argparse import ArgumentDefaultsHelpFormatter
+
+parser = ArgumentParser(
+    description='Shifted simplified steady Linear Boussinesq equation.',
+    formatter_class=ArgumentDefaultsHelpFormatter
+)
+
+parser.add_argument('--nx', type=int, default=40, help='Number of cells along horizontal direction.')
+parser.add_argument('--nz', type=int, default=20, help='Number of layers to extrude.')
+parser.add_argument('--length', type=float, default=1.0, help='Horizontal length of our solution domain.')
+parser.add_argument('--height', type=float, default=1.0, help='Height of our solution domain.')
+parser.add_argument('--refinement', type=int, default=2, help='Levels of the multigrid.')
+parser.add_argument('--degree', type=int, default=1, help='Order of the element.')
+parser.add_argument('--dt', type=float, default=1.0, help='Time stepping parameter.')
+parser.add_argument('--tmax', type=float, default=2.0, help='Time period that we solve.')
+parser.add_argument('--shift', type=float, default=1.0, help='Shift parameter for the shift preconditioner.')
+parser.add_argument('--show_args', action='store_true', help='Print all the arguments when the script starts.')
+parser.add_argument('--no_rotation', action='store_false', help='If true, no Coriolis term will be imposed in the equation.')
+parser.add_argument('--dt_test', action='store_true', help='If true, save the error data storing dt parameters.')
+parser.add_argument('--ar_test', action='store_true', help='If true, save the error data storing AR parameters.')
+parser.add_argument('--dx_test', action='store_true', help='If true, save the error data storing dx parameters.')
+parser.add_argument('--dz_test', action='store_true', help='If true, save the error data storing dz parameters.')
+parser.add_argument('--rtol', type=float, default=1.0e-10, help='Relative tolerance for the ksp of linear solver.')
+parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
+parser.add_argument('--timing', action='store_true', help='If true, run the code without monitoring and test for the time.')
+parser.add_argument('--reordering', action='store_true', help='If true, run the code with RCM reordering.')
+parser.add_argument('--richardson', action='store_true', help='If true, run the code with Richardson iteration for the fieldsplit_1 solve for Schur complement.')
+
+args = parser.parse_known_args()
+args = args[0]
+
+if args.show_args:
+    PETSc.Sys.Print(args)
+
+if args.no_rotation:
+    use_rotation = False
+else:
+    use_rotation = True
+
+nx=args.nx
+nz=args.nz
+length=args.length
+height=args.height
+deg = args.degree
+ar = height / length
+deltax = length / nx
+deltaz = height / nz
+
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+print(f"Physical domain with length{length} and height {height}, aspect ratio {ar}.")
+print(f"Number of elements in x direction {nx} and z direction {nz}.")
+print(f"Time stepping parameters dt {args.dt}, total time {args.tmax}")
+print(f"Shift parameter {args.shift}, proportional constant C1 {args.shift * args.dt**1.5}.")
+print(f"The code is running with solver for the Schur complement created.")
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+
+def vector_3D(u, uy):
+    return (
+        u + uy * utils.j()
+    )
+
+distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 1)}
+m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
+mh = MeshHierarchy(m, refinement_levels=args.refinement)
+hierarchy = ExtrudedMeshHierarchy(mh, height, layers=[nz] * (args.refinement+1), extrusion_type='uniform')
+new_mh = utils.high_dim_mesh_hierarchy(hierarchy, dim=3)
+mesh = new_mh[-1]
+finest_mesh_name = "finest"
+mesh.name = finest_mesh_name
+
+MC = MeshConstant(mesh)
+dt = MC.Constant(args.dt)
+shift = Constant(args.shift)
+tmax = args.tmax
+t = MC.Constant(0.0)
+appctx = {
+    "dt": dt,
+    "shift":shift,
+}
+
+x, y, z = SpatialCoordinate(mesh)
+V_2D = utils.extrude_RT(mesh, k=deg)
+Vy = FunctionSpace(mesh, 'DG', deg-1)
+Pressure = FunctionSpace(mesh, 'DG', deg-1)
+Vb = utils.W_theta(mesh, k=deg)
+W = V_2D * Vy * Vb * Pressure
+
+U = Function(W)
+
+uxz, uy, b, p = split(U)
+w_xz, wy, q, phi = TestFunctions(W)
+
+# Initial condition
+xc = Constant(length/2)
+yc = Constant(length/2)
+a = Constant(5000)
+# This is a 4 components function.
+u0_slice, u0yic, b0ic, p0ic = U.subfunctions
+b0ic.project(sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+
+# DiricheletBC
+bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
+bc2 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "bottom")
+bcs = [bc1, bc2]
+
+u = vector_3D(uxz, uy)
+w = vector_3D(w_xz, wy)
+
+eqn = utils.LB_velocity_Irk(u,w,b,p,dt)
+eqn += utils.LB_buoyancy_Irk(b, q, u, dt)
+eqn += utils.LB_pressure_Irk(u, phi)
+
+# Pressure Nullspace
+v_basis = VectorSpaceBasis(constant=True, comm=COMM_WORLD)
+nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), W.sub(2), v_basis])
+
+# ! Implement the direct shifted form now, then use the eliminated version.
+class HDivSchurPC(IRKAuxiliaryOperatorPC):
+    _prefix = "helmholtzschurpc_"
+    def getNewFsorm(self, pc, u0, test):
+        prefix = (pc.getOptionsPrefix() or "") + self._prefix
+        rotation = PETSc.Options().getBool(f"{prefix}use_rotation", False) # ! Use this petsc option can make the equation to be consistent.
+        appctx_PC = self.get_appctx(pc)
+        dtc = appctx_PC["dt"]
+        delta = appctx_PC["shift"]
+        W = u0.function_space()
+        uxz, uy, b, p = split(u0)
+        wxz, wy, q, phi = split(test)
+        u = vector_3D(uxz, uy)
+        w = vector_3D(wxz, wy)
+
+        # p = - Constant(1.) / delta * div(u)
+        F = utils.LB_velocity_Irk(u, w, b, p, dtc)
+        F += utils.LB_buoyancy_Irk(b, q, u, dtc)
+        F += utils.LB_pressure_Irk(u, phi)
+        F += delta * p * phi * dx
+
+        #  Boundary conditions
+        # _, bcs = super().form(pc, u, v)
+        bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
+        bc2 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "bottom")
+        bcs = [bc1, bc2]
+        return (F, bcs)
+
+# if args.direct:
+#     helmholtz_schur_pc_params = {
+#         'pc_type':'ksp',
+#         'ksp_ksp_type': 'preonly',
+#         # 'mat_view':':matSchurAuxPC.txt',
+#         'ksp_pc_type':'lu',
+#         # 'ksp_ksp_monitor': None,
+#     }
+
+# else:
+#     helmholtz_schur_pc_params = {
+#             # 'ksp_type': 'preonly',
+#             # 'ksp_max_its': 30,
+#             'pc_type': 'mg',
+#             'pc_mg_type': 'full',
+#             'pc_mg_cycle_type':'v',
+#             'mg_levels': {
+#                 'ksp_type': 'gmres',
+#                 # 'ksp_type':'richardson',
+#                 # 'ksp_type': 'chebyshev',
+#                 # 'ksp_richardson_scale': 0.5,
+#                 # 'ksp_richardson_self_scale':None,
+#                 # 'ksp_max_it': 1, # ? more robust for larger max_it here.
+#                 # 'ksp_monitor':None,
+#                 "pc_type": "python",
+#                 "pc_python_type": "firedrake.ASMStarPC",
+#                 "pc_star_construct_dim": 0,
+#                 "pc_star_sub_sub_pc_type": "lu",
+#                 # 'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
+#                 # 'pc_star_sub_sub_pc_factor_reuse_ordering': None,
+#                 # 'pc_star_sub_sub_pc_factor_mat_solver_type': 'mumps',
+#                 # 'pc_star_sub_sub_pc_factor_mat_solver_type': 'superlu_dist',
+#                 # "pc_star_sub_sub_pc_type": "svd",
+#                 # "pc_star_sub_sub_pc_svd_monitor": None,
+#             },
+#             'mg_coarse': {
+#                 'ksp_type': 'preonly',
+#                 'pc_type': 'lu',
+#             },
+#         }
+#     if args.reordering:
+#         helmholtz_schur_pc_params.update({
+#             'mg_levels_pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
+#             'mg_levels_pc_star_sub_sub_pc_factor_reuse_ordering': None,
+#         })
+#     if args.richardson:
+#         helmholtz_schur_pc_params.update({
+#             'mg_levels_ksp_max_it':6,
+#         })
+#     else:
+#         helmholtz_schur_pc_params.update({
+#             'mg_levels_ksp_max_it':1,
+#         })
+
+
+# params_schur = {
+#         # 'mat_type': 'aij',
+#         'ksp_view': ':slice3D.txt',
+#         # 'log_view':':log_view.txt',
+#         # 'log_view_memory':':log_view_memory.txt',
+
+#         'ksp_type': 'fgmres', # ! this can also be tuned.
+#         'snes_type':'ksponly',
+#         'ksp_atol': 0,
+#         'ksp_rtol': args.rtol,
+#         'ksp_max_it': args.maxit,
+#         'ksp_converged_maxits': None, # ! When max_it is reached, setting this will pass the convergence test and make the solver run, instead of raising a ConvergenceError. Distinguish the type of convergence in ConvergedReason instead!
+#         'snes_monitor': None,
+#         # 'ksp_monitor': None,
+#         'ksp_converged_rate':None,
+#         'ksp_monitor_true_residual': None,
+#         # "ksp_error_if_not_converged": False,
+#         # "snes_error_if_not_converged": False,
+#         'pc_type': 'fieldsplit',
+#         'pc_fieldsplit_type': 'schur',
+#         'pc_fieldsplit_schur_fact_type': 'full',
+#         'pc_fieldsplit_0_fields': '3',
+#         'pc_fieldsplit_1_fields': '0,1,2',
+#         'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
+#             'ksp_type': 'preonly',
+#             'pc_type': 'bjacobi',
+#             'sub_pc_type': 'ilu',
+#             # 'pc_factor_mat_solver_type': 'mumps',
+#         },
+#         'fieldsplit_1': {
+#             'helmholtzschurpc_use_rotation':use_rotation,
+#             # 'ksp_type': 'fgmres', # ! need to tune this.
+#             # 'ksp_type': 'richardson',
+#             # 'ksp_richardson_scale': 1.0,
+#             # 'ksp_richardson_self_scale':None,
+#             'ksp_monitor': None,
+#             'ksp_converged_reason': f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt',
+#             # 'ksp_atol': 0,
+#             # 'ksp_rtol': 1e-7, # ? Do I need to set this?
+#             # 'mat_view':':field_1_mat_aux.txt',
+#             'pc_type': 'python',
+#             'pc_python_type': __name__ + '.HDivSchurPC',
+#             'helmholtzschurpc': helmholtz_schur_pc_params,
+#             },
+#     }
+#     if args.richardson:
+#         params_schur.update({
+#             'fieldsplit_1_ksp_type':'preonly',
+#             # 'fieldsplit_1_ksp_type': 'richardson',
+#             # 'fieldsplit_1_ksp_richardson_scale':1.0,
+#         })
+#     else:
+#         params_schur.update({
+#             'fieldsplit_1_ksp_type': 'fgmres',
+#         })
+# print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+shifted_schur_pc_params ={
+    "pc_type": "lu",
+    "pc_factor_mat_solver_type": "mumps",
+}
+params_schur = {
+    'mat_type': 'matfree', # ! Auxiliary Operator PC needs a mat-free operator.
+    'ksp_view': ':Nonlinear_slice3D.txt',
+
+    'ksp_type': 'gmres',
+    'snes_type':'newtonls', # Newton Line Search
+    'ksp_atol': 0,
+    'ksp_rtol': args.rtol,
+    'ksp_max_it': args.maxit,
+    'ksp_converged_maxits': None,
+    'snes_monitor': None,
+    # 'ksp_monitor': None,
+    'ksp_converged_rate':None,
+    'ksp_monitor_true_residual': None,
+    # "ksp_error_if_not_converged": False,
+    # "snes_error_if_not_converged": False,
+    'pc_type': 'python',
+    'pc_python_type': __name__ + '.HDivSchurPC',
+    'helmholtzschurpc': shifted_schur_pc_params,
+}
+
+butcher_tableau = GaussLegendre(1)
+stepper = TimeStepper(eqn, butcher_tableau, t, dt, U, bcs=bcs, solver_parameters=params_schur, appctx=appctx)
+
+# Time Stepping
+name = 'lb_irk_slice_imp_ASM'
+file_lb = VTKFile(name+'.pvd')
+un, uny, bn, pn = U.subfunctions
+un.rename("in-plane-vel")
+uny.rename("y-vel")
+bn.rename("buoyancy")
+pn.rename("pressure")
+file_lb.write(un, uny, bn, pn)
+
+dumpt = args.dt
+tdump = 0.
+
+while (float(t) < tmax - 0.5 * args.dt):
+    tdump += args.dt
+    stepper.advance()
+    print(float(t))
+    t.assign(float(t) + float(dt))
+    if tdump > dumpt - 0.5*args.dt:
+        file_lb.write(un, uny, bn, pn)
+    tdump -= dumpt
+

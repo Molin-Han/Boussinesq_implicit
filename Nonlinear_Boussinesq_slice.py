@@ -69,7 +69,7 @@ print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print(f"Physical domain with length{length} and height {height}, aspect ratio {ar}.")
 print(f"Number of elements in x direction {nx} and z direction {nz}.")
-print(f"Time stepping parameters dt {args.dt}, total time {tmax}")
+print(f"Time stepping parameters dt {args.dt}, total time {args.tmax}")
 print(f"Shift parameter {args.shift}, proportional constant C1 {args.shift * args.dt**1.5}.")
 print(f"The code is running with {solver_name} solver for the Schur complement created.")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -81,6 +81,8 @@ def vector_3D(u, uy):
         u + uy * utils.j()
     )
 
+
+# ! This AuxiliaryOperatorPC is under construction and will not be working.
 class HDivSchurPC(AuxiliaryOperatorPC):
     _prefix = "helmholtzschurpc_"
     def form(self, pc, v, u):
@@ -92,21 +94,27 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         delta = appctx_PC["shift"]
         n = appctx_PC["n"]
         Un = appctx_PC["Un"]
-        Unp1 = get_snesctx(pc)._x # ! get the current solution variable, this would be a three-field function.
+        Unp1 = appctx_PC["Unp1"]
+        # Unp1 = get_snesctx(pc)._x # ! get the current solution variable, this would be a three-field function.
         un, uyn, bn, pn = split(Un)
-        unp1, uynp1, bnp1 = split(Unp1)
-        W = u.function_space()
-        One = as_vector([1., 1., 1.])
+        unp1, uynp1, bnp1, pnp1 = split(Unp1)
+        # W = u.function_space()
+        # One = as_vector([1., 1., 1.])
         uxz, uy, b = split(u)
         wxz, wy, q = split(v)
-        velo = vector_3D(uxz, uy)
-        unph = Constant(0.5) * (velo + un)
-        bnph = Constant(0.5) * (b + bn)
+        # velo = vector_3D(uxz, uy)
+        unph = Constant(0.5) * (unp1 + un)
+        bnph = Constant(0.5) * (bnp1 + bn)
         w = vector_3D(wxz, wy)
-        pnp1 = - Constant(1.) / delta * div(velo)
+        pnp1 = - Constant(1.) / delta * div(unp1)
         # ! This has a problem with nonlinear equation now. The abs() in utils is also wrong.
-        Jp = derivative(utils.Nonlinear_velocity(velo, un, unph, w, bnph, pnp1, dtc, n, use_rotation=rotation, twoD=False), Unp1)
-        Jp += derivative(utils.Nonlinear_buoyancy(b, bn, bnph, q, unph, dtc, n, twoD=False), Unp1)
+        F = utils.Nonlinear_velocity(unp1, un, unph, w, bnph, pnp1, dtc, n, use_rotation=rotation, twoD=False)
+        F += utils.Nonlinear_buoyancy(bnp1, bn, bnph, q, unph, dtc, n, twoD=False)
+        # Jp = derivative(F, unp1, du=uxz)
+        # Jp += derivative(F, uynp1, du=uy)
+        # Jp += derivative(F, bnp1, du=b)
+        Jp = derivative(F, Unp1)
+        block = split_form(Jp)
 
         # Jp = lhs(utils.Nonlinear_velocity(velo, un, unph, w, bnph, pnp1, dtc, n, use_rotation=rotation, twoD=False)) # ! differeniate the form wrt the current time step for the Jp. no lhs()
         # Jp += lhs(utils.Nonlinear_buoyancy(b, bn, bnph, q, unph, dtc, n, twoD=False))
@@ -114,11 +122,11 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         _, bcs = super().form(pc, u, v)
         return (Jp, bcs)
 
-distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 2)}
+distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 1)}
 m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
 mh = MeshHierarchy(m, refinement_levels=args.refinement)
 hierarchy = ExtrudedMeshHierarchy(mh, height, layers=[nz] * (args.refinement+1), extrusion_type='uniform')
-new_mh = utils.high_dim_mesh_hierarchy(hierarchy, dim=3)
+new_mh = utils.high_dim_mesh_hierarchy(hierarchy, dim=3) 
 mesh = new_mh[-1]
 finest_mesh_name = "finest"
 mesh.name = finest_mesh_name
@@ -200,7 +208,7 @@ else:
                 # 'ksp_type':'richardson',
                 # 'ksp_type': 'chebyshev',
                 # 'ksp_richardson_scale': 0.5,
-                'ksp_richardson_self_scale':None,
+                # 'ksp_richardson_self_scale':None,
                 'ksp_max_it': 1, # ? more robust for larger max_it here.
                 # 'ksp_monitor':None,
                 "pc_type": "python",
@@ -209,7 +217,7 @@ else:
                 "pc_star_sub_sub_pc_type": "lu",
                 'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
                 # 'pc_star_sub_sub_pc_factor_mat_solver_type': 'mumps',
-                'pc_star_sub_sub_pc_factor_mat_solver_type': 'superlu_dist',
+                # 'pc_star_sub_sub_pc_factor_mat_solver_type': 'superlu_dist',
                 # "pc_star_sub_sub_pc_type": "svd",
                 # "pc_star_sub_sub_pc_svd_monitor": None,
             },
@@ -220,7 +228,7 @@ else:
         }
 
 params_schur = {
-    'mat_type': 'matfree',
+    'mat_type': 'matfree', # ! Auxiliary Operator PC needs a mat-free operator.
     'ksp_view': ':slice3D.txt',
     # 'log_view':':log_view.txt',
     # 'log_view_memory':':log_view_memory.txt',
@@ -244,13 +252,17 @@ params_schur = {
     'pc_fieldsplit_1_fields': '0,1,2',
     'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
         'ksp_type': 'preonly',
-        'pc_type': 'bjacobi',
-        'sub_pc_type': 'ilu',
+        'pc_type':'python',
+        'pc_python_type':'firedrake.AssembledPC',
+        'assembled_pc_type': 'bjacobi',
+        'assembled_sub_pc_type': 'ilu', # ! ILU needs an assembled matrix so that AssembledPC is needed.
         # 'pc_factor_mat_solver_type': 'mumps',
     },
     'fieldsplit_1': {
         'helmholtzschurpc_use_rotation':use_rotation,
         'ksp_type': 'fgmres', # ! need to tune this.
+        # 'ksp_type': 'richardson',
+        # 'ksp_richardson_scale': 1.0,
         'ksp_monitor': None,
         'ksp_converged_reason': f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt',
         # 'ksp_atol': 0,
@@ -294,7 +306,8 @@ if not args.timing:
     pn.rename("pressure")
     file_lb.write(un, uny, bn, pn)
 Unp1.assign(Un)
-appctx.update({"Un": Un})
+# appctx.update({"Un": Un})
+appctx.update({"Un": Un, "Unp1":Unp1})
 t = 0.0
 dumpt = args.dt
 tdump = 0.
@@ -330,7 +343,7 @@ while t < tmax - 0.5 * args.dt:
             if args.dz_test:
                 np.savetxt(f'error_dt{args.dt}_nz{nz}.out', error_list)
     Un.assign(Unp1)
-    appctx.update({"Un": Un})
+    appctx.update({"Un": Un, "Unp1":Unp1})
     j += 1
     if tdump > dumpt - args.dt*0.5:
         if not args.timing:
