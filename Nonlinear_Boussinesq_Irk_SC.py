@@ -236,6 +236,8 @@ shifted_schur_pc_params ={
 params_schur = {
     'mat_type': 'matfree',
     'snes_type':'newtonls',
+    'snes_ksp_ew':None,
+    'snes_ksp_ew_rtol0': 1e-2, # setting the rtol for the first snes solve.
     'ksp_view': ':Nonlinear_slice3D.txt',
     'ksp_type': 'gmres',
     'ksp_atol': args.atol,
