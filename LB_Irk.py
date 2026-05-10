@@ -117,8 +117,8 @@ bcs = [bc1, bc2]
 u = vector_3D(uxz, uy)
 w = vector_3D(w_xz, wy)
 
-eqn = utils.LB_velocity_Irk(u,w,b,p,dt)
-eqn += utils.LB_buoyancy_Irk(b, q, u, dt)
+eqn = utils.LB_velocity_Irk(u,w,b,p)
+eqn += utils.LB_buoyancy_Irk(b, q, u)
 eqn += utils.LB_pressure_Irk(u, phi)
 
 # Pressure Nullspace
@@ -141,8 +141,8 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         w = vector_3D(wxz, wy)
 
         # p = - Constant(1.) / delta * div(u)
-        F = utils.LB_velocity_Irk(u, w, b, p, dtc)
-        F += utils.LB_buoyancy_Irk(b, q, u, dtc)
+        F = utils.LB_velocity_Irk(u, w, b, p)
+        F += utils.LB_buoyancy_Irk(b, q, u)
         F += utils.LB_pressure_Irk(u, phi)
         F += delta * p * phi * dx
 

@@ -102,7 +102,7 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         _, bcs = super().form(pc, u, v)
         return (Jp, bcs)
 
-distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 2)}
+distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 1)}
 m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
 mh = MeshHierarchy(m, refinement_levels=args.refinement)
 hierarchy = ExtrudedMeshHierarchy(mh, height, layers=[nz] * (args.refinement+1), extrusion_type='uniform')

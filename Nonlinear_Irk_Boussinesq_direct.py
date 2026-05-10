@@ -25,7 +25,7 @@ parser.add_argument('--tmax', type=float, default=2.0, help='Time period that we
 parser.add_argument('--shift', type=float, default=1.0, help='Shift parameter for the shift preconditioner.')
 parser.add_argument('--show_args', action='store_true', help='Print all the arguments when the script starts.')
 parser.add_argument('--no_rotation', action='store_false', help='If true, no Coriolis term will be imposed in the equation.')
-parser.add_argument('--rtol', type=float, default=1.0e-9, help='Relative tolerance for the ksp of linear solver.')
+parser.add_argument('--rtol', type=float, default=1.0e-8, help='Relative tolerance for the ksp of linear solver.')
 parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
 
 args = parser.parse_known_args()
@@ -104,7 +104,7 @@ a = Constant(5000)
 # U_mean = Constant(0.)
 # This is a 4 components function.
 u0_slice, u0yic, b0ic, p0ic = U.subfunctions # ! subfunction for data assignment
-b0ic.project(sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+b0ic.project(0.01 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
 
 # DiricheletBC
 bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
@@ -114,8 +114,8 @@ bcs = [bc1, bc2]
 u = vector_3D(uxz, uy)
 w = vector_3D(w_xz, wy)
 
-eqn = utils.Nonlinear_velocity_Irk(u, w, b, p, dt, n, use_rotation=use_rotation)
-eqn += utils.Nonlinear_buoyancy_Irk(b, q, u, dt, n)
+eqn = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=use_rotation)
+eqn += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
 eqn += utils.Nonlinear_pressure_Irk(u, phi)
 
 # Pressure Nullspace
@@ -137,10 +137,10 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         u = vector_3D(uxz, uy)
         w = vector_3D(wxz, wy)
         # ? The pressure elimination happened here, and no more pressure equation.
-        # p = - Constant(1.) / delta * div(u)
+        # p = p - Constant(1.) / delta * div(u) # ! Some problem here.
         
-        F = utils.Nonlinear_velocity_Irk(u, w, b, p, dtc, n, use_rotation=rotation)
-        F += utils.Nonlinear_buoyancy_Irk(b, q, u, dtc, n)
+        F = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=rotation)
+        F += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
         F += utils.Nonlinear_pressure_Irk(u, phi)
         F += delta * p * phi * dx
         # print("::::::::::::::::::::::")
@@ -151,86 +151,6 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         bcs = [bc1, bc2]
         # _, bcs = super().form(pc, u0, test)
         return (F, bcs)
-
-
-
-
-# helmholtz_schur_pc_params = {
-#         # 'ksp_type': 'preonly',
-#         # 'ksp_max_its': 30,
-#         'pc_type': 'mg',
-#         'pc_mg_type': 'full',
-#         'pc_mg_cycle_type':'v',
-#         'mg_levels': {
-#             'ksp_type': 'gmres',
-#             'ksp_max_it': 6, # ? more robust for larger max_it here.
-#             # 'ksp_monitor':None,
-#             "pc_type": "python",
-#             "pc_python_type": "firedrake.ASMStarPC",
-#             "pc_star_construct_dim": 0,
-#             "pc_star_sub_sub_pc_type": "lu",
-#             'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
-#             'pc_star_sub_sub_pc_factor_reuse_ordering': None,
-#         },
-#         'mg_coarse': {
-#             'ksp_type': 'preonly',
-#             'pc_type': 'lu',
-#         },
-#     }
-
-# ? Using the fieldsplit Schur complement to solve the preconditioned Schur complement and use the direct solver to solve the Schur complement.
-# shifted_schur_pc_params ={
-#     'pc_type':'ksp',
-#     'ksp_ksp_type': 'preonly',
-#     'ksp_pc_type':'lu',
-#     'ksp_ksp_monitor': None,
-#     # "pc_type": "lu",
-#     # "pc_factor_mat_solver_type": "mumps",
-# }
-
-
-# params_schur = {
-#     'mat_type': 'matfree',
-#     'ksp_view': ':Nonlinear_slice3D.txt',
-#     'ksp_type': 'gmres',
-#     'snes_type':'ksponly',
-#     'ksp_atol': 0,
-#     'ksp_rtol': args.rtol,
-#     'ksp_max_it': args.maxit,
-#     'ksp_converged_maxits': None,
-#     'snes_monitor': None,
-#     # 'ksp_monitor': None,
-#     'ksp_converged_rate':None,
-#     'ksp_monitor_true_residual': None,
-#     # "ksp_error_if_not_converged": False,
-#     # "snes_error_if_not_converged": False,
-#     'pc_type': 'fieldsplit',
-#     'pc_fieldsplit_type': 'schur',
-#     'pc_fieldsplit_schur_fact_type': 'full',
-#     'pc_fielsplit_schur_precondition': 'a11',
-#     'pc_fieldsplit_0_fields': '3',
-#     'pc_fieldsplit_1_fields': '0,1,2',
-#     'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
-#         'ksp_type': 'preonly',
-#         'pc_type':'python',
-#         'pc_python_type':'firedrake.AssembledPC',
-#         'assembled_pc_type': 'bjacobi',
-#         'assembled_sub_pc_type': 'ilu', # ILU needs an assembled matrix so that AssembledPC is needed.
-#     },
-#     'fieldsplit_1': {
-#         'helmholtzschurpc_use_rotation':use_rotation,
-#         'ksp_type': 'preonly', # ! need to tune this.
-#         'ksp_monitor': None,
-#         'ksp_converged_reason': f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt',
-#         # 'ksp_atol': 0,
-#         # 'ksp_rtol': 1e-7, # ? Do I need to set this?
-#         # 'mat_view':':field_1_mat_aux.txt',
-#         'pc_type': 'python',
-#         'pc_python_type': __name__ + '.HDivSchurPC',
-#         'shiftedschurpc': shifted_schur_pc_params,
-#         },
-# }
-
 
 # Direct solve for only the shifted equation using the AuxOPPC.
 
@@ -252,8 +172,6 @@ params_schur = {
     # 'ksp_monitor': None,
     'ksp_converged_rate':None,
     'ksp_monitor_true_residual': None,
-    # "ksp_error_if_not_converged": False,
-    # "snes_error_if_not_converged": False,
     'pc_type': 'python',
     'pc_python_type': __name__ + '.HDivSchurPC',
     'shiftedschurpc': shifted_schur_pc_params,

@@ -31,17 +31,32 @@ dts_scaled = (np.array(dts)/T).tolist()
 fig, ax = plt.subplots()
 fig_scale, ax_scale = plt.subplots()
 
+fig_res, ax_res = plt.subplots()
+fig_res_scale, ax_res_scale = plt.subplots()
+
 for nz in nzs:
     it_list = []
+    it_res_list = []
     for dt in dts:
         deltaz = height / nz
-        error = np.loadtxt(f'error_dt{dt}_nz{nz}.out')
+        try:
+            error = np.loadtxt(f'error_dt{dt}_nz{nz}.out')
+            residual = np.loadtxt(f'residual_dt{dt}_nz{nz}.out')
+        except FileNotFoundError:
+            error = np.zeros(5)
+            residual = np.zeros(5)
         its = len(error)
+        its_res = len(residual)
         if its >= args.maxit:
             it_list.append(np.nan)
             # it_list.append(its)
         else:
             it_list.append(its)
+        if its_res >= args.maxit:
+            it_res_list.append(np.nan)
+            # it_list.append(its)
+        else:
+            it_res_list.append(its_res)
     ax.semilogx(dts, it_list, label=f'dz={deltaz}')
     ax.legend()
     ax.set_xlabel('dt')
@@ -50,28 +65,54 @@ for nz in nzs:
     ax_scale.legend()
     ax_scale.set_xlabel('dt')
     ax_scale.set_ylabel('its')
+
+    ax_res.semilogx(dts, it_list, label=f'dz={deltaz}')
+    ax_res.legend()
+    ax_res.set_xlabel('dt')
+    ax_res.set_ylabel('its')
+    ax_res_scale.semilogx(dts_scaled, it_list, label=f'dz={deltaz}')
+    ax_res_scale.legend()
+    ax_res_scale.set_xlabel('dt')
+    ax_res_scale.set_ylabel('its')
 fig.savefig("error_dz.png")
 fig_scale.savefig("error_dz_scaled_t.png")
-
+fig_res.savefig("residual_dz.png")
+fig_res_scale.savefig("residual_dz_scaled_t.png")
 
 for dt in dts:
     it_list = []
+    res_list = []
     fig_rob, ax_rob = plt.subplots()
+    fig_res_rob, ax_res_rob = plt.subplots()
     for nz in nzs:
         deltaz = height / nz
-        error = np.loadtxt(f'error_dt{dt}_nz{nz}.out')
+        try:
+            error = np.loadtxt(f'error_dt{dt}_nz{nz}.out')
+            residual = np.loadtxt(f'residual_dt{dt}_nz{nz}.out')
+        except FileNotFoundError:
+            error = np.zeros(5)
+            residual = np.zeros(5)
         its = len(error)
+        its_res = len(residual)
         if its >= args.maxit:
             it_list.append(np.nan)
             # it_list.append(its)
         else:
             it_list.append(its)
+        if its_res >= args.maxit:
+            it_res_list.append(np.nan)
+            # it_list.append(its)
+        else:
+            it_res_list.append(its_res)
         x = np.arange(its)
         ax_rob.semilogy(x, error, label=f'nz={nz}')
         ax_rob.legend()
+        ax_res_rob.semilogy(x, residual, label=f'nz={nz}')
+        ax_res_rob.legend()
         plt.xlabel('its_num')
         plt.ylabel('log_error')
     fig_rob.savefig(f'error_dz_Robust_dt{dt}.png')
+    fig_res_rob.savefig(f'residual_dz_Robust_dt{dt}.png')
     plt.close()
 
 

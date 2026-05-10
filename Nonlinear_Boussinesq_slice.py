@@ -1,3 +1,5 @@
+### This script ends in failure due to the AuxOPPC not compatible with the nonlinear newton solver. The schur complement will need the solution for the current stage and previous time step. This will need a hooker from firedrake to pull out all the information and Function we need. This ends to fail to implement manually. The solution is to try with Irksome modules that deals with the time step automatically. 
+
 from firedrake import *
 import numpy as np
 from firedrake.output import VTKFile

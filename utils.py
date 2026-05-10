@@ -80,18 +80,18 @@ def SLB_pressure(u, phi):
         )
 
 
-def LB_velocity_Irk(u, w, b, p, dt, twoD=False):
+def LB_velocity_Irk(u, w, b, p, twoD=False):
     return (
             inner(w, Dt(u)) * dx 
-            + dt * inner(w, 2 * cross(Coriolis_param(), u)) * dx
-            - dt * div(w) * p * dx
-            - dt * inner(w, k(twoD=twoD)) * b * dx
+            + inner(w, 2 * cross(Coriolis_param(), u)) * dx
+            - div(w) * p * dx
+            - inner(w, k(twoD=twoD)) * b * dx
         )
 
-def LB_buoyancy_Irk(b, q, u, dt, twoD=False):
+def LB_buoyancy_Irk(b, q, u, twoD=False):
     return (
             q * Dt(b) * dx
-            + dt * buo_freq() * q * inner(k(twoD=twoD), u) * dx
+            + buo_freq() * q * inner(k(twoD=twoD), u) * dx
         )
 
 def LB_pressure_Irk(u, phi):
@@ -160,23 +160,25 @@ def Nonlinear_pressure(unp1, phi):
 
 
 
-def Nonlinear_velocity_Irk(u, w, b, p, dt, n, use_rotation=False, twoD=False):
+def Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=False, twoD=False):
     unn = unn_tool(u, n)
     eqn = inner(w, Dt(u)) * dx
     if use_rotation:
-        eqn += + dt * inner(w, 2 * cross(Coriolis_param(), u)) * dx
-    eqn -= dt * div(w) * p * dx
-    eqn -= dt * inner(w, k(twoD=twoD)) * b * dx
+        eqn += + inner(w, 2 * cross(Coriolis_param(), u)) * dx
+    eqn -= div(w) * p * dx
+    eqn -= inner(w, k(twoD=twoD)) * b * dx
     # Advective terms:
-    eqn -= dt * inner(div(outer(u, w)), u) * dx
-    eqn += dt * dot(jump(w), unn('+') * u('+') - unn('-') * u('-')) * (dS_v + dS_h)
+    eqn -= inner(div(outer(u, w)), u) * dx
+    eqn += dot(jump(w), unn('+') * u('+') - unn('-') * u('-')) * (dS_v + dS_h)
     return eqn
 
-def Nonlinear_buoyancy_Irk(b, q, u, dt, n, twoD=False):
+def Nonlinear_buoyancy_Irk(b, q, u, n, twoD=False):
     unn = unn_tool(u, n)
     eqn = q * Dt(b) * dx
-    eqn -= dt * div(q * u) * b * dx
-    eqn += dt * jump(q) * (unn('+') * b('+') - unn('-') * b('-')) * (dS_v + dS_h)
+    eqn -= div(q * u) * b * dx
+    eqn += jump(q) * (unn('+') * b('+') - unn('-') * b('-')) * (dS_v + dS_h)
+    # Add linear stratification:
+    eqn += buo_freq() * q * inner(k(twoD=twoD), u) * dx
     return eqn
 
 def Nonlinear_pressure_Irk(u, phi):
