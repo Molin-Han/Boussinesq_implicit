@@ -93,3 +93,29 @@ fig_res.savefig("residual_shift.png")
 fig_res_scale.savefig("residual_shift_scaled_t.png")
 
 
+# SNES error vs cumulative KSP iteration count, one curve per C1 value, per dt.
+for dt in dts:
+    fig_snes, ax_snes = plt.subplots()
+    has_data = False
+    for C1 in C1_list:
+        shift = np.round(C1 * dt**(-1.5), decimals=16)
+        try:
+            snes_err = np.loadtxt(f'snes_error_dt{dt}_shift{shift}.out')
+            snes_ksp_cum = np.loadtxt(f'snes_ksp_cum_dt{dt}_shift{shift}.out')
+        except FileNotFoundError:
+            continue
+        snes_err = np.atleast_1d(snes_err)
+        snes_ksp_cum = np.atleast_1d(snes_ksp_cum)
+        if snes_err.size == 0:
+            continue
+        snes_err = np.clip(snes_err, 1e-16, None)
+        ax_snes.semilogy(snes_ksp_cum, snes_err, marker='o', label=f'C1={C1}')
+        has_data = True
+    if has_data:
+        ax_snes.set_xlabel('cumulative KSP iterations')
+        ax_snes.set_ylabel(r'$\|U_k - U^*\| / \|U^*\|$')
+        ax_snes.legend()
+        fig_snes.savefig(f'snes_error_shift_dt{dt}.png')
+    plt.close(fig_snes)
+
+

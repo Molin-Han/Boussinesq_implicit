@@ -117,3 +117,30 @@ for dt in dts:
     plt.close()
 
 
+# SNES error vs cumulative KSP iteration count, one curve per AR value, per dt.
+for dt in dts:
+    fig_snes, ax_snes = plt.subplots()
+    has_data = False
+    for height in heights:
+        ar = height / length
+        try:
+            snes_err = np.loadtxt(f'snes_error_dt{dt}_ar{ar}.out')
+            snes_ksp_cum = np.loadtxt(f'snes_ksp_cum_dt{dt}_ar{ar}.out')
+        except FileNotFoundError:
+            continue
+        snes_err = np.atleast_1d(snes_err)
+        snes_ksp_cum = np.atleast_1d(snes_ksp_cum)
+        if snes_err.size == 0:
+            continue
+        snes_err = np.clip(snes_err, 1e-16, None)
+        ax_snes.semilogy(snes_ksp_cum, snes_err, marker='o',
+                         label=f'AR={np.round(ar, decimals=5)}')
+        has_data = True
+    if has_data:
+        ax_snes.set_xlabel('cumulative KSP iterations')
+        ax_snes.set_ylabel(r'$\|U_k - U^*\| / \|U^*\|$')
+        ax_snes.legend()
+        fig_snes.savefig(f'snes_error_AR_dt{dt}.png')
+    plt.close(fig_snes)
+
+

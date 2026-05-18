@@ -13,27 +13,27 @@ if test == 'ar_test':
     heights = [12000, 8000, 4000, 2000, 1000]
     C1_list = [1e-5]
     lengths = [3.0e5]
-    nxs = [100]
-    nzs = [100]
+    nxs = [20]
+    nzs = [20]
 if test == 'dt_test':
     dts = [1.0, 5.0, 10.0, 50.0, 100.0, 500.0, 1000.0, 5000.0, 10000.0, 50000.0]
     C1_list = [0.001, 0.0005, 0.0001, 0.00005, 0.00001, 0.000005, 0.000001]
     heights = [4000]
     lengths = [3.0e5]
-    nxs = [100]
-    nzs = [100]
+    nxs = [20]
+    nzs = [20]
 if test == 'dx_test':
     dts = [1.0, 5.0, 10.0, 50.0, 100.0, 500.0, 1000.0, 5000.0, 10000.0, 50000.0]
-    nxs = [50, 100, 150, 200, 250, 300]
+    nxs = [10, 20, 40, 60, 80]
     C1_list = [1e-5]
-    nzs = [100]
+    nzs = [20]
     heights = [4000]
     lengths = [3.0e5]
 if test == 'dz_test':
     dts = [1.0, 5.0, 10.0, 50.0, 100.0, 500.0, 1000.0, 5000.0, 10000.0, 50000.0]
-    nxs = [100]
+    nxs = [20]
     C1_list = [1e-5]
-    nzs = [50, 100, 150, 200, 250, 300]
+    nzs = [10, 20, 40, 60, 80]
     heights = [4000]
     lengths = [3.0e5]
 
@@ -58,7 +58,7 @@ for nx in nxs:
                                 "height": height,
                                 "dt": dt,
                                 "tmax": 2 * dt,
-                                "shift": np.round(C1 * dt ** (-1.5), decimals=16),
+                                "shift": np.round(C1 * dt ** (-1), decimals=16),
                             }
                             args = []
                             for key, value in options.items():
