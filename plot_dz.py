@@ -1,10 +1,47 @@
 from firedrake import *
+import glob
+import re
 import numpy as np
 import scipy as sp
 from matplotlib import pyplot as plt
 from firedrake.output import VTKFile
 from argparse import ArgumentParser
 from argparse import ArgumentDefaultsHelpFormatter
+
+
+def _find_data_path(prefix, dt, key, target, ext='.out'):
+    # Pick the file {prefix}_dt{dt}_{key}<value>{ext} whose <value> is closest
+    # in log-space to target. Returns None if no candidate within ~20% (log).
+    candidates = glob.glob(f'{prefix}_dt{dt}_{key}*{ext}')
+    if not candidates:
+        return None
+    rx = re.compile(rf'_{re.escape(key)}([^/]+){re.escape(ext)}$')
+    best, best_d = None, float('inf')
+    for p in candidates:
+        m = rx.search(p)
+        if not m:
+            continue
+        try:
+            v = float(m.group(1))
+        except ValueError:
+            continue
+        if v > 0 and target > 0:
+            d = abs(np.log(v) - np.log(target))
+        else:
+            d = abs(v - target)
+        if d < best_d:
+            best, best_d = p, d
+    return best if best is not None and best_d <= 0.2 else None
+
+
+def _load_or_zeros(prefix, dt, key, target, fallback_len=5):
+    path = _find_data_path(prefix, dt, key, target)
+    if path is None:
+        return np.zeros(fallback_len)
+    try:
+        return np.loadtxt(path)
+    except (OSError, ValueError):
+        return np.zeros(fallback_len)
 
 parser = ArgumentParser(
     description='Shifted simplified steady Linear Boussinesq equation.',
@@ -39,12 +76,8 @@ for nz in nzs:
     it_res_list = []
     for dt in dts:
         deltaz = height / nz
-        try:
-            error = np.loadtxt(f'error_dt{dt}_nz{nz}.out')
-            residual = np.loadtxt(f'residual_dt{dt}_nz{nz}.out')
-        except FileNotFoundError:
-            error = np.zeros(5)
-            residual = np.zeros(5)
+        error = _load_or_zeros('error', dt, 'nz', nz)
+        residual = _load_or_zeros('residual', dt, 'nz', nz)
         its = len(error)
         its_res = len(residual)
         if its >= args.maxit:
@@ -57,20 +90,20 @@ for nz in nzs:
             # it_list.append(its)
         else:
             it_res_list.append(its_res)
-    ax.semilogx(dts, it_list, label=f'dz={deltaz}')
+    ax.semilogx(dts, it_list, marker='o', label=f'nz={nz}')
     ax.legend()
     ax.set_xlabel('dt')
     ax.set_ylabel('its')
-    ax_scale.semilogx(dts_scaled, it_list, label=f'dz={deltaz}')
+    ax_scale.semilogx(dts_scaled, it_list, marker='o', label=f'nz={nz}')
     ax_scale.legend()
     ax_scale.set_xlabel('dt')
     ax_scale.set_ylabel('its')
 
-    ax_res.semilogx(dts, it_list, label=f'dz={deltaz}')
+    ax_res.semilogx(dts, it_res_list, marker='o', label=f'nz={nz}')
     ax_res.legend()
     ax_res.set_xlabel('dt')
     ax_res.set_ylabel('its')
-    ax_res_scale.semilogx(dts_scaled, it_list, label=f'dz={deltaz}')
+    ax_res_scale.semilogx(dts_scaled, it_res_list, marker='o', label=f'nz={nz}')
     ax_res_scale.legend()
     ax_res_scale.set_xlabel('dt')
     ax_res_scale.set_ylabel('its')
@@ -81,17 +114,13 @@ fig_res_scale.savefig("residual_dz_scaled_t.png")
 
 for dt in dts:
     it_list = []
-    res_list = []
+    it_res_list = []
     fig_rob, ax_rob = plt.subplots()
     fig_res_rob, ax_res_rob = plt.subplots()
     for nz in nzs:
         deltaz = height / nz
-        try:
-            error = np.loadtxt(f'error_dt{dt}_nz{nz}.out')
-            residual = np.loadtxt(f'residual_dt{dt}_nz{nz}.out')
-        except FileNotFoundError:
-            error = np.zeros(5)
-            residual = np.zeros(5)
+        error = _load_or_zeros('error', dt, 'nz', nz)
+        residual = _load_or_zeros('residual', dt, 'nz', nz)
         its = len(error)
         its_res = len(residual)
         if its >= args.maxit:
@@ -105,9 +134,10 @@ for dt in dts:
         else:
             it_res_list.append(its_res)
         x = np.arange(its)
+        x_res = np.arange(its_res)
         ax_rob.semilogy(x, error, label=f'nz={nz}')
         ax_rob.legend()
-        ax_res_rob.semilogy(x, residual, label=f'nz={nz}')
+        ax_res_rob.semilogy(x_res, residual, label=f'nz={nz}')
         ax_res_rob.legend()
         plt.xlabel('its_num')
         plt.ylabel('log_error')
@@ -122,10 +152,14 @@ for dt in dts:
     has_data = False
     for nz in nzs:
         deltaz = height / nz
+        snes_err_path = _find_data_path('snes_error', dt, 'nz', nz)
+        snes_ksp_path = _find_data_path('snes_ksp_cum', dt, 'nz', nz)
+        if snes_err_path is None or snes_ksp_path is None:
+            continue
         try:
-            snes_err = np.loadtxt(f'snes_error_dt{dt}_nz{nz}.out')
-            snes_ksp_cum = np.loadtxt(f'snes_ksp_cum_dt{dt}_nz{nz}.out')
-        except FileNotFoundError:
+            snes_err = np.loadtxt(snes_err_path)
+            snes_ksp_cum = np.loadtxt(snes_ksp_path)
+        except (OSError, ValueError):
             continue
         snes_err = np.atleast_1d(snes_err)
         snes_ksp_cum = np.atleast_1d(snes_ksp_cum)

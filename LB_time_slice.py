@@ -12,23 +12,28 @@ parser = ArgumentParser(
     formatter_class=ArgumentDefaultsHelpFormatter
 )
 
+# ! Parameter settings
 parser.add_argument('--nx', type=int, default=40, help='Number of cells along horizontal direction.')
 parser.add_argument('--nz', type=int, default=20, help='Number of layers to extrude.')
 parser.add_argument('--length', type=float, default=1.0, help='Horizontal length of our solution domain.')
 parser.add_argument('--height', type=float, default=1.0, help='Height of our solution domain.')
 parser.add_argument('--refinement', type=int, default=2, help='Levels of the multigrid.')
-parser.add_argument('--degree', type=int, default=1, help='Order of the element.')
+parser.add_argument('--degree', type=int, default=2, help='Order of the element.')
 parser.add_argument('--dt', type=float, default=1.0, help='Time stepping parameter.')
 parser.add_argument('--tmax', type=float, default=2.0, help='Time period that we solve.')
 parser.add_argument('--shift', type=float, default=1.0, help='Shift parameter for the shift preconditioner.')
+
+# ! Test settings
 parser.add_argument('--show_args', action='store_true', help='Print all the arguments when the script starts.')
 parser.add_argument('--no_rotation', action='store_false', help='If true, no Coriolis term will be imposed in the equation.')
 parser.add_argument('--dt_test', action='store_true', help='If true, save the error data storing dt parameters.')
 parser.add_argument('--ar_test', action='store_true', help='If true, save the error data storing AR parameters.')
 parser.add_argument('--dx_test', action='store_true', help='If true, save the error data storing dx parameters.')
 parser.add_argument('--dz_test', action='store_true', help='If true, save the error data storing dz parameters.')
-parser.add_argument('--rtol', type=float, default=1.0e-10, help='Relative tolerance for the ksp of linear solver.')
+parser.add_argument('--rtol', type=float, default=1.0e-8, help='Relative tolerance for the ksp of linear solver.')
 parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
+
+# ! Solver settings 
 parser.add_argument('--direct', action='store_true', help='If true, solve the Schur complement using direct LU.')
 parser.add_argument('--timing', action='store_true', help='If true, run the code without monitoring and test for the time.')
 parser.add_argument('--reordering', action='store_true', help='If true, run the code with RCM reordering.')
@@ -40,15 +45,9 @@ args = args[0]
 if args.show_args:
     PETSc.Sys.Print(args)
 
-if args.no_rotation:
-    use_rotation = False
-else:
-    use_rotation = True
-
-if args.direct:
-    solver_name = 'direct'
-else:
-    solver_name = 'MG ASMStar'
+use_rotation = not args.no_rotation
+monitor_run = not args.timing
+solver_name = 'direct' if args.direct else 'MG ASMStar'
 
 # if args.timing:
 #     opts = PETSc.Options()
@@ -120,8 +119,8 @@ finest_mesh_name = "finest"
 mesh.name = finest_mesh_name
 
 x, y, z = SpatialCoordinate(mesh)
-# ! Lowest order element here. i.e. order 1.
-V_2D = utils.extrude_RT(mesh, k=deg) # ! In common language, RT0
+# ! Lowest order element here. i.e. order 1. with degree = 1. Test with degree = 2 in general.
+V_2D = utils.extrude_RT(mesh, k=deg) # ! In common language, RT0 with k=1
 Vy = FunctionSpace(mesh, 'DG', deg-1)
 Pressure = FunctionSpace(mesh, 'DG', deg-1)
 Vb = utils.W_theta(mesh, k=deg)
@@ -191,7 +190,7 @@ else:
             'pc_mg_type': 'full',
             'pc_mg_cycle_type':'v',
             'mg_levels': {
-                'ksp_type': 'gmres',
+                # 'ksp_type': 'gmres',
                 # 'ksp_type':'richardson',
                 # 'ksp_type': 'chebyshev',
                 # 'ksp_richardson_scale': 0.5,
@@ -221,117 +220,79 @@ else:
         })
     if args.richardson:
         helmholtz_schur_pc_params.update({
+            # 'mg_levels_ksp_type': 'richardson',
+            'mg_levels_ksp_type':'chebyshev', # ! chebyshev smoother is working.
+            # 'mg_levels_ksp_type': 'gmres',
             'mg_levels_ksp_max_it':6,
         })
     else:
         helmholtz_schur_pc_params.update({
+            'mg_levels_ksp_type': 'gmres',
             'mg_levels_ksp_max_it':1,
         })
 
+params_schur = {
+    # 'mat_type': 'aij',
+    # 'log_view':':log_view.txt',
+    # 'log_view_memory':':log_view_memory.txt',
+
+    # 'ksp_type': 'gmres', # ! this can also be tuned.
+    'snes_type':'ksponly',
+    'ksp_atol': 0,
+    'ksp_rtol': args.rtol,
+    'ksp_max_it': args.maxit,
+    'ksp_converged_maxits': None, # ! When max_it is reached, setting this will pass the convergence test and make the solver run, instead of raising a ConvergenceError. Distinguish the type of convergence in ConvergedReason instead!
+    'pc_type': 'fieldsplit',
+    'pc_fieldsplit_type': 'schur',
+    'pc_fieldsplit_schur_fact_type': 'full',
+    'pc_fieldsplit_0_fields': '3',
+    'pc_fieldsplit_1_fields': '0,1,2',
+    'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
+        'ksp_type': 'preonly',
+        'pc_type': 'bjacobi',
+        'sub_pc_type': 'ilu',
+        # 'pc_factor_mat_solver_type': 'mumps',
+    },
+    'fieldsplit_1': {
+        'helmholtzschurpc_use_rotation':use_rotation,
+        # 'ksp_type': 'fgmres', # ! need to tune this.
+        # 'ksp_type': 'richardson',
+        # 'ksp_richardson_scale': 1.0,
+        # 'ksp_richardson_self_scale':None,
+        # 'ksp_atol': 0,
+        # 'ksp_rtol': 1e-7, # ? Do I need to set this?
+        # 'mat_view':':field_1_mat_aux.txt',
+        'pc_type': 'python',
+        'pc_python_type': __name__ + '.HDivSchurPC',
+        'helmholtzschurpc': helmholtz_schur_pc_params,
+    },
+}
+params_schur['ksp_type'] = 'gmres' if args.richardson else 'fgmres'
+params_schur['fieldsplit_1_ksp_type'] = 'preonly' if args.richardson else 'fgmres'
+
 if args.timing:
-    print("saving")
-    params_schur = {
-        'ksp_view': ':slice3D.txt',
-
-        'ksp_type': 'fgmres', # ! this can also be tuned.
-        'snes_type':'ksponly',
-        'ksp_atol': 0,
-        'ksp_rtol': args.rtol,
-        'ksp_max_it': args.maxit,
-        'ksp_converged_maxits': None, # ! When max_it is reached, setting this will pass the convergence test and make the solver run, instead of raising a ConvergenceError. Distinguish the type of convergence in ConvergedReason instead!
-        'pc_type': 'fieldsplit',
-        'pc_fieldsplit_type': 'schur',
-        'pc_fieldsplit_schur_fact_type': 'full',
-        'pc_fieldsplit_0_fields': '3',
-        'pc_fieldsplit_1_fields': '0,1,2',
-        'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
-            'ksp_type': 'preonly',
-            'pc_type': 'bjacobi',
-            'sub_pc_type': 'ilu',
-        },
-        'fieldsplit_1': {
-            'helmholtzschurpc_use_rotation':use_rotation,
-            # 'ksp_type': 'fgmres', # ! need to tune this.
-            # 'ksp_type': 'richardson',
-            # 'ksp_richardson_scale': 1.0,
-            'pc_type': 'python',
-            'pc_python_type': __name__ + '.HDivSchurPC',
-            'helmholtzschurpc': helmholtz_schur_pc_params,
-            },
-    }
-    if args.richardson:
-        params_schur.update({
-            'fieldsplit_1_ksp_type':'preonly',
-            # 'fieldsplit_1_ksp_type': 'richardson',
-            # 'fieldsplit_1_ksp_richardson_scale':1.0,
-        })
-    else:
-        params_schur.update({
-            'fieldsplit_1_ksp_type': 'fgmres',
-        })
-
+    params_schur['ksp_view'] = ':slice3D.txt'
 else:
-    params_schur = {
-        # 'mat_type': 'aij',
-        'ksp_view': ':slice3D.txt',
-        # 'log_view':':log_view.txt',
-        # 'log_view_memory':':log_view_memory.txt',
-
-        'ksp_type': 'fgmres', # ! this can also be tuned.
-        'snes_type':'ksponly',
-        'ksp_atol': 0,
-        'ksp_rtol': args.rtol,
-        'ksp_max_it': args.maxit,
-        'ksp_converged_maxits': None, # ! When max_it is reached, setting this will pass the convergence test and make the solver run, instead of raising a ConvergenceError. Distinguish the type of convergence in ConvergedReason instead!
+    params_schur.update({
         'snes_monitor': None,
         # 'ksp_monitor': None,
-        'ksp_converged_rate':None,
+        'ksp_converged_rate': None,
         'ksp_monitor_true_residual': None,
         # "ksp_error_if_not_converged": False,
         # "snes_error_if_not_converged": False,
-        'pc_type': 'fieldsplit',
-        'pc_fieldsplit_type': 'schur',
-        'pc_fieldsplit_schur_fact_type': 'full',
-        'pc_fieldsplit_0_fields': '3',
-        'pc_fieldsplit_1_fields': '0,1,2',
-        'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
-            'ksp_type': 'preonly',
-            'pc_type': 'bjacobi',
-            'sub_pc_type': 'ilu',
-            # 'pc_factor_mat_solver_type': 'mumps',
-        },
-        'fieldsplit_1': {
-            'helmholtzschurpc_use_rotation':use_rotation,
-            # 'ksp_type': 'fgmres', # ! need to tune this.
-            # 'ksp_type': 'richardson',
-            # 'ksp_richardson_scale': 1.0,
-            # 'ksp_richardson_self_scale':None,
-            'ksp_monitor': None,
-            'ksp_converged_reason': f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt',
-            # 'ksp_atol': 0,
-            # 'ksp_rtol': 1e-7, # ? Do I need to set this?
-            # 'mat_view':':field_1_mat_aux.txt',
-            'pc_type': 'python',
-            'pc_python_type': __name__ + '.HDivSchurPC',
-            'helmholtzschurpc': helmholtz_schur_pc_params,
-            },
-    }
-    if args.richardson:
-        params_schur.update({
-            'fieldsplit_1_ksp_type':'preonly',
-            # 'fieldsplit_1_ksp_type': 'richardson',
-            # 'fieldsplit_1_ksp_richardson_scale':1.0,
-        })
-    else:
-        params_schur.update({
-            'fieldsplit_1_ksp_type': 'fgmres',
-        })
+    })
+    params_schur['fieldsplit_1'].update({
+        'ksp_monitor': None,
+        'ksp_converged_reason': f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt',
+    })
+
+# 'fieldsplit_1_ksp_type': 'richardson', 'fieldsplit_1_ksp_richardson_scale': 1.0,
 # print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 nprob = NonlinearVariationalProblem(eqn, Unp1, bcs=bcs, Jp=Jp)
 # nprob = NonlinearVariationalProblem(shift_eqn, Unp1, bcs=bcs) # this will set the non-shifted equation.
 nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_parameters=params_schur, appctx=appctx)
 
-if not args.timing:
+if monitor_run:
     # Set checkpointing for saving the data.
     error_list = []
     sol_it = Function(W, name='sol_it')
@@ -349,7 +310,7 @@ if not args.timing:
         error_list.append(error)
 
 # Time Stepping
-if not args.timing:
+if monitor_run:
     name = 'lb_slice_imp_ASM'
     file_lb = VTKFile(name+'.pvd')
     un, uny, bn, pn = Un.subfunctions
@@ -373,16 +334,16 @@ while t < tmax - 0.5 * args.dt:
         U_restart = Unp1.copy(deepcopy=True)
         with PETSc.Log.Stage("Warm-up-solve"):
             nsolver.solve()
-        if not args.timing:
+        if monitor_run:
             final_sol = nsolver.snes.ksp.buildSolution()
             with sol_final.dat.vec_wo as final_vec:
                 final_sol.copy(result=final_vec)
         Unp1.assign(U_restart) # ! Assign the original velocity to restart the solver.
-        if not args.timing:
+        if monitor_run:
             nsolver.snes.ksp.setMonitor(monitor)
         with PETSc.Log.Stage("Official-Run"):
             nsolver.solve()
-        if not args.timing:
+        if monitor_run:
             reason = nsolver.snes.ksp.getConvergedReason()
             print("*************************************************", reason)
             converged_it_num = nsolver.snes.ksp.getIterationNumber()
@@ -398,6 +359,9 @@ while t < tmax - 0.5 * args.dt:
     Un.assign(Unp1)
     j += 1
     if tdump > dumpt - args.dt*0.5:
-        if not args.timing:
+
+
+        
+        if monitor_run:
             file_lb.write(un, uny, bn, pn)
         tdump -= dumpt

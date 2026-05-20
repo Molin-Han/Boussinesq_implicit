@@ -1,46 +1,46 @@
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test
-mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 60 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 1.0 --tmax 2.0 --shift 0.001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 5.0 --tmax 10.0 --shift 0.0002 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 10.0 --tmax 20.0 --shift 0.0001 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 50.0 --tmax 100.0 --shift 2e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-05 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 500.0 --tmax 1000.0 --shift 2e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 1000.0 --tmax 2000.0 --shift 1e-06 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 5000.0 --tmax 10000.0 --shift 2e-07 --maxit 100 --dx_test --richardson --reordering
+mpiexec -n 2 python ../Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 20 --length 300000.0 --height 4000 --dt 10000.0 --tmax 20000.0 --shift 1e-07 --maxit 100 --dx_test --richardson --reordering
 python ../Boussinesq_implicit/plot_dx.py --maxit 100 --dts 1.0 5.0 10.0 50.0 100.0 500.0 1000.0 5000.0 10000.0 --nxs 10 20 40 60 80 --C1 0.001 --length 300000.0

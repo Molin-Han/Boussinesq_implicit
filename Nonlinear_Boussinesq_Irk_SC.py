@@ -14,24 +14,31 @@ parser = ArgumentParser(
     formatter_class=ArgumentDefaultsHelpFormatter
 )
 
+# ! Parameter settings
 parser.add_argument('--nx', type=int, default=40, help='Number of cells along horizontal direction.')
 parser.add_argument('--nz', type=int, default=20, help='Number of layers to extrude.')
 parser.add_argument('--length', type=float, default=1.0, help='Horizontal length of our solution domain.')
 parser.add_argument('--height', type=float, default=1.0, help='Height of our solution domain.')
 parser.add_argument('--refinement', type=int, default=2, help='Levels of the multigrid.')
-parser.add_argument('--degree', type=int, default=1, help='Order of the element.')
+parser.add_argument('--degree', type=int, default=2, help='Order of the element.')
 parser.add_argument('--dt', type=float, default=1.0, help='Time stepping parameter.')
 parser.add_argument('--tmax', type=float, default=2.0, help='Time period that we solve.')
 parser.add_argument('--shift', type=float, default=1.0e-4, help='Shift parameter for the shift preconditioner.')
+
+# ! Test settings
 parser.add_argument('--show_args', action='store_true', help='Print all the arguments when the script starts.')
 parser.add_argument('--no_rotation', action='store_false', help='If true, no Coriolis term will be imposed in the equation.')
-parser.add_argument('--rtol', type=float, default=1.0e-8, help='Relative tolerance for the ksp of linear solver.')
-parser.add_argument('--atol', type=float, default=1.0e-10, help='Relative tolerance for the ksp of linear solver.')
+parser.add_argument('--rtol', type=float, default=1.0e-6, help='Relative tolerance for the ksp of linear solver.')
+parser.add_argument('--atol', type=float, default=1.0e-9, help='Relative tolerance for the ksp of linear solver.')
 parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
 parser.add_argument('--dt_test', action='store_true', help='If true, save the error data storing dt parameters.')
 parser.add_argument('--ar_test', action='store_true', help='If true, save the error data storing AR parameters.')
 parser.add_argument('--dx_test', action='store_true', help='If true, save the error data storing dx parameters.')
 parser.add_argument('--dz_test', action='store_true', help='If true, save the error data storing dz parameters.')
+parser.add_argument('--timing', action='store_true', help='If true, run the code without monitoring and test for the time.')
+
+# ! Solver setting
+parser.add_argument('--U_mean', type=float, default=0.0, help='Constant horizontal mean flow in x-direction (m/s). Set to 0 for no mean flow.')
 
 args = parser.parse_known_args()
 args = args[0]
@@ -39,12 +46,9 @@ args = args[0]
 if args.show_args:
     PETSc.Sys.Print(args)
 
-if args.no_rotation:
-    use_rotation = False
-else:
-    use_rotation = True
-
-
+use_rotation = not args.no_rotation
+monitor_run = not args.timing
+any_test = args.dt_test or args.ar_test or args.dx_test or args.dz_test
 solver_name = 'MG ASMStar'
 
 nx=args.nx
@@ -61,6 +65,8 @@ print(f"Physical domain with length{length} and height {height}, aspect ratio {a
 print(f"Number of elements in x direction {nx} and z direction {nz}.")
 print(f"Time stepping parameters dt {args.dt}, total time {args.tmax}")
 print(f"Shift parameter {args.shift}, proportional constant C1 {args.shift * args.dt**1.5}.")
+print(f"Mean flow U_mean = {args.U_mean} m/s in x-direction "
+    f"({'ON' if args.U_mean != 0.0 else 'OFF'}).")
 print(f"The code is running with {solver_name} solver for the Schur complement created.")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -106,16 +112,20 @@ w_xz, wy, q, phi = TestFunctions(W)
 xc = Constant(length/2)
 yc = Constant(length/2)
 a = Constant(5000)
-# U_mean = Constant(0.)
+U_mean = Constant(args.U_mean)
 # This is a 4 components function.
 u0_slice, u0yic, b0ic, p0ic = U.subfunctions # ! subfunction for data assignment
-b0ic.project(0.01 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+if args.U_mean != 0.0:
+    u0_slice.project(as_vector([U_mean, 0., 0.]))
+# b0ic.project(0.01 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+b0ic.project(3e-4 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
 
 # DiricheletBC
 bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
 bc2 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "bottom")
 bcs = [bc1, bc2]
 
+# Equations
 u = vector_3D(uxz, uy)
 w = vector_3D(w_xz, wy)
 
@@ -127,6 +137,7 @@ eqn += utils.Nonlinear_pressure_Irk(u, phi)
 v_basis = VectorSpaceBasis(constant=True, comm=COMM_WORLD)
 nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), W.sub(2), v_basis])
 
+# Auxiliary Operator Preconditioner for Schur Complement Form of the Equation.
 class HDivSchurPC(IRKAuxiliaryOperatorPC):
     _prefix = 'shiftedschurpc_'
     def getNewForm(self, pc, u0, test):
@@ -142,50 +153,19 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         u = vector_3D(uxz, uy)
         w = vector_3D(wxz, wy)
         # ? The pressure elimination happened here, and no more pressure equation.
-        p = p - Constant(1.) / delta * div(u) # ! Some problem here.
-        # p = - Constant(1.) / delta * div(u)
+        p = p - Constant(1.) / delta * div(u) # ! This gives the correct SC form and also the form needed for fieldsplit. Details in paper / notes.
         
         F = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=rotation)
         F += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
         F += utils.Nonlinear_pressure_Irk(u, phi)
         F += delta * p * phi * dx
-        # print("::::::::::::::::::::::")
-        #  Boundary conditions
         #  Boundary conditions
         bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
         bc2 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "bottom")
         bcs = [bc1, bc2]
-        # _, bcs = super().form(pc, u0, test)
         return (F, bcs)
 
-
-
-
-# helmholtz_schur_pc_params = {
-#         # 'ksp_type': 'preonly',
-#         # 'ksp_max_its': 30,
-#         'pc_type': 'mg',
-#         'pc_mg_type': 'full',
-#         'pc_mg_cycle_type':'v',
-#         'mg_levels': {
-#             'ksp_type': 'gmres',
-#             'ksp_max_it': 6, # ? more robust for larger max_it here.
-#             # 'ksp_monitor':None,
-#             "pc_type": "python",
-#             "pc_python_type": "firedrake.ASMStarPC",
-#             "pc_star_construct_dim": 0,
-#             "pc_star_sub_sub_pc_type": "lu",
-#             'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
-#             'pc_star_sub_sub_pc_factor_reuse_ordering': None,
-#         },
-#         'mg_coarse': {
-#             'ksp_type': 'preonly',
-#             'pc_type': 'lu',
-#         },
-#     }
-
-
-# ! The Correct IRKAuxOPPC 
+# ! The Correct IRKAuxOPPC Solver Parameter.
 shifted_schur_pc_params ={
     'helmholtzschurpc_use_rotation':use_rotation,
     'pc_type': 'fieldsplit',
@@ -196,6 +176,7 @@ shifted_schur_pc_params ={
     'pc_fieldsplit_1_fields': '0,1,2',
     'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
         'ksp_type': 'preonly',
+        'ksp_reuse_preconditioner':None, # ! double check if pc is reused in petsc log view. The pressure factorisation is the same all the time and will not need to be recomputed each time.
         'pc_type':'python',
         'pc_python_type':'firedrake.AssembledPC',
         'assembled_pc_type': 'bjacobi',
@@ -204,18 +185,19 @@ shifted_schur_pc_params ={
     'fieldsplit_1': {
         'ksp_type': 'preonly', # ! need to tune this.
         # 'ksp_monitor': None,
-        'ksp_converged_reason': f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt',
         # 'ksp_atol': 0,
         # 'ksp_rtol': 1e-7,
-        # ! direct solver on patch.
+        # ! direct solver on patch:
         # 'pc_type':'lu',
         # "pc_factor_mat_solver_type": "mumps",
-        # ! ASM line smoother on patch.
+        # ! ASM line smoother on patch:
         'pc_type': 'mg',
         'pc_mg_type': 'full',
         'pc_mg_cycle_type': 'v',
         'mg_levels': {
-            'ksp_type': 'gmres',
+            # 'ksp_type': 'gmres',
+            'ksp_type':'chebyshev',
+            # 'ksp_type':'richardson', # ! Richardson iteration.
             'ksp_max_it': 6, # ? more robust for larger max_it here.
             # 'ksp_monitor':None,
             "pc_type": "python",
@@ -236,18 +218,17 @@ shifted_schur_pc_params ={
 params_schur = {
     'mat_type': 'matfree',
     'snes_type':'newtonls',
+    # ! Eisenstat Walker trick for picking the inexact Newton steps.
     'snes_ksp_ew':None,
     'snes_ksp_ew_rtol0': 1e-2, # setting the rtol for the first snes solve.
-    'ksp_view': ':Nonlinear_slice3D.txt',
+
     'ksp_type': 'gmres',
+    'ksp_pc_side': 'right', # ! this is needed for EW.
     'ksp_atol': args.atol,
     'ksp_rtol': args.rtol,
+    'snes_max_it': 10,
     'ksp_max_it': args.maxit,
     'ksp_converged_maxits': None,
-    'snes_monitor': None,
-    # 'ksp_monitor': None,
-    'ksp_converged_rate':None,
-    'ksp_monitor_true_residual': None,
     # "ksp_error_if_not_converged": False,
     # "snes_error_if_not_converged": False,
     'pc_type': 'python',
@@ -255,25 +236,39 @@ params_schur = {
     'shiftedschurpc': shifted_schur_pc_params,
 }
 
+if args.timing:
+    params_schur['ksp_view'] = ':Nonlinear_slice3D.txt'
+else:
+    params_schur.update({
+        'snes_monitor': None,
+        'ksp_monitor': None,
+        'ksp_converged_rate': None,
+        'ksp_monitor_true_residual': None,
+    })
+    # shifted_schur_pc_params['fieldsplit_1']['ksp_converged_reason'] = (
+    #     f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt'
+    # )
 
-butcher_tableau = GaussLegendre(1)
+
+butcher_tableau = GaussLegendre(1) # ! Implicit Midpoint Rule.
 
 stepper = TimeStepper(eqn, butcher_tableau, t, dt, U, bcs=bcs, solver_parameters=params_schur, appctx=appctx)
 
-
-
-print("=================")
-print(f"Stepper class: {type(stepper).__name__}")
-print(f"Attributes: {[a for a in dir(stepper) if not a.startswith('_')]}")
+# print("=================The attribute prints for stepper in Irksome.")
+# print(f"Stepper class: {type(stepper).__name__}")
+# print(f"Attributes: {[a for a in dir(stepper) if not a.startswith('_')]}")
 
 
 # Set checkpointing for saving the error.
 error_list = []
 residual_list = []
+snes_error_list = []
+snes_ksp_cum_list = []
 sol_it = Function(W, name='sol_it')
 sol_final = Function(W, name='sol_final')
-# with CheckpointFile('sol_mesh.h5', 'w') as chk:
-#     chk.save_mesh(mesh)
+stage_space = stepper.stages.function_space()
+sol_snes_it = Function(stage_space, name='sol_snes_it')
+stages_final = Function(stage_space, name='stages_final')
 
 def monitor(ksp, iteration_number, rnorm0):
     # print('The monitor starts to build the solution.')
@@ -286,17 +281,26 @@ def monitor(ksp, iteration_number, rnorm0):
     residual_list.append(rnorm0)
 
 
+def snes_monitor(snes, iteration_number, fnorm):
+    sol_vec = snes.getSolution()
+    with sol_snes_it.dat.vec_wo as v:
+        sol_vec.copy(result=v)
+    snes_error_list.append(norm(sol_snes_it - stages_final) / norm(stages_final))
+    snes_ksp_cum_list.append(snes.getLinearSolveIterations())
 
 
-name = 'Nonlinear_slice_imp_ASM'
-file_lb = VTKFile(name+'.pvd')
-un, uny, bn, pn = U.subfunctions
-un.rename("in-plane-vel")
-uny.rename("y-vel")
-bn.rename("buoyancy")
-pn.rename("pressure")
-file_lb.write(un, uny, bn, pn)
+if monitor_run:
+    name = 'Nonlinear_slice_imp_ASM'
+    file_lb = VTKFile(name+'.pvd')
+    un, uny, bn, pn = U.subfunctions
+    un.rename("in-plane-vel")
+    uny.rename("y-vel")
+    bn.rename("buoyancy")
+    pn.rename("pressure")
+    file_lb.write(un, uny, bn, pn)
 
+
+# Time stepping
 dumpt = args.dt
 tdump = 0.
 j = 0
@@ -306,38 +310,51 @@ while (float(t) < tmax - 0.5 * args.dt):
         stepper.advance()
     else:
         U_restart = U.copy(deepcopy=True)
-        stage_var = stepper.stages
-        stage_restart = stage_var.copy(deepcopy=True)
+        stage_restart = stepper.stages.copy(deepcopy=True)
         with PETSc.Log.Stage('Warm-up-Solver'):
             stepper.advance()
-        final_sol = stepper.solver.snes.ksp.buildSolution()
-        with sol_final.dat.vec_wo as final_vec:
-            final_sol.copy(result=final_vec)
-        U.assign(U_restart)
-        stepper.stages.assign(stage_restart)
-        stepper.solver.snes.ksp.setMonitor(monitor)
-        with PETSc.Log.Stage("Second_Run"):
-            stepper.advance()
-        reason = stepper.solver.snes.ksp.getConvergedReason()
-        # print("*********************************KSP Converging Reason", reason)
-        converged_it_num = stepper.solver.snes.ksp.getIterationNumber()
-        print(f"KSP is converged in {converged_it_num} iterations and monitor is working on time step {j}.")
+        if any_test or args.timing: # ! doing the test need to have a warm-up run and have the final solution there.
+            if any_test:
+                final_sol = stepper.solver.snes.ksp.buildSolution()
+                with sol_final.dat.vec_wo as final_vec:
+                    final_sol.copy(result=final_vec)
+                stages_final.assign(stepper.stages)
+            U.assign(U_restart)
+            stepper.stages.assign(stage_restart)
+            if any_test:
+                stepper.solver.snes.ksp.setMonitor(monitor)
+                stepper.solver.snes.setMonitor(snes_monitor)
+            with PETSc.Log.Stage("Second_Run"):
+                stepper.advance()
+            if any_test:
+                reason = stepper.solver.snes.ksp.getConvergedReason()
+                converged_it_num = stepper.solver.snes.ksp.getIterationNumber()
+                print(f"KSP is converged in {converged_it_num} iterations and monitor is working on time step {j}.")
         if args.dt_test:
             np.savetxt(f'error_dt{args.dt}_shift{args.shift}.out', error_list)
             np.savetxt(f'residual_dt{args.dt}_shift{args.shift}.out', residual_list)
+            np.savetxt(f'snes_error_dt{args.dt}_shift{args.shift}.out', snes_error_list)
+            np.savetxt(f'snes_ksp_cum_dt{args.dt}_shift{args.shift}.out', snes_ksp_cum_list)
         if args.ar_test:
             np.savetxt(f'error_dt{args.dt}_ar{ar}.out', error_list)
             np.savetxt(f'residual_dt{args.dt}_ar{ar}.out', residual_list)
+            np.savetxt(f'snes_error_dt{args.dt}_ar{ar}.out', snes_error_list)
+            np.savetxt(f'snes_ksp_cum_dt{args.dt}_ar{ar}.out', snes_ksp_cum_list)
         if args.dx_test:
             np.savetxt(f'error_dt{args.dt}_nx{nx}.out', error_list)
             np.savetxt(f'residual_dt{args.dt}_nx{nx}.out', residual_list)
+            np.savetxt(f'snes_error_dt{args.dt}_nx{nx}.out', snes_error_list)
+            np.savetxt(f'snes_ksp_cum_dt{args.dt}_nx{nx}.out', snes_ksp_cum_list)
         if args.dz_test:
             np.savetxt(f'error_dt{args.dt}_nz{nz}.out', error_list)
             np.savetxt(f'residual_dt{args.dt}_nz{nz}.out', residual_list)
+            np.savetxt(f'snes_error_dt{args.dt}_nz{nz}.out', snes_error_list)
+            np.savetxt(f'snes_ksp_cum_dt{args.dt}_nz{nz}.out', snes_ksp_cum_list)
     print(float(t))
     t.assign(float(t) + float(dt))
     if tdump > dumpt - 0.5*args.dt:
-        file_lb.write(un, uny, bn, pn)
+        if monitor_run:
+            file_lb.write(un, uny, bn, pn)
     tdump -= dumpt
     j += 1
 

@@ -82,7 +82,7 @@ for nx in nxs:
                             if direct_solver:
                                 print("mpiexec -n "+str(ncpu)+" python ../Boussinesq_implicit/LB_time_slice.py " + " ".join(args)+ ' --maxit' + str(maxit) + ' --' + test + ' --' + 'direct')
                             else:
-                                print("mpiexec -n "+str(ncpu)+" python ../Boussinesq_implicit/LB_time_slice.py " + " ".join(args) + ' --maxit ' + str(maxit) + ' --' + test)
+                                print("mpiexec -n "+str(ncpu)+" python ../Boussinesq_implicit/LB_time_slice.py " + " ".join(args) + ' --maxit ' + str(maxit) + ' --' + test + ' --' +'richardson' + ' --'+'reordering')
                             # print("grep Main "+fname+"/log &> "+fname+"/stats")
                             # print("cat "+fname+"/out >> "+fname+"/stats")
                             rows.append(options)
