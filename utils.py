@@ -20,12 +20,18 @@ def buo_freq():
     return Constant(1.0e-2) ** 2
 
 def Coriolis_param(no_rotation=False):
+    '''
+    f-plane Coriolis vector f * k_hat with f = 2 * Omega * sin(latitude).
+    The Coriolis term in the momentum equation is cross(Coriolis_param(), u)
+    (no extra factor of 2).
+    '''
     if no_rotation:
-        Omega = Constant(0.0)
+        f = Constant(0.0)
     else:
         Omega = Constant(7.292e-5)
-    theta = pi /3 # Latitude
-    return as_vector([0, Omega * sin(theta), Omega * cos(theta)])
+        latitude = pi / 3
+        f = 2 * Omega * sin(latitude)
+    return as_vector([0., 0., f])
 
 def high_dim_mesh_hierarchy(mh, dim=3):
     '''
@@ -82,8 +88,8 @@ def SLB_pressure(u, phi):
 
 def LB_velocity_Irk(u, w, b, p, twoD=False):
     return (
-            inner(w, Dt(u)) * dx 
-            + inner(w, 2 * cross(Coriolis_param(), u)) * dx
+            inner(w, Dt(u)) * dx
+            + inner(w, cross(Coriolis_param(), u)) * dx
             - div(w) * p * dx
             - inner(w, k(twoD=twoD)) * b * dx
         )
@@ -99,26 +105,30 @@ def LB_pressure_Irk(u, phi):
             phi * div(u) * dx
         )
 
-def LB_velocity(unp1, un, unph, w, bnph, pnp1, dt, use_rotation=False, twoD=False):
+def LB_velocity(unp1, un, unph, w, bnph, pnp1, n, dt, use_rotation=False, twoD=False, U_mean=0.0):
+    eqn = inner(w, (unp1 - un)) * dx 
+    eqn -= dt * div(w) * pnp1 * dx
+    eqn -= dt * inner(w, k(twoD=twoD)) * bnph * dx
     if use_rotation:
-        return (
-                inner(w, (unp1 - un)) * dx 
-                + dt * inner(w, 2 * cross(Coriolis_param(), unph)) * dx
-                - dt * div(w) * pnp1 * dx
-                - dt * inner(w, k(twoD=twoD)) * bnph * dx
-            )
-    else:
-        return (
-                inner(w, (unp1 - un)) * dx 
-                - dt * div(w) * pnp1 * dx
-                - dt * inner(w, k(twoD=twoD)) * bnph * dx
-            )
+        eqn += dt * inner(w, cross(Coriolis_param(), unph)) * dx
 
-def LB_buoyancy(bnp1, bn, q, unph, dt, twoD=False):
-    return (
-            q * (bnp1 - bn) * dx
-            + dt * buo_freq() * q * inner(k(twoD=twoD), unph) * dx
-        )
+    if U_mean != 0:
+        U_vec = as_vector([U_mean, 0]) if twoD else as_vector([U_mean, 0, 0])
+        Un = 0.5 * (dot(U_vec, n) + abs(dot(U_vec, n)))
+        eqn -= dt * inner(div(outer(U_vec, w)), unph) * dx
+        eqn += dt * dot(jump(w), Un('+') * unph('+') - Un('-') * unph('-')) * (dS_v + dS_h)
+    return eqn
+
+def LB_buoyancy(bnp1, bn, q, unph, bnph, n, dt, twoD=False, U_mean=0.0):
+    eqn = q * (bnp1 - bn) * dx
+    eqn += dt * buo_freq() * q * inner(k(twoD=twoD), unph) * dx
+
+    if U_mean != 0:
+        U_vec = as_vector([U_mean, 0]) if twoD else as_vector([U_mean, 0, 0])
+        Un = 0.5 * (dot(U_vec, n) + abs(dot(U_vec, n)))
+        eqn -= dt * div(q * U_vec) * bnph * dx
+        eqn += dt * jump(q) * (Un('+') * bnph('+') - Un('-') * bnph('-')) * (dS_v + dS_h)
+    return eqn
 
 def LB_pressure(unp1, phi):
     return (
@@ -138,7 +148,7 @@ def Nonlinear_velocity(unp1, un, unph, w, bnph, pnp1, dt, n, use_rotation=False,
     unn = unn_tool(unph, n)
     eqn = inner(w, (unp1 - un)) * dx
     if use_rotation:
-        eqn += + dt * inner(w, 2 * cross(Coriolis_param(), unph)) * dx
+        eqn += dt * inner(w, cross(Coriolis_param(), unph)) * dx
     eqn -= dt * div(w) * pnp1 * dx
     eqn -= dt * inner(w, k(twoD=twoD)) * bnph * dx
     # Advective terms:
@@ -164,7 +174,7 @@ def Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=False, twoD=False):
     unn = unn_tool(u, n)
     eqn = inner(w, Dt(u)) * dx
     if use_rotation:
-        eqn += + inner(w, 2 * cross(Coriolis_param(), u)) * dx
+        eqn += inner(w, cross(Coriolis_param(), u)) * dx
     eqn -= div(w) * p * dx
     eqn -= inner(w, k(twoD=twoD)) * b * dx
     # Advective terms:

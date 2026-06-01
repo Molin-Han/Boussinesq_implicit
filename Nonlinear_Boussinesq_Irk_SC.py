@@ -27,9 +27,9 @@ parser.add_argument('--shift', type=float, default=1.0e-4, help='Shift parameter
 
 # ! Test settings
 parser.add_argument('--show_args', action='store_true', help='Print all the arguments when the script starts.')
-parser.add_argument('--no_rotation', action='store_false', help='If true, no Coriolis term will be imposed in the equation.')
+parser.add_argument('--no_rotation', action='store_true', help='If set, the Coriolis term is disabled (rotation OFF).')
 parser.add_argument('--rtol', type=float, default=1.0e-6, help='Relative tolerance for the ksp of linear solver.')
-parser.add_argument('--atol', type=float, default=1.0e-9, help='Relative tolerance for the ksp of linear solver.')
+parser.add_argument('--atol', type=float, default=1.0e-9, help='Absolute tolerance for the ksp of linear solver.')
 parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
 parser.add_argument('--dt_test', action='store_true', help='If true, save the error data storing dt parameters.')
 parser.add_argument('--ar_test', action='store_true', help='If true, save the error data storing AR parameters.')
@@ -154,11 +154,12 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         w = vector_3D(wxz, wy)
         # ? The pressure elimination happened here, and no more pressure equation.
         p = p - Constant(1.) / delta * div(u) # ! This gives the correct SC form and also the form needed for fieldsplit. Details in paper / notes.
-        
+
         F = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=rotation)
         F += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
         F += utils.Nonlinear_pressure_Irk(u, phi)
         F += delta * p * phi * dx
+
         #  Boundary conditions
         bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
         bc2 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "bottom")
@@ -167,7 +168,7 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
 
 # ! The Correct IRKAuxOPPC Solver Parameter.
 shifted_schur_pc_params ={
-    'helmholtzschurpc_use_rotation':use_rotation,
+    'use_rotation':use_rotation,
     'pc_type': 'fieldsplit',
     'pc_fieldsplit_type': 'schur',
     'pc_fieldsplit_schur_fact_type': 'full',
@@ -241,7 +242,7 @@ if args.timing:
 else:
     params_schur.update({
         'snes_monitor': None,
-        'ksp_monitor': None,
+        # 'ksp_monitor': None,
         'ksp_converged_rate': None,
         'ksp_monitor_true_residual': None,
     })

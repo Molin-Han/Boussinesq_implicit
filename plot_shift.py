@@ -106,11 +106,11 @@ for C1 in C1_list:
         plt.ylabel('log_error')
     fig_rob.savefig(f'error_Robust_C1_{C1}.png')
     fig_res_rob.savefig(f'residual_Robust_C1_{C1}.png')
-    ax.semilogx(dts, it_list, marker='o',  label=f'C1={C1}')
+    ax.semilogx(dts, it_list, marker='o',  label=f'K={C1}')
     ax.legend()
     ax.set_xlabel('dt')
     ax.set_ylabel('its')
-    ax_scale.semilogx(dts_scaled, it_list, marker='o', label=f'C1={C1}')
+    ax_scale.semilogx(dts_scaled, it_list, marker='o', label=f'K={C1}')
     ax_scale.legend()
     ax_scale.set_xlabel('dt')
     ax_scale.set_ylabel('its')
@@ -119,7 +119,7 @@ for C1 in C1_list:
     ax_res.legend()
     ax_res.set_xlabel('dt')
     ax_res.set_ylabel('its')
-    ax_res_scale.semilogx(dts_scaled, it_res_list, label=f'C1={C1}')
+    ax_res_scale.semilogx(dts_scaled, it_res_list, label=f'K={C1}')
     ax_res_scale.legend()
     ax_res_scale.set_xlabel('dt')
     ax_res_scale.set_ylabel('its')
@@ -146,7 +146,7 @@ for dt in dts:
         if snes_err.size == 0:
             continue
         snes_err = np.clip(snes_err, 1e-16, None)
-        ax_snes.semilogy(snes_ksp_cum, snes_err, marker='o', label=f'C1={C1}')
+        ax_snes.semilogy(snes_ksp_cum, snes_err, marker='o', label=f'K={C1}')
     if has_data:
         ax_snes.set_xlabel('cumulative KSP iterations')
         ax_snes.set_ylabel(r'$\|U_k - U^*\| / \|U^*\|$')

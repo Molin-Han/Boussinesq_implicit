@@ -34,10 +34,13 @@ parser.add_argument('--rtol', type=float, default=1.0e-8, help='Relative toleran
 parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
 
 # ! Solver settings 
+parser.add_argument('--U_mean', type=float, default=0.0, help='Constant horizontal mean flow in x-direction (m/s). Set to 0 for no mean flow.')
 parser.add_argument('--direct', action='store_true', help='If true, solve the Schur complement using direct LU.')
 parser.add_argument('--timing', action='store_true', help='If true, run the code without monitoring and test for the time.')
 parser.add_argument('--reordering', action='store_true', help='If true, run the code with RCM reordering.')
 parser.add_argument('--richardson', action='store_true', help='If true, run the code with Richardson iteration for the fieldsplit_1 solve for Schur complement.')
+parser.add_argument('--monolithic', action='store_true', help='If true, use a monolithic geometric-multigrid solver with an (extruded) star line patch smoother acting on the whole shifted system, instead of the fieldsplit Schur-complement approach. Takes precedence over --direct.')
+parser.add_argument('--cheb_it', type=int, default=6, help='Number of Chebyshev smoother iterations per MG level for the monolithic patch smoother.')
 
 args = parser.parse_known_args()
 args = args[0]
@@ -47,7 +50,13 @@ if args.show_args:
 
 use_rotation = not args.no_rotation
 monitor_run = not args.timing
-solver_name = 'direct' if args.direct else 'MG ASMStar'
+any_test = args.dt_test or args.ar_test or args.dx_test or args.dz_test
+if args.monolithic:
+    solver_name = 'monolithic MG ASMExtrudedStar (star line patch)'
+elif args.direct:
+    solver_name = 'direct'
+else:
+    solver_name = 'MG ASMStar'
 
 # if args.timing:
 #     opts = PETSc.Options()
@@ -94,6 +103,7 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         appctx_PC = self.get_appctx(pc)
         dtc = appctx_PC["dt"]
         delta = appctx_PC["shift"]
+        n = appctx_PC["n"]
         W = u.function_space()
         One = as_vector([1., 1., 1.])
         uxz, uy, b = split(u)
@@ -103,11 +113,30 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         bnph = Constant(0.5) * (b + Constant(1.))
         w = vector_3D(wxz, wy)
         pnp1 = - Constant(1.) / delta * div(velo)
-        Jp = lhs(utils.LB_velocity(velo, One, unph, w, bnph, pnp1, dtc, use_rotation=rotation, twoD=False))
-        Jp += lhs(utils.LB_buoyancy(b, Constant(1.), q, unph, dtc, twoD=False))
+        Jp = lhs(utils.LB_velocity(velo, One, unph, w, bnph, pnp1, n, dtc, use_rotation=rotation, twoD=False, U_mean=args.U_mean))
+        Jp += lhs(utils.LB_buoyancy(b, Constant(1.), q, unph, bnph, n, dtc, twoD=False, U_mean=args.U_mean))
         #  Boundary conditions
         _, bcs = super().form(pc, u, v)
         return (Jp, bcs)
+
+class MonolithicShiftPC(AuxiliaryOperatorPC):
+    """Provide the full shifted Jacobian as an auxiliary operator.
+
+    Wrapping the monolithic operator here (rather than passing it as the
+    problem's ``Jp``) gives the inner solver a context with ``Jp = None``
+    (J == P), which is what geometric multigrid needs in order to coarsen
+    the operator. Applying ``pc_type: mg`` to a global ``Jp`` directly trips
+    the ``P.handle == ctx._pjac.petscmat.handle`` assertion in
+    firedrake/solving_utils.py during ``PCSetUp_MG``.
+    """
+    _prefix = "monoshiftpc_"
+    def form(self, pc, v, u):
+        # Reuse the globally-built shifted Jacobian form, retargeted onto this
+        # PC's own test (v) and trial (u) functions.
+        test, trial = Jp.arguments()
+        a = replace(Jp, {test: v, trial: u})
+        _, bcs = super().form(pc, u, v)
+        return (a, bcs)
 
 distribution_parameters = {"partition": True, "overlap_type": (DistributedMeshOverlapType.VERTEX, 1)}
 m = PeriodicIntervalMesh(nx, length,distribution_parameters=distribution_parameters)
@@ -141,8 +170,8 @@ U = Constant(0.)
 # This is a 4 components function.
 u0_slice, u0yic, b0ic, p0ic = Un.subfunctions # ! subfunction for data assignment
 u1_slice, u1yic, b1ic, p1ic = Unp1.subfunctions
-b0ic.project(sin(pi*z/height)/(1+((x-xc)**2)/a**2))
-b1ic.project(sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+b0ic.project(3e-4*sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+b1ic.project(3e-4*sin(pi*z/height)/(1+((x-xc)**2)/a**2))
 # print('===============================================')
 # print('Initial condition has been interpolated')
 # name = 'ic'
@@ -162,9 +191,11 @@ unph = 0.5 * (un+unp1)
 bnph = 0.5 * (bn+bnp1)
 pnph = 0.5 * (pn+pnp1)
 w = vector_3D(w_xz, wy)
+n = FacetNormal(mesh)
+appctx.update({"n": n})
 
-eqn = utils.LB_velocity(unp1, un, unph, w, bnph, pnp1, dt, use_rotation=use_rotation)
-eqn += utils.LB_buoyancy(bnp1, bn, q, unph, dt)
+eqn = utils.LB_velocity(unp1, un, unph, w, bnph, pnp1, n, dt, use_rotation=use_rotation, U_mean=args.U_mean)
+eqn += utils.LB_buoyancy(bnp1, bn, q, unph, bnph, n, dt, U_mean=args.U_mean)
 eqn += utils.LB_pressure(unp1, phi)
 shift_eqn = eqn + shift * pnp1 * phi * dx
 Jp = derivative(shift_eqn, Unp1)
@@ -201,6 +232,7 @@ else:
                 "pc_python_type": "firedrake.ASMStarPC",
                 "pc_star_construct_dim": 0,
                 "pc_star_sub_sub_pc_type": "lu",
+                "pc_star_view_patch_sizes":True,
                 # 'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
                 # 'pc_star_sub_sub_pc_factor_reuse_ordering': None,
                 # 'pc_star_sub_sub_pc_factor_mat_solver_type': 'mumps',
@@ -254,7 +286,7 @@ params_schur = {
         # 'pc_factor_mat_solver_type': 'mumps',
     },
     'fieldsplit_1': {
-        'helmholtzschurpc_use_rotation':use_rotation,
+        'use_rotation':use_rotation,
         # 'ksp_type': 'fgmres', # ! need to tune this.
         # 'ksp_type': 'richardson',
         # 'ksp_richardson_scale': 1.0,
@@ -270,10 +302,56 @@ params_schur = {
 params_schur['ksp_type'] = 'gmres' if args.richardson else 'fgmres'
 params_schur['fieldsplit_1_ksp_type'] = 'preonly' if args.richardson else 'fgmres'
 
+# ! Monolithic solver: geometric multigrid applied to the *whole* shifted system Jp
+# ! (supplied via MonolithicShiftPC), with a star patch smoother, optional RCM
+# ! reordering on the patch sub-solves and a Chebyshev smoother KSP wrapping the patch.
+# ! Use firedrake.ASMExtrudedStarPC below for vertical line/column patches instead.
+
+mg_levels_mono = {
+    'ksp_type': 'chebyshev',     # Chebyshev iteration on the patch smoother.
+    'ksp_max_it': 6,
+    'pc_type': 'python',
+    'pc_python_type': 'firedrake.ASMStarPC',  # switch to firedrake.ASMExtrudedStarPC for vertical line patches
+    'pc_star_construct_dim': 0,
+    'pc_star_sub_sub_pc_type': 'lu',
+    'pc_star_view_patch_sizes': True,
+}
+if args.reordering:
+    mg_levels_mono.update({
+        'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
+        'pc_star_sub_sub_pc_factor_reuse_ordering': None,
+    })
+
+params_monolithic = {
+    'snes_type': 'ksponly',
+    'ksp_type': 'gmres',
+    'ksp_atol': 0,
+    'ksp_rtol': args.rtol,
+    'ksp_max_it': args.maxit,
+    'ksp_converged_maxits': None,
+    # Shifted operator supplied via MonolithicShiftPC so the inner MG context
+    # has J == P, which geometric multigrid requires to coarsen the operator.
+    'pc_type': 'python',
+    'pc_python_type': __name__ + '.MonolithicShiftPC',
+    'monoshiftpc': {
+        'mat_type': 'aij',  # patch PCs need an assembled (non-nested) operator.
+        'pc_type': 'mg',
+        'pc_mg_type': 'full',
+        'pc_mg_cycle_type': 'v',
+        'mg_levels': mg_levels_mono,
+        'mg_coarse': {
+            'ksp_type': 'preonly',
+            'pc_type': 'lu',
+        },
+    },
+}
+# ! Choose which solver configuration to run with. Monolithic takes precedence.
+params = params_monolithic if args.monolithic else params_schur
+
 if args.timing:
-    params_schur['ksp_view'] = ':slice3D.txt'
+    params['ksp_view'] = ':slice3D.txt'
 else:
-    params_schur.update({
+    params.update({
         'snes_monitor': None,
         # 'ksp_monitor': None,
         'ksp_converged_rate': None,
@@ -281,16 +359,17 @@ else:
         # "ksp_error_if_not_converged": False,
         # "snes_error_if_not_converged": False,
     })
-    params_schur['fieldsplit_1'].update({
-        'ksp_monitor': None,
-        'ksp_converged_reason': f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt',
-    })
+    if not args.monolithic:
+        params['fieldsplit_1'].update({
+            'ksp_monitor': None,
+            'ksp_converged_reason': f':fieldsplit1_ksp_dt{args.dt}_shift{args.shift}.txt',
+        })
 
 # 'fieldsplit_1_ksp_type': 'richardson', 'fieldsplit_1_ksp_richardson_scale': 1.0,
 # print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 nprob = NonlinearVariationalProblem(eqn, Unp1, bcs=bcs, Jp=Jp)
 # nprob = NonlinearVariationalProblem(shift_eqn, Unp1, bcs=bcs) # this will set the non-shifted equation.
-nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_parameters=params_schur, appctx=appctx)
+nsolver = NonlinearVariationalSolver(nprob, nullspace=nullspace, solver_parameters=params, appctx=appctx)
 
 if monitor_run:
     # Set checkpointing for saving the data.
@@ -334,16 +413,18 @@ while t < tmax - 0.5 * args.dt:
         U_restart = Unp1.copy(deepcopy=True)
         with PETSc.Log.Stage("Warm-up-solve"):
             nsolver.solve()
-        if monitor_run:
+        if not monitor_run: # ! test the CPU Time.
+            Unp1.assign(U_restart) # ! Assign the original velocity to restart the solver.
+            with PETSc.Log.Stage("Official-Run"):
+                nsolver.solve()
+        if monitor_run and any_test:
             final_sol = nsolver.snes.ksp.buildSolution()
             with sol_final.dat.vec_wo as final_vec:
                 final_sol.copy(result=final_vec)
-        Unp1.assign(U_restart) # ! Assign the original velocity to restart the solver.
-        if monitor_run:
+            Unp1.assign(U_restart) # ! Assign the original velocity to restart the solver.
             nsolver.snes.ksp.setMonitor(monitor)
-        with PETSc.Log.Stage("Official-Run"):
-            nsolver.solve()
-        if monitor_run:
+            with PETSc.Log.Stage("Official-Run"):
+                nsolver.solve()
             reason = nsolver.snes.ksp.getConvergedReason()
             print("*************************************************", reason)
             converged_it_num = nsolver.snes.ksp.getIterationNumber()
@@ -359,9 +440,6 @@ while t < tmax - 0.5 * args.dt:
     Un.assign(Unp1)
     j += 1
     if tdump > dumpt - args.dt*0.5:
-
-
-        
         if monitor_run:
             file_lb.write(un, uny, bn, pn)
         tdump -= dumpt

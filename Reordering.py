@@ -1,6 +1,6 @@
 from firedrake import *
 
-nz = 120
+nz = 80
 nx = 2
 length = 3.0e5
 height = 1.0e3
@@ -12,7 +12,7 @@ m = IntervalMesh(nx, length)
 mesh = ExtrudedMesh(m, nz, layer_height=height/nz)
 
 x, z = SpatialCoordinate(mesh)
-deg = 1
+deg = 2
 CG = FiniteElement("CG", interval, deg)
 DG = FiniteElement("DG", interval, deg-1)
 CG_DG = TensorProductElement(CG, DG)
@@ -61,7 +61,7 @@ for i in range(len(indptr_A)-1):
         bandwidth_A = max(bandwidth_A, abs(j - i))
 print(f"The bandwidth of the matrix A before reordering is {bandwidth_A}.")
 
-ordering = 'amd'
+ordering = 'rcm'
 rperm, cperm = A.getOrdering(ordering) # Reordering here.
 Aperm = A.createSubMatrix(rperm, cperm)
 
