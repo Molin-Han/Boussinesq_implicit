@@ -117,8 +117,8 @@ U_mean = Constant(args.U_mean)
 u0_slice, u0yic, b0ic, p0ic = U.subfunctions # ! subfunction for data assignment
 if args.U_mean != 0.0:
     u0_slice.project(as_vector([U_mean, 0., 0.]))
-b0ic.project(0.01 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
-# b0ic.project(3e-4 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+# b0ic.project(0.01 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+b0ic.project(3e-4 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
 
 # DiricheletBC
 bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
@@ -166,60 +166,60 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         bcs = [bc1, bc2]
         return (F, bcs)
 
-shifted_schur_pc_params = {
-    'use_rotation':use_rotation,
-    "pc_type": "lu",
-    "pc_factor_mat_solver_type": "mumps",
-}
+# shifted_schur_pc_params = {
+#     'use_rotation':use_rotation,
+#     "pc_type": "lu",
+#     "pc_factor_mat_solver_type": "mumps",
+# }
 
 # ! The Correct IRKAuxOPPC Solver Parameter.
-# shifted_schur_pc_params ={
-#     'use_rotation':use_rotation,
-#     'pc_type': 'fieldsplit',
-#     'pc_fieldsplit_type': 'schur',
-#     'pc_fieldsplit_schur_fact_type': 'full',
-#     'pc_fieldsplit_schur_precondition': 'a11',
-#     'pc_fieldsplit_0_fields': '3',
-#     'pc_fieldsplit_1_fields': '0,1,2',
-#     'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
-#         'ksp_type': 'preonly',
-#         'ksp_reuse_preconditioner':None, # ! double check if pc is reused in petsc log view. The pressure factorisation is the same all the time and will not need to be recomputed each time.
-#         'pc_type':'python',
-#         'pc_python_type':'firedrake.AssembledPC',
-#         'assembled_pc_type': 'bjacobi',
-#         'assembled_sub_pc_type': 'ilu', # ILU needs an assembled matrix so that AssembledPC is needed.
-#     },
-#     'fieldsplit_1': {
-#         'ksp_type': 'preonly', # ! need to tune this.
-#         # 'ksp_monitor': None,
-#         # 'ksp_atol': 0,
-#         # 'ksp_rtol': 1e-7,
-#         # ! direct solver on patch:
-#         # 'pc_type':'lu',
-#         # "pc_factor_mat_solver_type": "mumps",
-#         # ! ASM line smoother on patch:
-#         'pc_type': 'mg',
-#         'pc_mg_type': 'full',
-#         'pc_mg_cycle_type': 'v',
-#         'mg_levels': {
-#             'ksp_type': 'gmres',
-#             # 'ksp_type':'chebyshev',
-#             # 'ksp_type':'richardson', # ! Richardson iteration.
-#             'ksp_max_it': 6, # ? more robust for larger max_it here.
-#             # 'ksp_monitor':None,
-#             "pc_type": "python",
-#             "pc_python_type": "firedrake.ASMStarPC",
-#             "pc_star_construct_dim": 0,
-#             "pc_star_sub_sub_pc_type": "lu",
-#             'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
-#             'pc_star_sub_sub_pc_factor_reuse_ordering': None,
-#         },
-#         'mg_coarse': {
-#             'ksp_type': 'preonly',
-#             'pc_type': 'lu',
-#         },
-#     },
-# }
+shifted_schur_pc_params ={
+    'use_rotation':use_rotation,
+    'pc_type': 'fieldsplit',
+    'pc_fieldsplit_type': 'schur',
+    'pc_fieldsplit_schur_fact_type': 'full',
+    'pc_fieldsplit_schur_precondition': 'a11',
+    'pc_fieldsplit_0_fields': '3',
+    'pc_fieldsplit_1_fields': '0,1,2',
+    'fieldsplit_0': { # Doing a pure mass solve for the pressure block.
+        'ksp_type': 'preonly',
+        'ksp_reuse_preconditioner':None, # ! double check if pc is reused in petsc log view. The pressure factorisation is the same all the time and will not need to be recomputed each time.
+        'pc_type':'python',
+        'pc_python_type':'firedrake.AssembledPC',
+        'assembled_pc_type': 'bjacobi',
+        'assembled_sub_pc_type': 'ilu', # ILU needs an assembled matrix so that AssembledPC is needed.
+    },
+    'fieldsplit_1': {
+        'ksp_type': 'preonly', # ! need to tune this.
+        # 'ksp_monitor': None,
+        # 'ksp_atol': 0,
+        # 'ksp_rtol': 1e-7,
+        # ! direct solver on patch:
+        # 'pc_type':'lu',
+        # "pc_factor_mat_solver_type": "mumps",
+        # ! ASM line smoother on patch:
+        'pc_type': 'mg',
+        'pc_mg_type': 'full',
+        'pc_mg_cycle_type': 'v',
+        'mg_levels': {
+            'ksp_type': 'gmres',
+            # 'ksp_type':'chebyshev',
+            # 'ksp_type':'richardson', # ! Richardson iteration.
+            'ksp_max_it': 6, # ? more robust for larger max_it here.
+            # 'ksp_monitor':None,
+            "pc_type": "python",
+            "pc_python_type": "firedrake.ASMStarPC",
+            "pc_star_construct_dim": 0,
+            "pc_star_sub_sub_pc_type": "lu",
+            'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
+            'pc_star_sub_sub_pc_factor_reuse_ordering': None,
+        },
+        'mg_coarse': {
+            'ksp_type': 'preonly',
+            'pc_type': 'lu',
+        },
+    },
+}
 
 
 params_schur = {

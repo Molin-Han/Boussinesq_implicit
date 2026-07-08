@@ -30,8 +30,8 @@ parser.add_argument('--dt_test', action='store_true', help='If true, save the er
 parser.add_argument('--ar_test', action='store_true', help='If true, save the error data storing AR parameters.')
 parser.add_argument('--dx_test', action='store_true', help='If true, save the error data storing dx parameters.')
 parser.add_argument('--dz_test', action='store_true', help='If true, save the error data storing dz parameters.')
-parser.add_argument('--rtol', type=float, default=1.0e-8, help='Relative tolerance for the ksp of linear solver.')
-parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
+parser.add_argument('--rtol', type=float, default=1.0e-7, help='Relative tolerance for the ksp of linear solver.')
+parser.add_argument('--maxit', type=int, default=50, help='Max iteration number for the first ksp of the linear solve.')
 
 # ! Solver settings 
 parser.add_argument('--U_mean', type=float, default=0.0, help='Constant horizontal mean flow in x-direction (m/s). Set to 0 for no mean flow.')
@@ -113,8 +113,8 @@ class HDivSchurPC(AuxiliaryOperatorPC):
         bnph = Constant(0.5) * (b + Constant(1.))
         w = vector_3D(wxz, wy)
         pnp1 = - Constant(1.) / delta * div(velo)
-        Jp = lhs(utils.LB_velocity(velo, One, unph, w, bnph, pnp1, n, dtc, use_rotation=rotation, twoD=False, U_mean=args.U_mean))
-        Jp += lhs(utils.LB_buoyancy(b, Constant(1.), q, unph, bnph, n, dtc, twoD=False, U_mean=args.U_mean))
+        Jp = lhs(utils.LB_velocity(velo, One, unph, w, bnph, pnp1, n, dtc, use_rotation=rotation, twoD=False, U_mean=Constant(args.U_mean)))
+        Jp += lhs(utils.LB_buoyancy(b, Constant(1.), q, unph, bnph, n, dtc, twoD=False, U_mean=Constant(args.U_mean)))
         #  Boundary conditions
         _, bcs = super().form(pc, u, v)
         return (Jp, bcs)
@@ -172,6 +172,8 @@ u0_slice, u0yic, b0ic, p0ic = Un.subfunctions # ! subfunction for data assignmen
 u1_slice, u1yic, b1ic, p1ic = Unp1.subfunctions
 b0ic.project(3e-4*sin(pi*z/height)/(1+((x-xc)**2)/a**2))
 b1ic.project(3e-4*sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+# b0ic.project(1e-2*sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+# b1ic.project(1e-2*sin(pi*z/height)/(1+((x-xc)**2)/a**2))
 # print('===============================================')
 # print('Initial condition has been interpolated')
 # name = 'ic'
@@ -194,8 +196,8 @@ w = vector_3D(w_xz, wy)
 n = FacetNormal(mesh)
 appctx.update({"n": n})
 
-eqn = utils.LB_velocity(unp1, un, unph, w, bnph, pnp1, n, dt, use_rotation=use_rotation, U_mean=args.U_mean)
-eqn += utils.LB_buoyancy(bnp1, bn, q, unph, bnph, n, dt, U_mean=args.U_mean)
+eqn = utils.LB_velocity(unp1, un, unph, w, bnph, pnp1, n, dt, use_rotation=use_rotation, U_mean=Constant(args.U_mean))
+eqn += utils.LB_buoyancy(bnp1, bn, q, unph, bnph, n, dt, U_mean=Constant(args.U_mean))
 eqn += utils.LB_pressure(unp1, phi)
 shift_eqn = eqn + shift * pnp1 * phi * dx
 Jp = derivative(shift_eqn, Unp1)
@@ -260,7 +262,7 @@ else:
     else:
         helmholtz_schur_pc_params.update({
             'mg_levels_ksp_type': 'gmres',
-            'mg_levels_ksp_max_it':1,
+            'mg_levels_ksp_max_it':6,
         })
 
 params_schur = {
@@ -268,7 +270,7 @@ params_schur = {
     # 'log_view':':log_view.txt',
     # 'log_view_memory':':log_view_memory.txt',
 
-    # 'ksp_type': 'gmres', # ! this can also be tuned.
+    # 'ksp_type': 'fgmres', # ! this can also be tuned.
     'snes_type':'ksponly',
     'ksp_atol': 0,
     'ksp_rtol': args.rtol,
@@ -308,7 +310,8 @@ params_schur['fieldsplit_1_ksp_type'] = 'preonly' if args.richardson else 'fgmre
 # ! Use firedrake.ASMExtrudedStarPC below for vertical line/column patches instead.
 
 mg_levels_mono = {
-    'ksp_type': 'chebyshev',     # Chebyshev iteration on the patch smoother.
+    # 'ksp_type': 'chebyshev',
+    'ksp_type':'gmres',     # Chebyshev iteration on the patch smoother.
     'ksp_max_it': 6,
     'pc_type': 'python',
     'pc_python_type': 'firedrake.ASMStarPC',  # switch to firedrake.ASMExtrudedStarPC for vertical line patches
@@ -324,7 +327,7 @@ if args.reordering:
 
 params_monolithic = {
     'snes_type': 'ksponly',
-    'ksp_type': 'gmres',
+    'ksp_type': 'fgmres',
     'ksp_atol': 0,
     'ksp_rtol': args.rtol,
     'ksp_max_it': args.maxit,

@@ -65,11 +65,11 @@ height = args.height
 T = 1e4
 dts_scaled = (np.array(dts)/T).tolist()
 
-fig, ax = plt.subplots()
-fig_scale, ax_scale = plt.subplots()
+fig, ax = plt.subplots(figsize=(10, 6))
+fig_scale, ax_scale = plt.subplots(figsize=(10, 6))
 
-fig_res, ax_res = plt.subplots()
-fig_res_scale, ax_res_scale = plt.subplots()
+fig_res, ax_res = plt.subplots(figsize=(10, 6))
+fig_res_scale, ax_res_scale = plt.subplots(figsize=(10, 6))
 
 for nz in nzs:
     it_list = []
@@ -91,22 +91,26 @@ for nz in nzs:
         else:
             it_res_list.append(its_res)
     ax.semilogx(dts, it_list, marker='o', label=f'nz={nz}')
-    ax.legend()
-    ax.set_xlabel('dt')
-    ax.set_ylabel('its')
+    ax.legend(fontsize=20)
+    # ax.set_xlabel('dt')
+    ax.set_ylabel('KSP iterations', fontsize=20)
+    ax.set_title('KSP iterations vs dt for varying dz')
     ax_scale.semilogx(dts_scaled, it_list, marker='o', label=f'nz={nz}')
-    ax_scale.legend()
-    ax_scale.set_xlabel('dt')
-    ax_scale.set_ylabel('its')
+    ax_scale.legend(fontsize=20)
+    # ax_scale.set_xlabel('dt / T')
+    ax_scale.set_ylabel('KSP iterations', fontsize=20)
+    ax_scale.set_title('KSP iterations vs dt/T for varying dz')
 
     ax_res.semilogx(dts, it_res_list, marker='o', label=f'nz={nz}')
-    ax_res.legend()
-    ax_res.set_xlabel('dt')
-    ax_res.set_ylabel('its')
+    ax_res.legend(fontsize=20)
+    # ax_res.set_xlabel('dt')
+    ax_res.set_ylabel('KSP iterations (residual)', fontsize=20)
+    ax_res.set_title('Residual KSP iterations vs dt for varying dz')
     ax_res_scale.semilogx(dts_scaled, it_res_list, marker='o', label=f'nz={nz}')
-    ax_res_scale.legend()
-    ax_res_scale.set_xlabel('dt')
-    ax_res_scale.set_ylabel('its')
+    ax_res_scale.legend(fontsize=20)
+    # ax_res_scale.set_xlabel('dt / T')
+    ax_res_scale.set_ylabel('KSP iterations (residual)', fontsize=20)
+    ax_res_scale.set_title('Residual KSP iterations vs dt/T for varying dz')
 fig.savefig("error_dz.png")
 fig_scale.savefig("error_dz_scaled_t.png")
 fig_res.savefig("residual_dz.png")
@@ -115,8 +119,8 @@ fig_res_scale.savefig("residual_dz_scaled_t.png")
 for dt in dts:
     it_list = []
     it_res_list = []
-    fig_rob, ax_rob = plt.subplots()
-    fig_res_rob, ax_res_rob = plt.subplots()
+    fig_rob, ax_rob = plt.subplots(figsize=(10, 6))
+    fig_res_rob, ax_res_rob = plt.subplots(figsize=(10, 6))
     for nz in nzs:
         deltaz = height / nz
         error = _load_or_zeros('error', dt, 'nz', nz)
@@ -125,30 +129,35 @@ for dt in dts:
         its_res = len(residual)
         if its >= args.maxit:
             it_list.append(np.nan)
-            # it_list.append(its)
         else:
             it_list.append(its)
         if its_res >= args.maxit:
             it_res_list.append(np.nan)
-            # it_list.append(its)
         else:
             it_res_list.append(its_res)
-        x = np.arange(its)
-        x_res = np.arange(its_res)
-        ax_rob.semilogy(x, error, label=f'nz={nz}')
-        ax_rob.legend()
-        ax_res_rob.semilogy(x_res, residual, label=f'nz={nz}')
-        ax_res_rob.legend()
-        plt.xlabel('its_num')
-        plt.ylabel('log_error')
+        err_plot = error[:-1] if len(error) > 1 else error
+        res_plot = residual[:-1] if len(residual) > 1 else residual
+        x = np.arange(len(err_plot))
+        x_res = np.arange(len(res_plot))
+        ax_rob.semilogy(x, err_plot, marker='o', label=f'nz={nz}')
+        ax_res_rob.semilogy(x_res, res_plot, marker='o', label=f'nz={nz}')
+    ax_rob.legend(fontsize=20)
+    # ax_rob.set_xlabel('KSP iteration')
+    ax_rob.set_ylabel('relative error', fontsize=20)
+    ax_rob.set_title(f'Error convergence at dt={dt}')
+    ax_res_rob.legend(fontsize=20)
+    # ax_res_rob.set_xlabel('KSP iteration')
+    ax_res_rob.set_ylabel('residual', fontsize=20)
+    ax_res_rob.set_title(f'Residual convergence at dt={dt}')
     fig_rob.savefig(f'error_dz_Robust_dt{dt}.png')
     fig_res_rob.savefig(f'residual_dz_Robust_dt{dt}.png')
-    plt.close()
+    plt.close(fig_rob)
+    plt.close(fig_res_rob)
 
 
 # SNES error vs cumulative KSP iteration count, one curve per nz value, per dt.
 for dt in dts:
-    fig_snes, ax_snes = plt.subplots()
+    fig_snes, ax_snes = plt.subplots(figsize=(10, 6))
     has_data = False
     for nz in nzs:
         deltaz = height / nz
@@ -165,13 +174,17 @@ for dt in dts:
         snes_ksp_cum = np.atleast_1d(snes_ksp_cum)
         if snes_err.size == 0:
             continue
+        if snes_err.size > 1:
+            snes_err = snes_err[:-1]
+            snes_ksp_cum = snes_ksp_cum[:-1]
         snes_err = np.clip(snes_err, 1e-16, None)
-        ax_snes.semilogy(snes_ksp_cum, snes_err, marker='o', label=f'dz={deltaz}')
+        ax_snes.semilogy(snes_ksp_cum, snes_err, marker='o', label=f'nz={nz}')
         has_data = True
     if has_data:
-        ax_snes.set_xlabel('cumulative KSP iterations')
-        ax_snes.set_ylabel(r'$\|U_k - U^*\| / \|U^*\|$')
-        ax_snes.legend()
+        # ax_snes.set_xlabel('cumulative KSP iterations')
+        ax_snes.set_ylabel(r'$\|U_k - U^*\| / \|U^*\|$', fontsize=20)
+        ax_snes.set_title(f'SNES error vs cumulative KSP iterations at dt={dt}')
+        ax_snes.legend(fontsize=20)
         fig_snes.savefig(f'snes_error_dz_dt{dt}.png')
     plt.close(fig_snes)
 

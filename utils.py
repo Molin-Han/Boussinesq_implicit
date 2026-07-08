@@ -105,29 +105,49 @@ def LB_pressure_Irk(u, phi):
             phi * div(u) * dx
         )
 
-def LB_velocity(unp1, un, unph, w, bnph, pnp1, n, dt, use_rotation=False, twoD=False, U_mean=0.0):
+def LB_velocity(unp1, un, unph, w, bnph, pnp1, n, dt, use_rotation=False, twoD=False, U_mean=None):
     eqn = inner(w, (unp1 - un)) * dx 
     eqn -= dt * div(w) * pnp1 * dx
     eqn -= dt * inner(w, k(twoD=twoD)) * bnph * dx
     if use_rotation:
         eqn += dt * inner(w, cross(Coriolis_param(), unph)) * dx
 
-    if U_mean != 0:
+    if U_mean:
         U_vec = as_vector([U_mean, 0]) if twoD else as_vector([U_mean, 0, 0])
         Un = 0.5 * (dot(U_vec, n) + abs(dot(U_vec, n)))
         eqn -= dt * inner(div(outer(U_vec, w)), unph) * dx
         eqn += dt * dot(jump(w), Un('+') * unph('+') - Un('-') * unph('-')) * (dS_v + dS_h)
+        # eqn += dt * dot(jump(w), Un('+') * unph('+') - Un('-') * unph('-')) * dS_v
+
+    # Centred Flux
+    if U_mean:
+        U_vec = as_vector([U_mean, 0]) if twoD else as_vector([U_mean, 0, 0])
+        # Volume term: integration by parts
+        eqn -= dt * inner(div(outer(U_vec, w)), unph) * dx
+        # Centred facet flux on vertical facets
+        flux_u = 0.5 * (unph('+') + unph('-'))
+        eqn += dt * dot(jump(w), dot(U_vec, n)('+') * flux_u) * (dS_v+dS_h)
     return eqn
 
-def LB_buoyancy(bnp1, bn, q, unph, bnph, n, dt, twoD=False, U_mean=0.0):
+def LB_buoyancy(bnp1, bn, q, unph, bnph, n, dt, twoD=False, U_mean=None):
     eqn = q * (bnp1 - bn) * dx
     eqn += dt * buo_freq() * q * inner(k(twoD=twoD), unph) * dx
 
-    if U_mean != 0:
+    if U_mean:
         U_vec = as_vector([U_mean, 0]) if twoD else as_vector([U_mean, 0, 0])
         Un = 0.5 * (dot(U_vec, n) + abs(dot(U_vec, n)))
         eqn -= dt * div(q * U_vec) * bnph * dx
         eqn += dt * jump(q) * (Un('+') * bnph('+') - Un('-') * bnph('-')) * (dS_v + dS_h)
+        # eqn += dt * jump(q) * (Un('+') * bnph('+') - Un('-') * bnph('-')) * dS_v
+
+    # Centred Flux
+    # if U_mean != 0.0:
+    #     U_vec = as_vector([U_mean, 0]) if twoD else as_vector([U_mean, 0, 0])
+        
+    #     eqn -= dt * div(q * U_vec) * bnph * dx
+        
+    #     flux_b = 0.5 * (bnph('+') + bnph('-'))
+    #     eqn += dt * jump(q) * dot(U_vec, n)('+') * flux_b * dS_v
     return eqn
 
 def LB_pressure(unp1, phi):
