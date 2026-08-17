@@ -115,7 +115,7 @@ def LB_velocity(unp1, un, unph, w, bnph, pnp1, n, dt, use_rotation=False, twoD=F
     if U_mean:
         U_vec = as_vector([U_mean, 0]) if twoD else as_vector([U_mean, 0, 0])
         Un = 0.5 * (dot(U_vec, n) + abs(dot(U_vec, n)))
-        eqn -= dt * inner(div(outer(U_vec, w)), unph) * dx
+        eqn -= dt * inner(div(outer(w, U_vec)), unph) * dx  # ! outer(w, U): see Nonlinear_velocity_Irk.
         eqn += dt * dot(jump(w), Un('+') * unph('+') - Un('-') * unph('-')) * (dS_v + dS_h)
         # eqn += dt * dot(jump(w), Un('+') * unph('+') - Un('-') * unph('-')) * dS_v
 
@@ -123,7 +123,7 @@ def LB_velocity(unp1, un, unph, w, bnph, pnp1, n, dt, use_rotation=False, twoD=F
     if U_mean:
         U_vec = as_vector([U_mean, 0]) if twoD else as_vector([U_mean, 0, 0])
         # Volume term: integration by parts
-        eqn -= dt * inner(div(outer(U_vec, w)), unph) * dx
+        eqn -= dt * inner(div(outer(w, U_vec)), unph) * dx  # ! outer(w, U): see Nonlinear_velocity_Irk.
         # Centred facet flux on vertical facets
         flux_u = 0.5 * (unph('+') + unph('-'))
         eqn += dt * dot(jump(w), dot(U_vec, n)('+') * flux_u) * (dS_v+dS_h)
@@ -172,7 +172,7 @@ def Nonlinear_velocity(unp1, un, unph, w, bnph, pnp1, dt, n, use_rotation=False,
     eqn -= dt * div(w) * pnp1 * dx
     eqn -= dt * inner(w, k(twoD=twoD)) * bnph * dx
     # Advective terms:
-    eqn -= dt * inner(div(outer(unph, w)), unph) * dx
+    eqn -= dt * inner(div(outer(w, unph)), unph) * dx  # ! outer(w, u): see Nonlinear_velocity_Irk.
     eqn += dt * dot(jump(w), unn('+') * unph('+') - unn('-') * unph('-')) * (dS_v + dS_h)
     return eqn
 
@@ -198,7 +198,11 @@ def Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=False, twoD=False):
     eqn -= div(w) * p * dx
     eqn -= inner(w, k(twoD=twoD)) * b * dx
     # Advective terms:
-    eqn -= inner(div(outer(u, w)), u) * dx
+    # ! outer(w, u), NOT outer(u, w).  UFL contracts div over the last index, so
+    # ! div(outer(w, u))_i = d_j (w_i u_j) = (u.grad)w_i + w_i div(u), which is the
+    # ! integration by parts of int w.(u.grad)u.  outer(u, w) gives d_j(u_i w_j) =
+    # ! (w.grad)u_i + u_i div(w), a different operator entirely.
+    eqn -= inner(div(outer(w, u)), u) * dx
     eqn += dot(jump(w), unn('+') * u('+') - unn('-') * u('-')) * (dS_v + dS_h)
     return eqn
 

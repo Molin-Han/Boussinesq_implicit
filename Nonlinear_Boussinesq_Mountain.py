@@ -51,7 +51,7 @@ parser.add_argument('--refinement', type=int, default=2, help='Levels of the mul
 parser.add_argument('--degree', type=int, default=2, help='Order of the element.')
 parser.add_argument('--dt', type=float, default=5.0, help='Time stepping parameter.')
 parser.add_argument('--tmax', type=float, default=9000.0, help='Time period that we solve.')
-parser.add_argument('--dumpt', type=float, default=500.0, help='Time between two vtk dumps.')
+# parser.add_argument('--dumpt', type=float, default=500.0, help='Time between two vtk dumps.')
 parser.add_argument('--shift', type=float, default=None,
                     help='Shift parameter delta for the shift preconditioner. delta has units of '
                          '1/(velocity*length) = s/m^2, so by default it is set to '
@@ -150,7 +150,16 @@ def mountain_mesh_hierarchy(mh, xc, a, hm, H, dim=3):
     for m in mh:
         x, z = SpatialCoordinate(m)
         zs = mountain(x, xc, a, hm)
-        coord_fs = VectorFunctionSpace(m, "DG", 1, dim=dim)
+        # ! variant='equispaced' is essential, do NOT drop it.  Firedrake's default DG
+        # ! variant is 'spectral', whose degree 1 nodes are the two Gauss points in the
+        # ! INTERIOR of the cell.  Neighbouring columns then share no node, each fits its
+        # ! own line to the nonlinear z_s(x), the fits disagree on the shared facet and
+        # ! the mesh is torn open along every vertical facet: measured 2.7 cm steps on a
+        # ! 1 m mountain, largest right over the peak.  With equispaced the nodes are the
+        # ! cell vertices, the neighbours agree and the tear is exactly zero.
+        # ! utils.high_dim_mesh_hierarchy gets away with plain "DG" only because its map
+        # ! (x, z) -> (x, 0, z) is linear, hence exact at any set of nodes.
+        coord_fs = VectorFunctionSpace(m, "DG", 1, dim=dim, variant='equispaced')
         new_coord = assemble(interpolate(as_vector([x, 0, z + zs * (H - z) / H]), coord_fs))
         new_mesh = Mesh(new_coord)
         new_mesh.init_cell_orientations(utils.j())
@@ -338,9 +347,11 @@ shifted_schur_pc_params = {
 
 params_schur = {
     'mat_type': 'matfree',
-    'snes_type': 'newtonls',
+    'snes_type': 'newtonls', # ! We have not added the EW trick.
     'ksp_type': 'fgmres',
     'ksp_pc_side': 'right',
+    'snes_atol':args.atol,
+    'snes_rtol':args.rtol,
     'ksp_atol': args.atol,
     'ksp_rtol': args.rtol,
     'snes_max_it': 10,
@@ -403,7 +414,7 @@ if monitor_run:
 
 
 # Time stepping
-dumpt = args.dumpt
+dumpt = args.dt
 tdump = 0.
 itcount = 0
 stepcount = 0

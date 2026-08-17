@@ -220,18 +220,154 @@ Run at the full paper resolution (180 × 70, `dt = 5 s`, 3 steps):
 | Newton convergence, step 1 | `1.31 → 4.8e-6 → 3.6e-12` (2 iterations) |
 | linear solves | converge by `rtol` in 4–7 iterations |
 | **KSP iterations per timestep** | **11.7** |
-| `max\|w\|` | `5.6e-3 m/s`, steady across steps |
+
+> **These checks were not sufficient.** They test that the *solver* converges to the
+> solution of the discrete system. They say nothing about whether the discrete system
+> is the right one. Both bugs in section 6 leave every one of these numbers looking
+> healthy. The amplitude check that used to be in this section (`max|w| = 5.6e-3 m/s`,
+> "the right amplitude") was reading a contaminated field: it is the correct order of
+> magnitude by coincidence, because the spurious forcing happens to scale with the
+> same $U h_m/a$. **A converged residual is not evidence of a correct discretisation** —
+> the checks that actually caught these were the operator-consistency test and the
+> mesh-continuity test in section 6.
 
 **Flat-terrain control** (`--h_mount 0`): the initial nonlinear residual is `1.2e-9`,
-against `1.31` with the 1 m ridge in place. The discretisation therefore preserves the
-uniform-wind / linear-stratification background state to nine digits, and the mountain
-signal sits nine orders of magnitude above the numerical floor. (That control run then
-aborts, correctly — with nothing left to solve the KSP sits on roundoff. `--h_mount 0`
-is only useful for this check.)
+against `1.31` with the 1 m ridge in place. This control is still meaningful: it shows
+the discretisation preserves the uniform-wind / linear-stratification background state
+to nine digits. Note it does *not* catch either bug — with `h_mount = 0` the mesh is
+undeformed (no tear) and $|u|^2$ is constant (the spurious advection force cancels).
 
-**Amplitude check.** The linear scaling gives $U h_m / a = 10^{-2}$ m/s, and Melvin et
-al.'s contours for this case span roughly $\pm 5\times10^{-3}$ m/s. The computed
-`max|w| = 5.6e-3 m/s` is the right amplitude.
+---
+
+## 6. Two bugs found after the first version, and their fixes
+
+The symptom was a velocity field with visible cell-to-cell jumps, while the solver
+converged perfectly. That combination points away from the solver and towards the
+discretisation. Two independent causes were found; both are verified in isolation
+below.
+
+### 6.1 The nonlinear advection operator was transposed — `utils.py`
+
+```python
+# utils.Nonlinear_velocity_Irk, as written
+eqn -= inner(div(outer(u, w)), u) * dx      # WRONG
+# slice_utils.u_tendency (Cotter), and the fix
+eqn -= inner(div(outer(w, u)), u) * dx      # right
+```
+
+UFL contracts `div` over the **last** index, so `outer` is not symmetric here:
+
+$$\operatorname{div}(w \otimes u)_i = \partial_j (w_i u_j) = (u\cdot\nabla)w_i + w_i \nabla\!\cdot\! u,$$
+
+$$\operatorname{div}(u \otimes w)_i = \partial_j (u_i w_j) = (w\cdot\nabla)u_i + u_i \nabla\!\cdot\! w .$$
+
+Only the first is the integration by parts of $\int w\cdot(u\cdot\nabla)u$.
+
+**Verification.** On a smooth, continuous, divergence-free field with $u\cdot n = 0$ on
+top and bottom and periodic in $x$ — where every facet and boundary term vanishes, so
+the weak and strong forms must agree exactly:
+
+| form | relative difference from $\int w\cdot(u\cdot\nabla)u$ |
+| --- | --- |
+| `-∫ div(outer(w,u))·u` (Cotter, the fix) | `2.6e-14` ✅ |
+| `-∫ div(outer(u,w))·u` (utils.py) | `7.4e+00` ❌ |
+
+**Why it produces jumps at cell interfaces.** Writing $K = \lvert u\rvert^2/2$, the
+erroneous term expands to
+
+$$-\!\int\! (w\cdot\nabla)K - \!\int\! K\,\nabla\!\cdot\! w
+\;=\; -\!\int\! \nabla\!\cdot\!(wK) \;-\; \int\! K\,\nabla\!\cdot\! w .$$
+
+The second piece is pressure-shaped and is harmlessly absorbed by the pressure Lagrange
+multiplier. The first, summed over cells, is $-\sum_K \oint_{\partial K} K\, w\cdot n$,
+and since $w \in H(\mathrm{div})$ has continuous normal component this collapses to a
+spurious **interfacial force $\propto [\![K]\!]\, w\cdot n$ on every facet** — a forcing
+that lives exactly on cell boundaries. With $U = 10$ m/s, $K \approx 50$ m²/s², and the
+jump in $K$ across facets comes from the tangential velocity jumps that an
+$H(\mathrm{div})$ space legitimately has. The result swamps the $5\times10^{-3}$ m/s
+mountain signal.
+
+**Why it never showed up before.** In the earlier tests `U_mean = 0` and
+$\lvert u\rvert \sim 10^{-3}$ m/s, so $K \sim 10^{-6}$ and the whole term — right or
+wrong — is negligible; those runs were effectively linear. The mountain case is the
+first one with a real mean flow, and there the advection term is the term that carries
+the entire solution.
+
+**Scope.** The same transposition was present in three places in `utils.py`, all now
+fixed:
+
+- `Nonlinear_velocity_Irk` — used by this script, `Nonlinear_Boussinesq_Irk_SC.py`,
+  `Nonlinear_Irk_Boussinesq_direct.py`;
+- `Nonlinear_velocity` — used by `Nonlinear_Boussinesq_slice.py`;
+- `LB_velocity`, in the `U_mean` mean-flow branch (twice — the upwind block and the
+  centred-flux block). Inactive at the default `U_mean = 0`.
+
+Anything previously run with a **nonzero mean flow or a finite-amplitude velocity** is
+affected. The small-amplitude, zero-mean-flow convergence and scaling studies are not:
+there the term is quadratically negligible.
+
+### 6.2 The terrain-following mesh was torn open — mesh construction
+
+`utils.high_dim_mesh_hierarchy` builds the embedded mesh by interpolating the new
+coordinates into `VectorFunctionSpace(m, "DG", 1)`. Firedrake's default `DG` variant is
+`spectral`, whose degree-1 nodes are the two **Gauss points in the interior of the
+cell**, not the vertices:
+
+```
+the extruded mesh's OWN coordinate element : TensorProductElement(DG1(equispaced), CG1)
+what "DG", 1 gives you                     : TensorProductElement(DG1,            DG1)
+
+node z-coords, own coord element : min 0.0000   (cell height 500 m)
+node z-coords, DG1 element       : min 105.66   <-- inset by 0.2113 of a cell
+```
+
+Neighbouring columns therefore share **no node at all**. Each column fits its own
+independent straight line to $z_s(x)$ through its two interior Gauss points, the fits
+disagree at the shared facet, and the mesh is torn open along every vertical facet.
+
+**Verification** (180 × 70, `a = 1000 m`, `h_m = 1 m`), measuring $[\![z]\!]$ across
+vertical facets — the $z$ coordinate is used because $x$ wraps at the periodic seam and
+pollutes the measurement:
+
+| coordinate space | RMS tear | worst tear |
+| --- | --- | --- |
+| `"DG", 1` (default, spectral) | `2.3e-3 m` | **`2.7e-2 m` = 2.7% of the mountain** |
+| `"DG", 1, variant='equispaced'` / own coord element | `1.2e-12 m` | `0.0` ✅ |
+
+The flow was seeing a staircase of ~2.7 cm steps instead of a smooth 1 m hill, with the
+steps largest exactly over the peak where $z_s''$ is largest — and each step radiates
+its own grid-scale response. This is a *geometric* discontinuity, so no amount of solver
+convergence removes it.
+
+`utils.high_dim_mesh_hierarchy` gets away with the same code only because its map
+$(x,z)\mapsto(x,0,z)$ is linear and so is reproduced exactly at any set of nodes. The
+moment a nonlinear orography is composed with it, the node positions matter.
+
+**Fix:** interpolate the coordinates into a space whose nodes are the cell vertices —
+either `variant='equispaced'`, or, more robustly, the mesh's own coordinate element:
+
+```python
+coord_elt = m.coordinates.function_space().ufl_element().sub_elements[0]
+coord_fs = VectorFunctionSpace(m, coord_elt, dim=dim)
+```
+
+### 6.3 Still open: no vertical stabilisation for buoyancy transport
+
+Not a bug so much as a missing term, flagged for completeness. `Vb` is
+$DG_h \otimes CG_v$ — **continuous in the vertical** — so `jump(q)` vanishes on `dS_h`
+and the upwind facet term in `Nonlinear_buoyancy_Irk` contributes *nothing* on
+horizontal facets. Vertical transport of $b$ is therefore a pure centred Galerkin
+scheme with no stabilisation at all. The reference `theta_tendency` adds exactly the
+term that handles this:
+
+```python
+h = avg(CellVolume(mesh))/FacetArea(mesh)
+eqn += h**2*c_pen*abs(inner(u('+'), n('+'))) \
+       * inner(jump(grad(theta)), jump(grad(q)))*(dS_v + dS_h)   # c_pen = 2**(-7/2)
+```
+
+If grid-scale structure survives in $b$ once 6.1 and 6.2 are fixed, this is the next
+thing to add.
 
 ---
 
