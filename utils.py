@@ -190,11 +190,17 @@ def Nonlinear_pressure(unp1, phi):
 
 
 
-def Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=False, twoD=False):
+def Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=False, twoD=False, f=None):
+    '''
+    f: optional scalar Coriolis parameter overriding Coriolis_param().  The hydrostatic
+    mountain test case of Cotter & Shipton (2023) uses f = 1.0e-4 exactly rather than
+    the f-plane value 2*Omega*sin(latitude) that Coriolis_param() returns.
+    '''
     unn = unn_tool(u, n)
     eqn = inner(w, Dt(u)) * dx
     if use_rotation:
-        eqn += inner(w, cross(Coriolis_param(), u)) * dx
+        f_vec = as_vector([0., 0., f]) if f is not None else Coriolis_param()
+        eqn += inner(w, cross(f_vec, u)) * dx
     eqn -= div(w) * p * dx
     eqn -= inner(w, k(twoD=twoD)) * b * dx
     # Advective terms:
@@ -206,13 +212,19 @@ def Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=False, twoD=False):
     eqn += dot(jump(w), unn('+') * u('+') - unn('-') * u('-')) * (dS_v + dS_h)
     return eqn
 
-def Nonlinear_buoyancy_Irk(b, q, u, n, twoD=False):
+def Nonlinear_buoyancy_Irk(b, q, u, n, twoD=False, N2=None):
+    '''
+    N2: optional squared buoyancy frequency overriding buo_freq().  The hydrostatic
+    mountain test case needs N = g/sqrt(cp*T_surf) = 0.019577 1/s rather than the
+    0.01 1/s hardcoded in buo_freq().
+    '''
     unn = unn_tool(u, n)
     eqn = q * Dt(b) * dx
     eqn -= div(q * u) * b * dx
     eqn += jump(q) * (unn('+') * b('+') - unn('-') * b('-')) * (dS_v + dS_h)
     # Add linear stratification:
-    eqn += buo_freq() * q * inner(k(twoD=twoD), u) * dx
+    N_sq = buo_freq() if N2 is None else N2
+    eqn += N_sq * q * inner(k(twoD=twoD), u) * dx
     return eqn
 
 def Nonlinear_pressure_Irk(u, phi):

@@ -37,10 +37,40 @@ import utils
 from argparse import ArgumentParser
 from argparse import ArgumentDefaultsHelpFormatter
 
+# ! Cotter & Shipton (2023) section 3.3 describes two mountain wave regimes.  The
+# ! argparse defaults below are the NONHYDROSTATIC case; passing --hydrostatic swaps in
+# ! the HYDROSTATIC preset before the main parse, so anything given explicitly on the
+# ! command line still wins over the preset.
+HYDROSTATIC_PRESET = {
+    'nx': 15,             # 15 * 2**2 = 60 columns on the finest level (dx = 4000 m)
+    'nz': 100,            # dz = 500 m
+    'length': 240.0e3,
+    'height': 50.0e3,
+    'dt': 20.0,
+    'tmax': 5000.0,
+    'U_mean': 20.0,
+    'half_width': 10000.0,
+    'mubar': 0.3,
+    'z_sponge': 30.0e3,   # H - 2e4
+    'coriolis_f': 1.0e-4,
+    # N = g / sqrt(cp * T_surf) for the isothermal T_surf = 250 K profile of the
+    # compressible reference, = 9.810616 / sqrt(1004.5 * 250).
+    'buoyancy_freq': 9.810616 / (1004.5 * 250.0) ** 0.5,
+    'rotation': True,
+}
+
+pre = ArgumentParser(add_help=False)
+pre.add_argument('--hydrostatic', action='store_true')
+hydrostatic = pre.parse_known_args()[0].hydrostatic
+
 parser = ArgumentParser(
     description='Nonlinear incompressible Boussinesq flow over an Agnesi mountain (vertical slice).',
     formatter_class=ArgumentDefaultsHelpFormatter
 )
+parser.add_argument('--hydrostatic', action='store_true',
+                    help='Switch from the nonhydrostatic mountain test case (default) to the '
+                         'hydrostatic one: wider ridge, bigger domain, faster mean flow, '
+                         'stronger stratification, deeper sponge and Coriolis switched on.')
 
 # ! Parameter settings
 parser.add_argument('--nx', type=int, default=45, help='Number of columns of the coarsest mesh in the hierarchy.')
@@ -65,6 +95,10 @@ parser.add_argument('--half_width', type=float, default=1000.0, help='Half width
 parser.add_argument('--h_mount', type=float, default=1.0, help='Peak height of the Agnesi mountain (m).')
 parser.add_argument('--mubar', type=float, default=0.15, help='Sponge strength, mubar = mu * dt (dimensionless).')
 parser.add_argument('--z_sponge', type=float, default=25.0e3, help='Bottom z_B of the absorbing layer (m).')
+parser.add_argument('--coriolis_f', type=float, default=1.0e-4,
+                    help='Coriolis parameter f (1/s), only used when rotation is on.')
+parser.add_argument('--buoyancy_freq', type=float, default=1.0e-2,
+                    help='Buoyancy (Brunt-Vaisala) frequency N (1/s).')
 
 # ! Test settings
 parser.add_argument('--show_args', action='store_true', help='Print all the arguments when the script starts.')
@@ -77,13 +111,20 @@ parser.add_argument('--atol', type=float, default=1.0e-30,
 parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
 parser.add_argument('--timing', action='store_true', help='If true, run the code without monitoring and test for the time.')
 
+if hydrostatic:
+    parser.set_defaults(**HYDROSTATIC_PRESET)
+
 args = parser.parse_known_args()
 args = args[0]
 
 if args.show_args:
     PETSc.Sys.Print(args)
 
-use_rotation = args.rotation  # ! The nonhydrostatic mountain test case of the paper is non-rotating.
+use_rotation = args.rotation  # ! The nonhydrostatic case is non-rotating, the hydrostatic one is not.
+case_name = 'hydrostatic' if args.hydrostatic else 'nonhydrostatic'
+N_freq = args.buoyancy_freq
+N_squared = Constant(N_freq ** 2)
+coriolis_f = args.coriolis_f if use_rotation else 0.0
 monitor_run = not args.timing
 solver_name = 'MG ASMStar'
 
@@ -103,7 +144,7 @@ courant = args.U_mean * args.dt / deltax
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("Flow over an Agnesi mountain, Boussinesq (incompressible) version of")
-print("Cotter & Shipton (2023), section 3.3, nonhydrostatic regime.")
+print(f"Cotter & Shipton (2023), section 3.3, {case_name} regime.")
 print(f"Physical domain with length {length} and height {height}, aspect ratio {ar}.")
 print(f"Number of elements in x direction {nx_fine} and z direction {nz}, "
       f"deltax {deltax}, deltaz {deltaz}.")
@@ -113,12 +154,19 @@ print(f"Shift parameter delta {shift_value} s/m^2, augmented Lagrangian paramete
 print(f"Mountain: half width a = {args.half_width} m, peak height h_m = {args.h_mount} m, "
       f"centred at x = {length/2} m.")
 print(f"Mean flow U_mean = {args.U_mean} m/s in x-direction, "
-      f"buoyancy frequency N = {float(sqrt(utils.buo_freq()))} 1/s.")
-print(f"Nonlinearity parameter N*a/U = {float(sqrt(utils.buo_freq())) * args.half_width / args.U_mean} "
-      "(=1 is the nonhydrostatic regime).")
+      f"buoyancy frequency N = {N_freq} 1/s.")
+print(f"Hydrostatic parameter N*a/U = {N_freq * args.half_width / args.U_mean} "
+      "(~1 nonhydrostatic, >>1 hydrostatic).")
+print(f"Nonlinearity parameter N*h_m/U = {N_freq * args.h_mount / args.U_mean} "
+      "(<<1 keeps the response linear).")
 print(f"Advective Courant number U_mean * dt / deltax = {courant}.")
 print(f"Sponge layer above z_B = {args.z_sponge} m with mubar = mu*dt = {args.mubar}.")
-print(f"Rotation is {'ON' if use_rotation else 'OFF'}.")
+if use_rotation:
+    print(f"Rotation is ON, f = {coriolis_f} 1/s, with a steady balancing body force "
+          f"F = (0, -f*U_mean, 0) = (0, {-coriolis_f * args.U_mean}, 0) m/s^2 so that the "
+          "uniform mean flow stays an exact steady solution.")
+else:
+    print("Rotation is OFF.")
 print(f"The code is running with {solver_name} solver for the Schur complement created.")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -261,9 +309,17 @@ print(f"Initial divergence: ||div(u0)||_L2 = {norm(div(u0_slice))}, "
 u = vector_3D(uxz, uy)
 w = vector_3D(w_xz, wy)
 
-eqn = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=use_rotation)
+# ! Steady body force balancing the Coriolis acceleration on the background wind.  With
+# ! u = (U, 0, 0) the Coriolis term f*k x u = (0, f*U, 0) would spin the mean flow up in
+# ! the y direction, so the reference adds F = (0, -f*U, 0) and the uniform flow stays an
+# ! exact steady solution -- essential here, since the ridge must be the ONLY forcing.
+F_balance = as_vector([0., -Constant(coriolis_f) * U_mean, 0.])
+
+eqn = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=use_rotation, f=coriolis_f)
 eqn += sponge(mesh, dt) * inner(w, utils.k()) * inner(u, utils.k()) * dx
-eqn += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
+if use_rotation:
+    eqn += inner(w, F_balance) * dx
+eqn += utils.Nonlinear_buoyancy_Irk(b, q, u, n, N2=N_squared)
 eqn += utils.Nonlinear_pressure_Irk(u, phi)
 
 # Pressure Nullspace
@@ -291,9 +347,13 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         # ? The pressure elimination happened here, and no more pressure equation.
         p = p - Constant(1.) / delta * div(u)  # ! This gives the correct SC form and also the form needed for fieldsplit. Details in paper / notes.
 
-        F = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=rotation)
+        F = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=rotation, f=coriolis_f)
         F += sponge(mesh, dtc) * inner(w, utils.k()) * inner(u, utils.k()) * dx
-        F += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
+        # ! F_balance is constant, so it drops out of the Jacobian.  Kept only so that the
+        # ! auxiliary residual is textually the same equation as the one being solved.
+        if rotation:
+            F += inner(w, F_balance) * dx
+        F += utils.Nonlinear_buoyancy_Irk(b, q, u, n, N2=N_squared)
         F += utils.Nonlinear_pressure_Irk(u, phi)
         F += delta * p * phi * dx
 
@@ -433,8 +493,12 @@ while (float(t) < tmax - 0.5 * args.dt):
         if monitor_run:
             update_diagnostics()
             file_lb.write(un, uny, bn, pn, w_diag, Courant)
+            # ! max|uy| is the health check for the rotating (hydrostatic) case: if the
+            # ! balancing force F were wrong the mean flow would spin up in y at a rate
+            # ! f*U_mean, so uy would grow linearly instead of staying at wave amplitude.
             print(f"Dump at t = {float(t)}, max w = {global_max(w_diag)}, "
                   f"min w = {global_max(w_diag, op=MPI.MIN)}, "
+                  f"max|uy| = {max(abs(global_max(uny)), abs(global_max(uny, op=MPI.MIN)))}, "
                   f"max Courant = {global_max(Courant)}.")
         tdump -= dumpt
 
