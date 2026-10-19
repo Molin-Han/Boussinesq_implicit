@@ -1,0 +1,100 @@
+[
+ {
+  "id": "B1-dz-text",
+  "group": "B",
+  "line": 3057,
+  "old": "The iteration counts are even more tightly clustered than in the \nhorizontal sweep, reflecting the fact that the column-patch \nsmoother resolves the vertical coupling exactly within each patch.",
+  "new": "As in the horizontal sweep, every run takes the same number of\niterations, reflecting the fact that the column-patch\nsmoother resolves the vertical coupling exactly within each patch."
+ },
+ {
+  "id": "B2-dz-caption",
+  "group": "B",
+  "line": 3067,
+  "old": "    held at their nominal values. The curves are more tightly\n    clustered than in Figure~\\ref{fig:robust-dx}, reflecting the\n    fact that the column-patch smoother resolves the vertical\n    coupling exactly within each patch.}",
+  "new": "    held at their nominal values. As in\n    Figure~\\ref{fig:robust-dx}, every curve ends at the same\n    iteration, reflecting the fact that the column-patch smoother\n    resolves the vertical coupling exactly within each patch.}"
+ },
+ {
+  "id": "B3-shift-cap-text",
+  "group": "B",
+  "line": 3226,
+  "old": "iteration count diverges (the $C_1 = 1$ curve never converges to the\ntolerance within the iteration cap for $\\Delta t \\le 10^2$), while for\n$C_1 \\le 10^{-2}$ it remains bounded and decreases as $\\Delta t$\ngrows;",
+  "new": "iteration count diverges (the $C_1 = 1$ curve reaches the iteration cap\nfor every $\\Delta t \\le 50\\,\\mathrm{s}$, and the $C_1 = 10^{-1}$ curve for\nevery $\\Delta t \\le 10\\,\\mathrm{s}$), while for $C_1 \\le 10^{-3}$, and for\n$C_1 = 10^{-2}$ when $\\Delta t \\ge 5\\,\\mathrm{s}$, it remains bounded and\ndecreases as $\\Delta t$\ngrows;"
+ },
+ {
+  "id": "B4-shift-small-dt",
+  "group": "B",
+  "line": 3258,
+  "old": "counts are large for every $C_1$ and ordered monotonically in it.",
+  "new": "counts exceed their values at $\\Delta t \\ge 50\\,\\mathrm{s}$ for every\n$C_1$ and increase monotonically with it."
+ },
+ {
+  "id": "B5-shift-caption",
+  "group": "B",
+  "line": 3298,
+  "old": "    near $10^{-2}$, for $\\Delta t \\gg 2/N$.  The curves separate\n    accordingly into those that respect it and those that do not, and\n    level off beyond $\\Delta t \\sim 2/N$.}",
+  "new": "    near $10^{-2}$, for $\\Delta t \\gg 2/N$.  The curves separate\n    accordingly into those that respect it, which level off beyond\n    $\\Delta t \\sim 2/N$, and those that do not.  Runs that reach the\n    iteration cap of $100$ are omitted.}"
+ },
+ {
+  "id": "B6-snes-C1",
+  "group": "B",
+  "line": 3330,
+  "old": "preconditioned by $A_\\delta^{-1}$ as before. The convergence",
+  "new": "preconditioned by $A_\\delta^{-1}$ as before, with\n$\\delta = C_1/\\Delta t$ and $C_1 = 10^{-5}$ in the resolution and\naspect-ratio sweeps of Figures~\\ref{fig:snes-dx}--\\ref{fig:snes-ar}. The convergence"
+ },
+ {
+  "id": "B7-snes-ar-text",
+  "group": "B",
+  "line": 3367,
+  "old": "$\\Delta t = 5000\\,\\mathrm{s}$. In both cases the curves are\ntightly clustered, confirming that the preconditioner retains\nits aspect-ratio robustness in the nonlinear setting.",
+  "new": "$\\Delta t = 5000\\,\\mathrm{s}$. At $\\Delta t = 5000\\,\\mathrm{s}$ the\ncurves are tightly clustered; at $\\Delta t = 100\\,\\mathrm{s}$ the\ncumulative count falls from $19$--$20$ at $L_z = 12$ and $8\\,\\mathrm{km}$\nto $11$ at $L_z = 1\\,\\mathrm{km}$, the same improvement in thinner\ndomains as in the linear sweep (Remark~\\ref{rem:thin-faster}).  In\nneither case does the count grow as $\\varepsilon$ decreases, confirming\nthat the preconditioner retains its aspect-ratio robustness in the\nnonlinear setting."
+ },
+ {
+  "id": "B8-snes-ar-caption",
+  "group": "B",
+  "line": 3384,
+  "old": "    (left) and $\\Delta t = 5000\\,\\mathrm{s}$ (right) for five\n    aspect ratios. The curves are tightly clustered at both time\n    steps.}",
+  "new": "    (left) and $\\Delta t = 5000\\,\\mathrm{s}$ (right) for five\n    aspect ratios, $L_z \\in \\{12, 8, 4, 2, 1\\}\\,\\mathrm{km}$\n    ($\\varepsilon = L_z/L_x$ from $4\\times10^{-2}$ to $3.3\\times10^{-3}$).\n    Thinner domains converge in fewer iterations at\n    $\\Delta t = 100\\,\\mathrm{s}$ ($11$ against $19$--$20$ cumulative\n    iterations); at $\\Delta t = 5000\\,\\mathrm{s}$ the curves are tightly\n    clustered.  In the right panel the final Newton step, which takes\n    the error below $10^{-12}$, is not plotted.}"
+ },
+ {
+  "id": "B9-snes-shift-text",
+  "group": "B",
+  "line": 3397,
+  "old": "of Section~\\ref{sec:robustness}: a well-chosen $C_1$ in the range\n$[10^{-4}, 10^{-3}]$ gives uniformly low iteration counts, and",
+  "new": "of Section~\\ref{sec:robustness}: for $\\Delta t \\le 500\\,\\mathrm{s}$ the\niteration count decreases monotonically as $C_1$ decreases, so that the\nsmallest value tested, $C_1 = 10^{-6}$, gives the lowest counts, while\nfor $C_1 \\ge 5\\times10^{-4}$ and $\\Delta t \\le 100\\,\\mathrm{s}$ the count\nexceeds $100$; for $\\Delta t \\ge 10^{4}\\,\\mathrm{s}$ all seven values give\nnearly the same count; and"
+ },
+ {
+  "id": "B10-snes-shift-hist-caption",
+  "group": "B",
+  "line": 3410,
+  "old": "        \\caption{Nonlinear shift-parameter sensitivity: convergence\n        history at $\\Delta t = 500\\,\\mathrm{s}$ for\n        $C_1 \\in [10^{-3}, 10^{-6}]$.}",
+  "new": "        \\caption{Nonlinear shift-parameter sensitivity: convergence\n        history at $\\Delta t = 500\\,\\mathrm{s}$ for the seven values\n        $C_1 \\in \\{10^{-3}, 5\\times10^{-4}, 10^{-4}, 5\\times10^{-5},\n        10^{-5}, 5\\times10^{-6}, 10^{-6}\\}$.}"
+ },
+ {
+  "id": "B11-snes-shift-sweep-caption",
+  "group": "B",
+  "line": 3418,
+  "old": "        \\caption{Nonlinear shift-parameter sweep: total KSP\n        iteration count vs $\\Delta t$ for\n        $C_1 \\in [10^{-3}, 10^{-6}]$.}",
+  "new": "        \\caption{Nonlinear shift-parameter sweep: total KSP\n        iteration count over the Newton steps vs $\\Delta t$ for the\n        seven values of $C_1$ of Figure~\\ref{fig:snes-shift-hist}.\n        Runs in which a Newton step reached the cap of $100$ KSP\n        iterations, or which did not complete, are omitted.}"
+ },
+ {
+  "id": "C1-fig12-true-totals",
+  "group": "C",
+  "line": 3417,
+  "old": "        \\includegraphics[width=\\linewidth]{Image_restyled/error_shift_nonlinear}",
+  "new": "        \\includegraphics[width=\\linewidth]{Image_restyled/corrected/error_shift_nonlinear}"
+ },
+ {
+  "id": "C2-linear-history-note",
+  "group": "C",
+  "line": 3050,
+  "old": "    fixed $\\Delta t = 50\\,\\mathrm{s}$, with remaining parameters\n    held at their nominal values.}",
+  "new": "    fixed $\\Delta t = 50\\,\\mathrm{s}$, with remaining parameters\n    held at their nominal values.  Here and in\n    Figures~\\ref{fig:robust-dz} and~\\ref{fig:robust-ar} the converged\n    iterate (error below $10^{-13}$) is not plotted, so the curve of a\n    run with $n$ iterations ends at index $n-1$.}"
+ },
+ {
+  "id": "A1-ar-caption-if-short-legend",
+  "group": "A",
+  "line": 3189,
+  "old": "for seven aspect ratios at fixed\n    $\\Delta t = 50\\,\\mathrm{s}$.",
+  "new": "for the seven depths\n    $L_z \\in \\{12, 8, 4, 2, 1, 0.5, 0.25\\}\\,\\mathrm{km}$ of\n    Table~\\ref{tab:mode-damping} at fixed $\\Delta t = 50\\,\\mathrm{s}$."
+ }
+]

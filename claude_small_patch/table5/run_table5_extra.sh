@@ -11,6 +11,10 @@ add() { echo "$1|$2|$3" >> "$HERE/commands_extra.txt"; }
 for m in "20 20" "40 40"; do set -- $m
   add "D_fs_np2_nx$1_nz$2"   2 "--nx $1 --nz $2 --richardson"
   add "D_mono_np2_nx$1_nz$2" 2 "--nx $1 --nz $2 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left"
+  # left preconditioning (the table's setting) with the true residual monitored, replacing the failed Ap_*_left_rich runs
+  # (GMRES does not support the unpreconditioned norm with left preconditioning)
+  add "D_fs_lefttrue_np2_nx$1_nz$2"   2 "--nx $1 --nz $2 --richardson -firedrake_2_ksp_monitor_true_residual"
+  add "D_mono_lefttrue_np2_nx$1_nz$2" 2 "--nx $1 --nz $2 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_ksp_monitor_true_residual"
   for tol in 1e-6 1e-10; do
     add "D_fs_inner${tol}_np2_nx$1_nz$2"   2 "--nx $1 --nz $2 --richardson --inner_rtol $tol --pc_side right -firedrake_2_fieldsplit_1_ksp_converged_reason"
     add "D_mono_inner${tol}_np2_nx$1_nz$2" 2 "--nx $1 --nz $2 --monolithic --mono_smoother chebyshev --inner_rtol $tol --pc_side right -firedrake_2_monoshiftpc_ksp_converged_reason"

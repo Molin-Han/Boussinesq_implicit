@@ -92,7 +92,7 @@ def members(mode, test, short=False):
 # ---------------------------------------------------------------------------------------------------------------
 def linear_history(d, test, dt, corrected, out, name, size):
     fig, ax = plt.subplots(figsize=size)
-    mem = members('linear', test, short=(size == ps.HALF))
+    mem = members('linear', test, short=(size == ps.HALF or test == 'ar'))   # fig. 6: L_z only, the long labels hid data
     cols = ps.ramp(len(mem))
     for (lab, key, val), col in zip(mem, cols):
         e = load(d, 'error', dt, key, val)
@@ -124,7 +124,8 @@ def linear_shift_sweep(d, corrected, out, name, size):
         ax.plot(xs, ys, color=col, label=lab, **ps.STAR)
     ax.set_xscale('log')
     ps.finish(ax, xlabel=r'$\Delta t$ (s)', ylabel='KSP iterations', small=(size == ps.HALF))
-    ax.set_ylim(bottom=0)
+    ax.legend(loc='upper right', ncol=3, columnspacing=1.0)   # fig. 7: three columns above the data
+    ax.set_ylim(0, 120)
     fig.savefig(os.path.join(out, name)); plt.close(fig)
 
 
@@ -144,8 +145,8 @@ def nonlinear_history(d, test, dt, corrected, out, name, size, drop_last=False):
         ax.semilogy(cu, np.clip(se, 1e-16, None), color=col, label=lab, **ps.STAR)
     crowded = size == ps.HALF and len(mem) >= 6
     ps.finish(ax, xlabel='cumulative KSP iterations', ylabel=r'$\|U_k - U^*\| / \|U^*\|$', legend=not crowded, small=(size == ps.HALF))
-    if crowded:   # seven entries in a half-width figure: compact legend in the empty upper-right corner
-        ax.legend(loc='upper right', fontsize=6.5, handlelength=1.6, borderpad=0.3, labelspacing=0.25)
+    # crowded (fig. 11, seven C_1 in a half-width panel): no legend, the caption refers to the legend of fig. 12,
+    # which uses the same colours for the same seven values (a legend in the panel hid data)
     ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
     fig.savefig(os.path.join(out, name)); plt.close(fig)
 

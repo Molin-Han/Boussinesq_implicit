@@ -1,0 +1,99 @@
+--- ex_article.tex
++++ ex_article.figure_referee.tex
+@@ -3051 +3051,4 @@
+-    held at their nominal values.}
++    held at their nominal values.  Here and in
++    Figures~\ref{fig:robust-dz} and~\ref{fig:robust-ar} the converged
++    iterate (error below $10^{-13}$) is not plotted, so the curve of a
++    run with $n$ iterations ends at index $n-1$.}
+@@ -3057,2 +3060,2 @@
+-The iteration counts are even more tightly clustered than in the 
+-horizontal sweep, reflecting the fact that the column-patch 
++As in the horizontal sweep, every run takes the same number of
++iterations, reflecting the fact that the column-patch
+@@ -3067,4 +3070,4 @@
+-    held at their nominal values. The curves are more tightly
+-    clustered than in Figure~\ref{fig:robust-dx}, reflecting the
+-    fact that the column-patch smoother resolves the vertical
+-    coupling exactly within each patch.}
++    held at their nominal values. As in
++    Figure~\ref{fig:robust-dx}, every curve ends at the same
++    iteration, reflecting the fact that the column-patch smoother
++    resolves the vertical coupling exactly within each patch.}
+@@ -3189,2 +3192,3 @@
+-    FGMRES convergence history for seven aspect ratios at fixed
+-    $\Delta t = 50\,\mathrm{s}$. Thinner domains (smaller
++    FGMRES convergence history for the seven depths
++    $L_z \in \{12, 8, 4, 2, 1, 0.5, 0.25\}\,\mathrm{km}$ of
++    Table~\ref{tab:mode-damping} at fixed $\Delta t = 50\,\mathrm{s}$. Thinner domains (smaller
+@@ -3226,3 +3230,5 @@
+-iteration count diverges (the $C_1 = 1$ curve never converges to the
+-tolerance within the iteration cap for $\Delta t \le 10^2$), while for
+-$C_1 \le 10^{-2}$ it remains bounded and decreases as $\Delta t$
++iteration count diverges (the $C_1 = 1$ curve reaches the iteration cap
++for every $\Delta t \le 50\,\mathrm{s}$, and the $C_1 = 10^{-1}$ curve for
++every $\Delta t \le 10\,\mathrm{s}$), while for $C_1 \le 10^{-3}$, and for
++$C_1 = 10^{-2}$ when $\Delta t \ge 5\,\mathrm{s}$, it remains bounded and
++decreases as $\Delta t$
+@@ -3258 +3264,2 @@
+-counts are large for every $C_1$ and ordered monotonically in it.  It
++counts exceed their values at $\Delta t \ge 50\,\mathrm{s}$ for every
++$C_1$ and increase monotonically with it.  It
+@@ -3299,2 +3306,3 @@
+-    accordingly into those that respect it and those that do not, and
+-    level off beyond $\Delta t \sim 2/N$.}
++    accordingly into those that respect it, which level off beyond
++    $\Delta t \sim 2/N$, and those that do not.  Runs that reach the
++    iteration cap of $100$ are omitted.}
+@@ -3330 +3338,3 @@
+-preconditioned by $A_\delta^{-1}$ as before. The convergence
++preconditioned by $A_\delta^{-1}$ as before, with
++$\delta = C_1/\Delta t$ and $C_1 = 10^{-5}$ in the resolution and
++aspect-ratio sweeps of Figures~\ref{fig:snes-dx}--\ref{fig:snes-ar}. The convergence
+@@ -3367,3 +3377,8 @@
+-$\Delta t = 5000\,\mathrm{s}$. In both cases the curves are
+-tightly clustered, confirming that the preconditioner retains
+-its aspect-ratio robustness in the nonlinear setting.
++$\Delta t = 5000\,\mathrm{s}$. At $\Delta t = 5000\,\mathrm{s}$ the
++curves are tightly clustered; at $\Delta t = 100\,\mathrm{s}$ the
++cumulative count falls from $19$--$20$ at $L_z = 12$ and $8\,\mathrm{km}$
++to $11$ at $L_z = 1\,\mathrm{km}$, the same improvement in thinner
++domains as in the linear sweep (Remark~\ref{rem:thin-faster}).  In
++neither case does the count grow as $\varepsilon$ decreases, confirming
++that the preconditioner retains its aspect-ratio robustness in the
++nonlinear setting.
+@@ -3385,2 +3400,7 @@
+-    aspect ratios. The curves are tightly clustered at both time
+-    steps.}
++    aspect ratios, $L_z \in \{12, 8, 4, 2, 1\}\,\mathrm{km}$
++    ($\varepsilon = L_z/L_x$ from $4\times10^{-2}$ to $3.3\times10^{-3}$).
++    Thinner domains converge in fewer iterations at
++    $\Delta t = 100\,\mathrm{s}$ ($11$ against $19$--$20$ cumulative
++    iterations); at $\Delta t = 5000\,\mathrm{s}$ the curves are tightly
++    clustered.  In the right panel the final Newton step, which takes
++    the error below $10^{-12}$, is not plotted.}
+@@ -3397,2 +3417,6 @@
+-of Section~\ref{sec:robustness}: a well-chosen $C_1$ in the range
+-$[10^{-4}, 10^{-3}]$ gives uniformly low iteration counts, and
++of Section~\ref{sec:robustness}: for $\Delta t \le 500\,\mathrm{s}$ the
++iteration count decreases monotonically as $C_1$ decreases, so that the
++smallest value tested, $C_1 = 10^{-6}$, gives the lowest counts, while
++for $C_1 \ge 5\times10^{-4}$ and $\Delta t \le 100\,\mathrm{s}$ the count
++exceeds $100$; for $\Delta t \ge 10^{4}\,\mathrm{s}$ all seven values give
++nearly the same count; and
+@@ -3411,2 +3435,3 @@
+-        history at $\Delta t = 500\,\mathrm{s}$ for
+-        $C_1 \in [10^{-3}, 10^{-6}]$.}
++        history at $\Delta t = 500\,\mathrm{s}$ for the seven values
++        $C_1 \in \{10^{-3}, 5\times10^{-4}, 10^{-4}, 5\times10^{-5},
++        10^{-5}, 5\times10^{-6}, 10^{-6}\}$.}
+@@ -3417 +3442 @@
+-        \includegraphics[width=\linewidth]{Image_restyled/error_shift_nonlinear}
++        \includegraphics[width=\linewidth]{Image_restyled/corrected/error_shift_nonlinear}
+@@ -3419,2 +3444,4 @@
+-        iteration count vs $\Delta t$ for
+-        $C_1 \in [10^{-3}, 10^{-6}]$.}
++        iteration count over the Newton steps vs $\Delta t$ for the
++        seven values of $C_1$ of Figure~\ref{fig:snes-shift-hist}.
++        Runs in which a Newton step reached the cap of $100$ KSP
++        iterations, or which did not complete, are omitted.}

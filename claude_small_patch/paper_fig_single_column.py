@@ -33,7 +33,7 @@ def table(mode, test):
     return mem, data
 
 
-LEG = dict(fontsize=6.5, handlelength=1.6, borderpad=0.3, labelspacing=0.25, columnspacing=0.8)
+LEG = dict(fontsize=7.5, handlelength=1.6, borderpad=0.3, labelspacing=0.25, columnspacing=0.8)
 OUTDIR = os.path.dirname(OUT)
 for mode in ('linear', 'nonlinear'):
     S = cpp.SWEEP[mode]
@@ -62,9 +62,11 @@ for mode in ('linear', 'nonlinear'):
         for patch, ls, mfc, pname in (('star', '-', colr, 'star'), ('vanka', '--', 'white', 'single column')):
             ax.plot(ns, [data[patch][(n, 50.0)]['count'] for n in ns], ls=ls, marker=mk, color=colr, mfc=mfc, label=f'{pname}, {name}')
     ax.set_title(r"(b) mesh resolution, $\Delta t = 50$ s")
-    ax.set_xticks([10, 20, 40, 60, 80]); ax.set_xlabel(r'$N_x$ (coarse mesh) or $N_z$')
+    ax.set_xscale('log'); ax.set_xticks([10, 20, 40, 60, 80]); ax.set_xticklabels(['10', '20', '40', '60', '80'])
+    ax.xaxis.set_minor_locator(plt.NullLocator()); ax.set_xlabel(r'$N_x$ (coarse mesh) or $N_z$')
+    ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
     ax.set_ylim(0, 1.6 * max(max(l.get_ydata()) for l in ax.get_lines() if len(l.get_ydata())))
-    ax.legend(loc='upper left', ncol=2, **LEG)
+    ax.legend(loc='lower right', ncol=1, **LEG)
     # (c) shift sweep: label the largest, a middle and the smallest C_1 only
     ax = axes[2]
     mem, data = table(mode, 'dt')

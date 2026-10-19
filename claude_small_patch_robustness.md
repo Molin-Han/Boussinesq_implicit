@@ -1,6 +1,6 @@
 # Smaller (single-column) patch: the paper's robustness tests re-run, two ways to build the patch, and the dt trend of fig. 14(a)
 
-Record for proofreading, written 2026-10-16 (session started 05:30), Section 8 added 2026-10-19 (the paper edits and the Table-5 study). Everything below lives in
+Record for proofreading, written 2026-10-16 (session started 05:30). The 2026-10-19 follow-up is in `claude_paper_update_and_table5.md`. Everything below lives in
 `claude_small_patch/` next to this file and in the data folders listed in Section 2.
 The previous study of the single-column patch is `claude_column_patch_study.md` (2026-09-29, revised 2026-10-13);
 this file does not repeat it.
@@ -766,41 +766,4 @@ Not re-checked by an agent after these changes; I looked at every changed figure
 
 ---
 
-## 8. 2026-10-19: results into the paper, and Table 5 (fieldsplit against monolithic)
-
-Request of 2026-10-19: put the results in the paper (a short single-column section: "the point is just to say
-that using a smaller patch is working and parameter robust"), re-run Table 5, investigate why the monolithic
-multigrid and the fieldsplit Schur multigrid, both on the shifted operator, do not converge in the same number of
-outer iterations (8 against 12 in the table), repeat in serial, and repeat on larger meshes.
-A copy of the tex as it was before any edit is in the session scratchpad (`ex_article_before_2026-10-19.tex`); the
-paper's git HEAD (eeda07e) also has it.
-
-### 8.1 Edits to `ex_article.tex` (all in place; the paper builds with `latexmk -norc -pdf`, no undefined references)
-
-1. **Figure folders.** The ten `\includegraphics` of figs. 4-12 now point to `Image_restyled/` (the restyled
-   drop-in set of Section 7, same file names, same data as the paper's figures). `Image_new/`, `Image_nonlinear/`
-   and `Image_patch/` are untouched on disk.
-2. **Section "A smaller patch: single-column smoothing"** (`sec:single-column`) replaced by two paragraphs and two
-   figures, 60 lines instead of 215. It states what the patch is (closure of a base-mesh cell: one column of
-   cells plus the horizontal-velocity unknowns on its two vertical facets, `firedrake.ASMVankaPC` with
-   `pc_vanka_construct_dim 1`; 18 N_z + 4 against 30 N_z + 8 unknowns, 364 against 608 at N_z = 20, patch solves
-   about 2.2 x cheaper), that it was run on the paper's own four sweeps for both codes with identical settings,
-   and the result of Section 2.3 of this file: converges wherever the star converges, counts bounded in dx, dz,
-   eps, dt and C_1; linear counts within one iteration except thin domains at dt = 500-1000 s (up to 2.75 x, 11
-   against 4 at L_z = 250 m); nonlinear counts equal at or above the admissible threshold (dt <= 100 s for
-   C_1 = 1e-5) and two to three times below it; the k = 1 caveat in one sentence (no divergence-free functions in
-   a single column). The paper's old `tab:single-column-block`, `fig:single-column` (fig. 14) and the timing table
-   `tab:single-column` are gone with the section; nothing else referenced them.
-3. **New figures** `Image_restyled/single_column_linear.png` and `single_column_nonlinear.png`
-   (`claude_small_patch/paper_fig_single_column.py`, 6.8 x 2.6 in, full linewidth), labels
-   `fig:single-column-linear`, `fig:single-column-nonlinear`: (a) aspect-ratio sweep (three of the L_z values
-   labelled, the colour ramp runs dark to light from the thickest to the thinnest domain, a style key for the two
-   patches), (b) the mesh sweeps at dt = 50 s (N_x and N_z on one axis), (c) the shift sweep (three C_1 values
-   labelled). Data: the 2026-10-16 re-runs `data_{linear,nonlinear}_<test>_deg2[_ew]_{star,vanka}`, read through
-   `compare_paper_patches.record` so that the counts are the ones of Section 2.3 (the star curves are the re-run,
-   not the paper's old data, which differ by one Newton step in the nonlinear case; Section 2.3).
-4. **Cross-references.** Section 3.4's sentence now reads "for k = 2 a single-column patch is also found to work in
-   practice (Section ...)" (it referred to a "two-level kernel count" that the short section no longer contains);
-   the Discussion's "beyond the two-level kernel count of Section ..." was removed from the sentence on the
-   grad-div augmentation; the roadmap sentence of Section 5 ("asks whether a smaller patch suffices") stands.
-5. **Table 5 and its text**: Section 8.3 below.
+The follow-up of 2026-10-19 (the paper edits and the Table-5 study) is recorded in `claude_paper_update_and_table5.md`.

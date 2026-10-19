@@ -1,0 +1,5937 @@
+{
+ "A_fs_np16_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": null,
+  "status": [
+   "1",
+   "4"
+  ],
+  "its": [],
+  "reasons": [],
+  "off_pc": null,
+  "off_ksp": null,
+  "wu_pc": null,
+  "wu_ksp": null,
+  "patch": [],
+  "files": [
+   "cmd.sh",
+   "run.log",
+   "status"
+  ]
+ },
+ "A_fs_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "20"
+  ],
+  "its": [
+   11,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   2.3219
+  ],
+  "off_ksp": [
+   1,
+   2.3365
+  ],
+  "wu_pc": [
+   14,
+   2.3545
+  ],
+  "wu_ksp": [
+   1,
+   2.3689
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "37"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   7.2849
+  ],
+  "off_ksp": [
+   1,
+   7.3557
+  ],
+  "wu_pc": [
+   14,
+   7.2825
+  ],
+  "wu_ksp": [
+   1,
+   7.3529
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np16_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "60"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   14.805
+  ],
+  "off_ksp": [
+   1,
+   14.941
+  ],
+  "wu_pc": [
+   14,
+   14.877
+  ],
+  "wu_ksp": [
+   1,
+   15.014
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np1_nx10_nz10": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "14"
+  ],
+  "its": [
+   11,
+   12,
+   12
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   13,
+   1.4709
+  ],
+  "off_ksp": [
+   1,
+   1.4851
+  ],
+  "wu_pc": [
+   13,
+   1.4914
+  ],
+  "wu_ksp": [
+   1,
+   1.5059
+  ],
+  "patch": [
+   308
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np1_nx20_nz20": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "28"
+  ],
+  "its": [
+   11,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   5.6776
+  ],
+  "off_ksp": [
+   1,
+   5.7391
+  ],
+  "wu_pc": [
+   14,
+   5.722
+  ],
+  "wu_ksp": [
+   1,
+   5.7881
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np1_nx40_nz40": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "92"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   23.319
+  ],
+  "off_ksp": [
+   1,
+   23.563
+  ],
+  "wu_pc": [
+   14,
+   23.305
+  ],
+  "wu_ksp": [
+   1,
+   23.565
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np1_nx40_nz80": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "185"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   49.806
+  ],
+  "off_ksp": [
+   1,
+   50.302
+  ],
+  "wu_pc": [
+   14,
+   49.589
+  ],
+  "wu_ksp": [
+   1,
+   50.118
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np2_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "14"
+  ],
+  "its": [
+   11,
+   12,
+   12
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   13,
+   1.157
+  ],
+  "off_ksp": [
+   1,
+   1.1659
+  ],
+  "wu_pc": [
+   13,
+   1.1965
+  ],
+  "wu_ksp": [
+   1,
+   1.2068
+  ],
+  "patch": [
+   308
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "23"
+  ],
+  "its": [
+   11,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   4.021
+  ],
+  "off_ksp": [
+   1,
+   4.0622
+  ],
+  "wu_pc": [
+   14,
+   4.0229
+  ],
+  "wu_ksp": [
+   1,
+   4.0685
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "62"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   15.297
+  ],
+  "off_ksp": [
+   1,
+   15.471
+  ],
+  "wu_pc": [
+   14,
+   15.331
+  ],
+  "wu_ksp": [
+   1,
+   15.504
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_fs_np2_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "119"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   30.769
+  ],
+  "off_ksp": [
+   1,
+   31.151
+  ],
+  "wu_pc": [
+   14,
+   31.439
+  ],
+  "wu_ksp": [
+   1,
+   31.838
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np16_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": null,
+  "status": [
+   "1",
+   "3"
+  ],
+  "its": [],
+  "reasons": [],
+  "off_pc": null,
+  "off_ksp": null,
+  "wu_pc": null,
+  "wu_ksp": null,
+  "patch": [],
+  "files": [
+   "cmd.sh",
+   "run.log",
+   "status"
+  ]
+ },
+ "A_mono_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "16"
+  ],
+  "its": [
+   7,
+   6,
+   6
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   7,
+   1.292
+  ],
+  "off_ksp": [
+   1,
+   1.2985
+  ],
+  "wu_pc": [
+   7,
+   1.3709
+  ],
+  "wu_ksp": [
+   1,
+   1.3792
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "29"
+  ],
+  "its": [
+   7,
+   7,
+   7
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   5.1522
+  ],
+  "off_ksp": [
+   1,
+   5.1883
+  ],
+  "wu_pc": [
+   8,
+   5.1943
+  ],
+  "wu_ksp": [
+   1,
+   5.2321
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np16_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "46"
+  ],
+  "its": [
+   7,
+   7,
+   7
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   10.319
+  ],
+  "off_ksp": [
+   1,
+   10.389
+  ],
+  "wu_pc": [
+   8,
+   10.241
+  ],
+  "wu_ksp": [
+   1,
+   10.319
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np1_nx10_nz10": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "11"
+  ],
+  "its": [
+   5,
+   5,
+   5
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   6,
+   0.94378
+  ],
+  "off_ksp": [
+   1,
+   0.94983
+  ],
+  "wu_pc": [
+   6,
+   0.95092
+  ],
+  "wu_ksp": [
+   1,
+   0.95679
+  ],
+  "patch": [
+   388
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np1_nx20_nz20": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "21"
+  ],
+  "its": [
+   7,
+   6,
+   6
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   7,
+   3.5155
+  ],
+  "off_ksp": [
+   1,
+   3.5424
+  ],
+  "wu_pc": [
+   7,
+   3.5057
+  ],
+  "wu_ksp": [
+   1,
+   3.5321
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np1_nx40_nz40": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "70"
+  ],
+  "its": [
+   7,
+   7,
+   7
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   16.723
+  ],
+  "off_ksp": [
+   1,
+   16.848
+  ],
+  "wu_pc": [
+   8,
+   16.934
+  ],
+  "wu_ksp": [
+   1,
+   17.06
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np1_nx40_nz80": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "142"
+  ],
+  "its": [
+   7,
+   7,
+   7
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   35.78
+  ],
+  "off_ksp": [
+   1,
+   36.033
+  ],
+  "wu_pc": [
+   8,
+   35.852
+  ],
+  "wu_ksp": [
+   1,
+   36.107
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np2_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "11"
+  ],
+  "its": [
+   5,
+   5,
+   5
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   6,
+   0.70664
+  ],
+  "off_ksp": [
+   1,
+   0.71061
+  ],
+  "wu_pc": [
+   6,
+   0.7017
+  ],
+  "wu_ksp": [
+   1,
+   0.70556
+  ],
+  "patch": [
+   388
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "15"
+  ],
+  "its": [
+   7,
+   6,
+   6
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   7,
+   2.0122
+  ],
+  "off_ksp": [
+   1,
+   2.0258
+  ],
+  "wu_pc": [
+   7,
+   2.0347
+  ],
+  "wu_ksp": [
+   1,
+   2.0485
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "47"
+  ],
+  "its": [
+   7,
+   7,
+   7
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   10.643
+  ],
+  "off_ksp": [
+   1,
+   10.729
+  ],
+  "wu_pc": [
+   8,
+   10.714
+  ],
+  "wu_ksp": [
+   1,
+   10.805
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "A_mono_np2_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "87"
+  ],
+  "its": [
+   7,
+   7,
+   7
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   21.122
+  ],
+  "off_ksp": [
+   1,
+   21.301
+  ],
+  "wu_pc": [
+   8,
+   21.5
+  ],
+  "wu_ksp": [
+   1,
+   21.689
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_fs_right_np2_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --richardson --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "12"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   12,
+   1.0045
+  ],
+  "off_ksp": [
+   1,
+   1.0112
+  ],
+  "wu_pc": [
+   12,
+   0.98289
+  ],
+  "wu_ksp": [
+   1,
+   0.98935
+  ],
+  "patch": [
+   308
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_fs_right_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "22"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   12,
+   3.4788
+  ],
+  "off_ksp": [
+   1,
+   3.5125
+  ],
+  "wu_pc": [
+   12,
+   3.5299
+  ],
+  "wu_ksp": [
+   1,
+   3.566
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_fs_right_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "50"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   12,
+   10.488
+  ],
+  "off_ksp": [
+   1,
+   10.589
+  ],
+  "wu_pc": [
+   12,
+   10.576
+  ],
+  "wu_ksp": [
+   1,
+   10.678
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_fs_right_np2_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --richardson --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "110"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   12,
+   26.924
+  ],
+  "off_ksp": [
+   1,
+   27.269
+  ],
+  "wu_pc": [
+   12,
+   26.533
+  ],
+  "wu_ksp": [
+   1,
+   26.847
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monocheb_left_rich_np2_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_ksp_norm_type unpreconditioned --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": null,
+  "status": [
+   "1",
+   "5"
+  ],
+  "its": [],
+  "reasons": [],
+  "off_pc": null,
+  "off_ksp": null,
+  "wu_pc": null,
+  "wu_ksp": null,
+  "patch": [],
+  "files": [
+   "cmd.sh",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monocheb_left_rich_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_ksp_norm_type unpreconditioned --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": null,
+  "status": [
+   "1",
+   "4"
+  ],
+  "its": [],
+  "reasons": [],
+  "off_pc": null,
+  "off_ksp": null,
+  "wu_pc": null,
+  "wu_ksp": null,
+  "patch": [],
+  "files": [
+   "cmd.sh",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monocheb_left_rich_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_ksp_norm_type unpreconditioned --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": null,
+  "status": [
+   "1",
+   "7"
+  ],
+  "its": [],
+  "reasons": [],
+  "off_pc": null,
+  "off_ksp": null,
+  "wu_pc": null,
+  "wu_ksp": null,
+  "patch": [],
+  "files": [
+   "cmd.sh",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monocheb_left_rich_np2_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_ksp_norm_type unpreconditioned --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": null,
+  "status": [
+   "1",
+   "9"
+  ],
+  "its": [],
+  "reasons": [],
+  "off_pc": null,
+  "off_ksp": null,
+  "wu_pc": null,
+  "wu_ksp": null,
+  "patch": [],
+  "files": [
+   "cmd.sh",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monocheb_right_np2_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --monolithic --mono_smoother chebyshev --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "10"
+  ],
+  "its": [
+   6,
+   5,
+   5
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   5,
+   0.55519
+  ],
+  "off_ksp": [
+   1,
+   0.55827
+  ],
+  "wu_pc": [
+   5,
+   0.56085
+  ],
+  "wu_ksp": [
+   1,
+   0.56394
+  ],
+  "patch": [
+   388
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monocheb_right_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "15"
+  ],
+  "its": [
+   7,
+   6,
+   6
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   6,
+   1.8136
+  ],
+  "off_ksp": [
+   1,
+   1.8269
+  ],
+  "wu_pc": [
+   6,
+   1.8462
+  ],
+  "wu_ksp": [
+   1,
+   1.8601
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monocheb_right_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "40"
+  ],
+  "its": [
+   8,
+   8,
+   8
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   8.2774
+  ],
+  "off_ksp": [
+   1,
+   8.3505
+  ],
+  "wu_pc": [
+   8,
+   8.3828
+  ],
+  "wu_ksp": [
+   1,
+   8.4555
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monocheb_right_np2_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --monolithic --mono_smoother chebyshev --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "71"
+  ],
+  "its": [
+   8,
+   8,
+   8
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   16.323
+  ],
+  "off_ksp": [
+   1,
+   16.47
+  ],
+  "wu_pc": [
+   8,
+   16.376
+  ],
+  "wu_ksp": [
+   1,
+   16.524
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monogmres_right_np2_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --monolithic --mono_smoother gmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "9"
+  ],
+  "its": [
+   2,
+   2,
+   2
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   2,
+   0.29494
+  ],
+  "off_ksp": [
+   1,
+   0.29658
+  ],
+  "wu_pc": [
+   2,
+   0.28929
+  ],
+  "wu_ksp": [
+   1,
+   0.29085
+  ],
+  "patch": [
+   388
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monogmres_right_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother gmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "12"
+  ],
+  "its": [
+   2,
+   2,
+   2
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   2,
+   0.79409
+  ],
+  "off_ksp": [
+   1,
+   0.79877
+  ],
+  "wu_pc": [
+   2,
+   0.8015
+  ],
+  "wu_ksp": [
+   1,
+   0.80603
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monogmres_right_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother gmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "23"
+  ],
+  "its": [
+   2,
+   2,
+   2
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   2,
+   3.2419
+  ],
+  "off_ksp": [
+   1,
+   3.2602
+  ],
+  "wu_pc": [
+   2,
+   3.2118
+  ],
+  "wu_ksp": [
+   1,
+   3.2307
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Ap_monogmres_right_np2_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --monolithic --mono_smoother gmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "40"
+  ],
+  "its": [
+   2,
+   2,
+   2
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   2,
+   6.1116
+  ],
+  "off_ksp": [
+   1,
+   6.1474
+  ],
+  "wu_pc": [
+   2,
+   6.2576
+  ],
+  "wu_ksp": [
+   1,
+   6.2953
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "B_fs_inner1e-10_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --inner_rtol 1e-10 --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "40"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   8.9948
+  ],
+  "off_ksp": [
+   1,
+   9.0314
+  ],
+  "wu_pc": [
+   11,
+   8.9699
+  ],
+  "wu_ksp": [
+   1,
+   9.0086
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "B_fs_inner1e-10_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --inner_rtol 1e-10 --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "93"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   23.847
+  ],
+  "off_ksp": [
+   1,
+   23.95
+  ],
+  "wu_pc": [
+   10,
+   23.82
+  ],
+  "wu_ksp": [
+   1,
+   23.913
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "B_fs_inner1e-6_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --inner_rtol 1e-6 --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "27"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   4.9805
+  ],
+  "off_ksp": [
+   1,
+   5.0094
+  ],
+  "wu_pc": [
+   11,
+   5.0705
+  ],
+  "wu_ksp": [
+   1,
+   5.0994
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "B_fs_inner1e-6_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --inner_rtol 1e-6 --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "86"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   21.249
+  ],
+  "off_ksp": [
+   1,
+   21.391
+  ],
+  "wu_pc": [
+   10,
+   21.295
+  ],
+  "wu_ksp": [
+   1,
+   21.428
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "B_mono_inner1e-10_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --inner_rtol 1e-10 --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "41"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   10.164
+  ],
+  "off_ksp": [
+   1,
+   10.19
+  ],
+  "wu_pc": [
+   11,
+   10.248
+  ],
+  "wu_ksp": [
+   1,
+   10.28
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "B_mono_inner1e-10_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --inner_rtol 1e-10 --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "119"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   32.908
+  ],
+  "off_ksp": [
+   1,
+   33.011
+  ],
+  "wu_pc": [
+   10,
+   32.902
+  ],
+  "wu_ksp": [
+   1,
+   33.005
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "B_mono_inner1e-6_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --inner_rtol 1e-6 --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "32"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   6.9282
+  ],
+  "off_ksp": [
+   1,
+   6.9644
+  ],
+  "wu_pc": [
+   11,
+   6.986
+  ],
+  "wu_ksp": [
+   1,
+   7.0222
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "B_mono_inner1e-6_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --inner_rtol 1e-6 --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "112"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   30.419
+  ],
+  "off_ksp": [
+   1,
+   30.552
+  ],
+  "wu_pc": [
+   10,
+   30.396
+  ],
+  "wu_ksp": [
+   1,
+   30.53
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "C_fs_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "242",
+   "(written",
+   "by",
+   "hand:",
+   "the",
+   "run",
+   "finished",
+   "after",
+   "its",
+   "runner",
+   "loop",
+   "was",
+   "stopped;",
+   "wall",
+   "=",
+   "log_view",
+   "total",
+   "time)"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   70.741
+  ],
+  "off_ksp": [
+   1,
+   71.346
+  ],
+  "wu_pc": [
+   14,
+   64.928
+  ],
+  "wu_ksp": [
+   1,
+   65.54
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "C_fs_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "105"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   28.856
+  ],
+  "off_ksp": [
+   1,
+   29.147
+  ],
+  "wu_pc": [
+   14,
+   28.809
+  ],
+  "wu_ksp": [
+   1,
+   29.101
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "C_fs_np2_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --richardson --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "241"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   66.526
+  ],
+  "off_ksp": [
+   1,
+   67.245
+  ],
+  "wu_pc": [
+   14,
+   66.481
+  ],
+  "wu_ksp": [
+   1,
+   67.202
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "C_mono_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "497"
+  ],
+  "its": [
+   17,
+   100,
+   100
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_ITS",
+   "CONVERGED_ITS"
+  ],
+  "off_pc": [
+   104,
+   218.76
+  ],
+  "off_ksp": [
+   1,
+   221.3
+  ],
+  "wu_pc": [
+   104,
+   216.06
+  ],
+  "wu_ksp": [
+   1,
+   218.52
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "C_mono_np2_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "1192"
+  ],
+  "its": [
+   17,
+   100,
+   100
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_ITS",
+   "CONVERGED_ITS"
+  ],
+  "off_pc": [
+   104,
+   516.15
+  ],
+  "off_ksp": [
+   1,
+   522.47
+  ],
+  "wu_pc": [
+   104,
+   532.0
+  ],
+  "wu_ksp": [
+   1,
+   538.61
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_fsdirect_np1_nx20_nz20": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --direct --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "15"
+  ],
+  "its": [
+   11,
+   12,
+   12
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   13,
+   1.8864
+  ],
+  "off_ksp": [
+   1,
+   1.9405
+  ],
+  "wu_pc": [
+   13,
+   1.8929
+  ],
+  "wu_ksp": [
+   1,
+   1.9526
+  ],
+  "patch": [],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_fsdirect_np1_nx40_nz40": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --direct --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "66"
+  ],
+  "its": [
+   11,
+   12,
+   12
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   13,
+   16.259
+  ],
+  "off_ksp": [
+   1,
+   16.503
+  ],
+  "wu_pc": [
+   13,
+   16.316
+  ],
+  "wu_ksp": [
+   1,
+   16.56
+  ],
+  "patch": [],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_fspmat_np2_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --richardson -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "14"
+  ],
+  "its": [
+   11,
+   12,
+   12
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   13,
+   1.2212
+  ],
+  "off_ksp": [
+   1,
+   1.2313
+  ],
+  "wu_pc": [
+   13,
+   1.2285
+  ],
+  "wu_ksp": [
+   1,
+   1.2396
+  ],
+  "patch": [
+   308
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_fspmat_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "23"
+  ],
+  "its": [
+   11,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   4.1447
+  ],
+  "off_ksp": [
+   1,
+   4.1856
+  ],
+  "wu_pc": [
+   14,
+   4.2397
+  ],
+  "wu_ksp": [
+   1,
+   4.2834
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_fspmat_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "65"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   15.893
+  ],
+  "off_ksp": [
+   1,
+   16.068
+  ],
+  "wu_pc": [
+   14,
+   16.084
+  ],
+  "wu_ksp": [
+   1,
+   16.261
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_fspmat_np2_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --richardson -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "99"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   25.493
+  ],
+  "off_ksp": [
+   1,
+   25.769
+  ],
+  "wu_pc": [
+   14,
+   25.237
+  ],
+  "wu_ksp": [
+   1,
+   25.594
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "19"
+  ],
+  "its": [
+   11,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   2.5553
+  ],
+  "off_ksp": [
+   1,
+   2.5701
+  ],
+  "wu_pc": [
+   14,
+   2.6083
+  ],
+  "wu_ksp": [
+   1,
+   2.6234
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "37"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   8.1918
+  ],
+  "off_ksp": [
+   1,
+   8.2635
+  ],
+  "wu_pc": [
+   14,
+   8.2674
+  ],
+  "wu_ksp": [
+   1,
+   8.3383
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_np16_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "66"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   17.561
+  ],
+  "off_ksp": [
+   1,
+   17.693
+  ],
+  "wu_pc": [
+   14,
+   17.505
+  ],
+  "wu_ksp": [
+   1,
+   17.633
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_np1_nx20_nz20": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "29"
+  ],
+  "its": [
+   11,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   6.4903
+  ],
+  "off_ksp": [
+   1,
+   6.5506
+  ],
+  "wu_pc": [
+   14,
+   6.5316
+  ],
+  "wu_ksp": [
+   1,
+   6.5969
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_np1_nx40_nz40": {
+  "cmd": "python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": null,
+  "np_log": 1,
+  "status": [
+   "0",
+   "99"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   26.525
+  ],
+  "off_ksp": [
+   1,
+   26.767
+  ],
+  "wu_pc": [
+   14,
+   26.48
+  ],
+  "wu_ksp": [
+   1,
+   26.763
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_np2_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "27"
+  ],
+  "its": [
+   10,
+   12,
+   12
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   13,
+   1.4288
+  ],
+  "off_ksp": [
+   1,
+   1.4389
+  ],
+  "wu_pc": [
+   13,
+   1.456
+  ],
+  "wu_ksp": [
+   1,
+   1.4664
+  ],
+  "patch": [
+   388
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "23"
+  ],
+  "its": [
+   11,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   4.7041
+  ],
+  "off_ksp": [
+   1,
+   4.7461
+  ],
+  "wu_pc": [
+   14,
+   4.7001
+  ],
+  "wu_ksp": [
+   1,
+   4.7426
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "66"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   17.344
+  ],
+  "off_ksp": [
+   1,
+   17.511
+  ],
+  "wu_pc": [
+   14,
+   17.34
+  ],
+  "wu_ksp": [
+   1,
+   17.52
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_np2_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "125"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   34.209
+  ],
+  "off_ksp": [
+   1,
+   34.573
+  ],
+  "wu_pc": [
+   14,
+   34.164
+  ],
+  "wu_ksp": [
+   1,
+   34.511
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_right_np2_nx10_nz10": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 10 --nz 10 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "13"
+  ],
+  "its": [
+   12,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   1.274
+  ],
+  "off_ksp": [
+   1,
+   1.2847
+  ],
+  "wu_pc": [
+   11,
+   1.279
+  ],
+  "wu_ksp": [
+   1,
+   1.2898
+  ],
+  "patch": [
+   388
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_right_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "22"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   3.7386
+  ],
+  "off_ksp": [
+   1,
+   3.7734
+  ],
+  "wu_pc": [
+   11,
+   3.7292
+  ],
+  "wu_ksp": [
+   1,
+   3.768
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_right_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "59"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   14.266
+  ],
+  "off_ksp": [
+   1,
+   14.442
+  ],
+  "wu_pc": [
+   11,
+   14.005
+  ],
+  "wu_ksp": [
+   1,
+   14.152
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofix_right_np2_nx40_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "106"
+  ],
+  "its": [
+   13,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   25.232
+  ],
+  "off_ksp": [
+   1,
+   25.479
+  ],
+  "wu_pc": [
+   10,
+   25.313
+  ],
+  "wu_ksp": [
+   1,
+   25.581
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofixgmres_right_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother gmres --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "19"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   3.1697
+  ],
+  "off_ksp": [
+   1,
+   3.1953
+  ],
+  "wu_pc": [
+   11,
+   3.2177
+  ],
+  "wu_ksp": [
+   1,
+   3.2533
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "F_monofixgmres_right_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother gmres --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "60"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   13.809
+  ],
+  "off_ksp": [
+   1,
+   13.933
+  ],
+  "wu_pc": [
+   10,
+   13.819
+  ],
+  "wu_ksp": [
+   1,
+   13.962
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "H_mono_monitor_right_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_ksp_monitor --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "635"
+  ],
+  "its": [
+   100,
+   100,
+   100
+  ],
+  "reasons": [
+   "CONVERGED_ITS",
+   "CONVERGED_ITS",
+   "CONVERGED_ITS"
+  ],
+  "off_pc": [
+   100,
+   204.74
+  ],
+  "off_ksp": [
+   1,
+   207.29
+  ],
+  "wu_pc": [
+   100,
+   202.42
+  ],
+  "wu_ksp": [
+   1,
+   205.03
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "H_mono_mumps_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left -firedrake_2_monoshiftpc_mg_levels_pc_star_sub_sub_pc_factor_mat_solver_type mumps --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": null,
+  "status": [],
+  "its": [
+   17
+  ],
+  "reasons": [
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": null,
+  "off_ksp": null,
+  "wu_pc": null,
+  "wu_ksp": null,
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "run.log",
+   "slice3D.txt"
+  ]
+ },
+ "H_mono_right_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "16"
+  ],
+  "its": [
+   7,
+   6,
+   6
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   6,
+   1.2517
+  ],
+  "off_ksp": [
+   1,
+   1.2647
+  ],
+  "wu_pc": [
+   6,
+   1.2247
+  ],
+  "wu_ksp": [
+   1,
+   1.2383
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "H_mono_right_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "27"
+  ],
+  "its": [
+   8,
+   8,
+   8
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   4.9322
+  ],
+  "off_ksp": [
+   1,
+   4.9786
+  ],
+  "wu_pc": [
+   8,
+   4.9531
+  ],
+  "wu_ksp": [
+   1,
+   4.998
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "H_mono_right_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "627"
+  ],
+  "its": [
+   100,
+   100,
+   100
+  ],
+  "reasons": [
+   "CONVERGED_ITS",
+   "CONVERGED_ITS",
+   "CONVERGED_ITS"
+  ],
+  "off_pc": [
+   100,
+   201.56
+  ],
+  "off_ksp": [
+   1,
+   204.08
+  ],
+  "wu_pc": [
+   100,
+   200.77
+  ],
+  "wu_ksp": [
+   1,
+   203.27
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep1_np16_nx160_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 160 --nz 160 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "350"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   94.114
+  ],
+  "off_ksp": [
+   1,
+   95.09
+  ],
+  "wu_pc": [
+   10,
+   95.467
+  ],
+  "wu_ksp": [
+   1,
+   96.45
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep1_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "19"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   1.7544
+  ],
+  "off_ksp": [
+   1,
+   1.7748
+  ],
+  "wu_pc": [
+   11,
+   1.7552
+  ],
+  "wu_ksp": [
+   1,
+   1.7757
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep1_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "34"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   6.28
+  ],
+  "off_ksp": [
+   1,
+   6.3511
+  ],
+  "wu_pc": [
+   11,
+   6.268
+  ],
+  "wu_ksp": [
+   1,
+   6.3378
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep1_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "173"
+  ],
+  "its": [
+   13,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   44.86
+  ],
+  "off_ksp": [
+   1,
+   45.345
+  ],
+  "wu_pc": [
+   10,
+   45.106
+  ],
+  "wu_ksp": [
+   1,
+   45.584
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep1_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "93"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   23.361
+  ],
+  "off_ksp": [
+   1,
+   23.678
+  ],
+  "wu_pc": [
+   11,
+   23.411
+  ],
+  "wu_ksp": [
+   1,
+   23.675
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep2_np16_nx160_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 160 --nz 160 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "336"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   93.47
+  ],
+  "off_ksp": [
+   1,
+   94.453
+  ],
+  "wu_pc": [
+   10,
+   94.305
+  ],
+  "wu_ksp": [
+   1,
+   95.321
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep2_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "20"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   1.8192
+  ],
+  "off_ksp": [
+   1,
+   1.8421
+  ],
+  "wu_pc": [
+   11,
+   1.8147
+  ],
+  "wu_ksp": [
+   1,
+   1.8364
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep2_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "33"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   5.7649
+  ],
+  "off_ksp": [
+   1,
+   5.8319
+  ],
+  "wu_pc": [
+   11,
+   5.7761
+  ],
+  "wu_ksp": [
+   1,
+   5.8393
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep2_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "171"
+  ],
+  "its": [
+   13,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   44.561
+  ],
+  "off_ksp": [
+   1,
+   45.054
+  ],
+  "wu_pc": [
+   10,
+   44.399
+  ],
+  "wu_ksp": [
+   1,
+   44.88
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep2_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "94"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   23.321
+  ],
+  "off_ksp": [
+   1,
+   23.585
+  ],
+  "wu_pc": [
+   11,
+   23.422
+  ],
+  "wu_ksp": [
+   1,
+   23.687
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep3_np16_nx160_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 160 --nz 160 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "341"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   95.301
+  ],
+  "off_ksp": [
+   1,
+   96.333
+  ],
+  "wu_pc": [
+   10,
+   95.78
+  ],
+  "wu_ksp": [
+   1,
+   96.77
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep3_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "19"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   1.7405
+  ],
+  "off_ksp": [
+   1,
+   1.7606
+  ],
+  "wu_pc": [
+   11,
+   1.7692
+  ],
+  "wu_ksp": [
+   1,
+   1.7897
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep3_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "34"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   5.7199
+  ],
+  "off_ksp": [
+   1,
+   5.7848
+  ],
+  "wu_pc": [
+   11,
+   5.7644
+  ],
+  "wu_ksp": [
+   1,
+   5.8301
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep3_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "173"
+  ],
+  "its": [
+   13,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   44.599
+  ],
+  "off_ksp": [
+   1,
+   45.105
+  ],
+  "wu_pc": [
+   10,
+   44.783
+  ],
+  "wu_ksp": [
+   1,
+   45.276
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fs_rep3_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --richardson --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "93"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   23.375
+  ],
+  "off_ksp": [
+   1,
+   23.641
+  ],
+  "wu_pc": [
+   11,
+   23.52
+  ],
+  "wu_ksp": [
+   1,
+   23.787
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep1_np16_nx160_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 160 --nz 160 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "346"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   95.175
+  ],
+  "off_ksp": [
+   1,
+   96.168
+  ],
+  "wu_pc": [
+   10,
+   95.439
+  ],
+  "wu_ksp": [
+   1,
+   96.399
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep1_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "20"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   1.7079
+  ],
+  "off_ksp": [
+   1,
+   1.7281
+  ],
+  "wu_pc": [
+   11,
+   1.7289
+  ],
+  "wu_ksp": [
+   1,
+   1.7479
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep1_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "34"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   5.8681
+  ],
+  "off_ksp": [
+   1,
+   5.9314
+  ],
+  "wu_pc": [
+   11,
+   5.9016
+  ],
+  "wu_ksp": [
+   1,
+   5.9668
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep1_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "175"
+  ],
+  "its": [
+   13,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   45.717
+  ],
+  "off_ksp": [
+   1,
+   46.186
+  ],
+  "wu_pc": [
+   10,
+   45.891
+  ],
+  "wu_ksp": [
+   1,
+   46.398
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep1_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "95"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   23.916
+  ],
+  "off_ksp": [
+   1,
+   24.176
+  ],
+  "wu_pc": [
+   11,
+   23.876
+  ],
+  "wu_ksp": [
+   1,
+   24.142
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep2_np16_nx160_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 160 --nz 160 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "350"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   98.626
+  ],
+  "off_ksp": [
+   1,
+   99.6
+  ],
+  "wu_pc": [
+   10,
+   98.356
+  ],
+  "wu_ksp": [
+   1,
+   99.292
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep2_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "19"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   1.701
+  ],
+  "off_ksp": [
+   1,
+   1.7207
+  ],
+  "wu_pc": [
+   11,
+   1.693
+  ],
+  "wu_ksp": [
+   1,
+   1.7124
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep2_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "35"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   5.9949
+  ],
+  "off_ksp": [
+   1,
+   6.0585
+  ],
+  "wu_pc": [
+   11,
+   6.079
+  ],
+  "wu_ksp": [
+   1,
+   6.1431
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep2_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "166"
+  ],
+  "its": [
+   13,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   42.88
+  ],
+  "off_ksp": [
+   1,
+   43.373
+  ],
+  "wu_pc": [
+   10,
+   42.838
+  ],
+  "wu_ksp": [
+   1,
+   43.322
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep2_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "95"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   23.861
+  ],
+  "off_ksp": [
+   1,
+   24.119
+  ],
+  "wu_pc": [
+   11,
+   23.846
+  ],
+  "wu_ksp": [
+   1,
+   24.103
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep3_np16_nx160_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 160 --nz 160 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "359"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   95.133
+  ],
+  "off_ksp": [
+   1,
+   96.063
+  ],
+  "wu_pc": [
+   10,
+   95.283
+  ],
+  "wu_ksp": [
+   1,
+   96.316
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep3_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "20"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   1.8233
+  ],
+  "off_ksp": [
+   1,
+   1.8452
+  ],
+  "wu_pc": [
+   11,
+   1.8394
+  ],
+  "wu_ksp": [
+   1,
+   1.8631
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep3_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "33"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   5.8358
+  ],
+  "off_ksp": [
+   1,
+   5.8983
+  ],
+  "wu_pc": [
+   11,
+   5.829
+  ],
+  "wu_ksp": [
+   1,
+   5.8903
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep3_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "175"
+  ],
+  "its": [
+   13,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   45.806
+  ],
+  "off_ksp": [
+   1,
+   46.283
+  ],
+  "wu_pc": [
+   10,
+   46.653
+  ],
+  "wu_ksp": [
+   1,
+   47.155
+  ],
+  "patch": [
+   4808
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_fspmat_rep3_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --richardson --outer_ksp fgmres --pc_side right -firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "95"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   23.82
+  ],
+  "off_ksp": [
+   1,
+   24.077
+  ],
+  "wu_pc": [
+   11,
+   23.971
+  ],
+  "wu_ksp": [
+   1,
+   24.232
+  ],
+  "patch": [
+   2408
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep1_np16_nx160_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 160 --nz 160 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "368"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   104.76
+  ],
+  "off_ksp": [
+   1,
+   105.73
+  ],
+  "wu_pc": [
+   10,
+   105.71
+  ],
+  "wu_ksp": [
+   1,
+   106.73
+  ],
+  "patch": [
+   6088
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep1_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "19"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   2.0992
+  ],
+  "off_ksp": [
+   1,
+   2.1266
+  ],
+  "wu_pc": [
+   11,
+   2.1865
+  ],
+  "wu_ksp": [
+   1,
+   2.2186
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep1_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "34"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   6.6573
+  ],
+  "off_ksp": [
+   1,
+   6.7265
+  ],
+  "wu_pc": [
+   11,
+   6.6438
+  ],
+  "wu_ksp": [
+   1,
+   6.7072
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep1_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "179"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   49.382
+  ],
+  "off_ksp": [
+   1,
+   49.867
+  ],
+  "wu_pc": [
+   10,
+   49.434
+  ],
+  "wu_ksp": [
+   1,
+   49.929
+  ],
+  "patch": [
+   6088
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep1_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "91"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   23.584
+  ],
+  "off_ksp": [
+   1,
+   23.827
+  ],
+  "wu_pc": [
+   10,
+   23.721
+  ],
+  "wu_ksp": [
+   1,
+   23.998
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep2_np16_nx160_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 160 --nz 160 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "371"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   106.1
+  ],
+  "off_ksp": [
+   1,
+   107.05
+  ],
+  "wu_pc": [
+   10,
+   106.22
+  ],
+  "wu_ksp": [
+   1,
+   107.18
+  ],
+  "patch": [
+   6088
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep2_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "18"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   2.0464
+  ],
+  "off_ksp": [
+   1,
+   2.0681
+  ],
+  "wu_pc": [
+   11,
+   2.1013
+  ],
+  "wu_ksp": [
+   1,
+   2.123
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep2_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "36"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   7.1648
+  ],
+  "off_ksp": [
+   1,
+   7.2367
+  ],
+  "wu_pc": [
+   11,
+   7.1665
+  ],
+  "wu_ksp": [
+   1,
+   7.2403
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep2_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "174"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   47.216
+  ],
+  "off_ksp": [
+   1,
+   47.712
+  ],
+  "wu_pc": [
+   10,
+   47.823
+  ],
+  "wu_ksp": [
+   1,
+   48.31
+  ],
+  "patch": [
+   6088
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep2_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "93"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   23.524
+  ],
+  "off_ksp": [
+   1,
+   23.765
+  ],
+  "wu_pc": [
+   10,
+   23.58
+  ],
+  "wu_ksp": [
+   1,
+   23.818
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep3_np16_nx160_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 160 --nz 160 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "378"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   108.62
+  ],
+  "off_ksp": [
+   1,
+   109.62
+  ],
+  "wu_pc": [
+   10,
+   107.93
+  ],
+  "wu_ksp": [
+   1,
+   108.93
+  ],
+  "patch": [
+   6088
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep3_np16_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "19"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   1.9902
+  ],
+  "off_ksp": [
+   1,
+   2.0107
+  ],
+  "wu_pc": [
+   11,
+   2.0167
+  ],
+  "wu_ksp": [
+   1,
+   2.0423
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep3_np16_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "34"
+  ],
+  "its": [
+   13,
+   11,
+   11
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   11,
+   6.584
+  ],
+  "off_ksp": [
+   1,
+   6.6481
+  ],
+  "wu_pc": [
+   11,
+   6.6488
+  ],
+  "wu_ksp": [
+   1,
+   6.7121
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep3_np16_nx80_nz160": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 160 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "176"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   49.357
+  ],
+  "off_ksp": [
+   1,
+   49.889
+  ],
+  "wu_pc": [
+   10,
+   47.204
+  ],
+  "wu_ksp": [
+   1,
+   47.705
+  ],
+  "patch": [
+   6088
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "T_monofix_rep3_np16_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right -firedrake_2_monoshiftpc_pc_use_amat false --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 16,
+  "np_log": 16,
+  "status": [
+   "0",
+   "92"
+  ],
+  "its": [
+   12,
+   10,
+   10
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   10,
+   23.687
+  ],
+  "off_ksp": [
+   1,
+   23.921
+  ],
+  "wu_pc": [
+   10,
+   23.657
+  ],
+  "wu_ksp": [
+   1,
+   23.9
+  ],
+  "patch": [
+   3048
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Y_fs_rcm_mumps_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --richardson --reordering -firedrake_2_fieldsplit_1_helmholtzschurpc_mg_levels_pc_star_sub_sub_pc_factor_mat_solver_type mumps --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "43"
+  ],
+  "its": [
+   11,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   10.808
+  ],
+  "off_ksp": [
+   1,
+   10.852
+  ],
+  "wu_pc": [
+   14,
+   10.747
+  ],
+  "wu_ksp": [
+   1,
+   10.788
+  ],
+  "patch": [
+   608
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Y_fs_rcm_mumps_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --richardson --reordering -firedrake_2_fieldsplit_1_helmholtzschurpc_mg_levels_pc_star_sub_sub_pc_factor_mat_solver_type mumps --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "239"
+  ],
+  "its": [
+   12,
+   13,
+   13
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   14,
+   93.501
+  ],
+  "off_ksp": [
+   1,
+   93.813
+  ],
+  "wu_pc": [
+   14,
+   63.789
+  ],
+  "wu_ksp": [
+   1,
+   63.982
+  ],
+  "patch": [
+   1208
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Y_mono_natural_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "51"
+  ],
+  "its": [
+   7,
+   6,
+   6
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   7,
+   12.824
+  ],
+  "off_ksp": [
+   1,
+   12.842
+  ],
+  "wu_pc": [
+   7,
+   12.936
+  ],
+  "wu_ksp": [
+   1,
+   12.955
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Y_mono_natural_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "377"
+  ],
+  "its": [
+   7,
+   7,
+   7
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   125.08
+  ],
+  "off_ksp": [
+   1,
+   125.17
+  ],
+  "wu_pc": [
+   8,
+   117.2
+  ],
+  "wu_ksp": [
+   1,
+   117.29
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Y_mono_natural_right_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "48"
+  ],
+  "its": [
+   7,
+   6,
+   6
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   6,
+   12.411
+  ],
+  "off_ksp": [
+   1,
+   12.431
+  ],
+  "wu_pc": [
+   6,
+   11.421
+  ],
+  "wu_ksp": [
+   1,
+   11.439
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Y_mono_natural_right_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp fgmres --pc_side right --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "410"
+  ],
+  "its": [
+   8,
+   8,
+   8
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   129.42
+  ],
+  "off_ksp": [
+   1,
+   129.53
+  ],
+  "wu_pc": [
+   8,
+   131.88
+  ],
+  "wu_ksp": [
+   1,
+   132.0
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Y_mono_rcm_mumps_np2_nx20_nz20": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 20 --nz 20 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --reordering -firedrake_2_monoshiftpc_mg_levels_pc_star_sub_sub_pc_factor_mat_solver_type mumps --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "35"
+  ],
+  "its": [
+   7,
+   6,
+   6
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   7,
+   7.761
+  ],
+  "off_ksp": [
+   1,
+   7.7795
+  ],
+  "wu_pc": [
+   7,
+   8.4626
+  ],
+  "wu_ksp": [
+   1,
+   8.4819
+  ],
+  "patch": [
+   768
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Y_mono_rcm_mumps_np2_nx40_nz40": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --reordering -firedrake_2_monoshiftpc_mg_levels_pc_star_sub_sub_pc_factor_mat_solver_type mumps --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": 2,
+  "status": [
+   "0",
+   "243"
+  ],
+  "its": [
+   7,
+   7,
+   7
+  ],
+  "reasons": [
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL",
+   "CONVERGED_RTOL"
+  ],
+  "off_pc": [
+   8,
+   72.171
+  ],
+  "off_ksp": [
+   1,
+   72.275
+  ],
+  "wu_pc": [
+   8,
+   73.227
+  ],
+  "wu_ksp": [
+   1,
+   73.335
+  ],
+  "patch": [
+   1528
+  ],
+  "files": [
+   "cmd.sh",
+   "done",
+   "log.txt",
+   "run.log",
+   "slice3D.txt",
+   "status"
+  ]
+ },
+ "Y_mono_rcm_mumps_np2_nx80_nz80": {
+  "cmd": "mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 80 --nz 80 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --reordering -firedrake_2_monoshiftpc_mg_levels_pc_star_sub_sub_pc_factor_mat_solver_type mumps --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --timing -firedrake_2_ksp_converged_reason -log_view :log.txt",
+  "np_cmd": 2,
+  "np_log": null,
+  "status": [],
+  "its": [],
+  "reasons": [],
+  "off_pc": null,
+  "off_ksp": null,
+  "wu_pc": null,
+  "wu_ksp": null,
+  "patch": [],
+  "files": [
+   "cmd.sh",
+   "run.log",
+   "slice3D.txt"
+  ]
+ }
+}

@@ -1,0 +1,187 @@
+diff --git a/ex_article.tex b/ex_article.tex
+index 73e09bf..6c5e2db 100644
+--- a/ex_article.tex
++++ b/ex_article.tex
+@@ -3713,10 +3713,11 @@ confined above the ridge, as in the reference solutions.
+ We now turn from iteration counts to the wall-clock cost of applying
+ the preconditioner, examining in turn the effect of reordering the
+ patch subproblems and the cost of the Schur-complement reduction
+-relative to a monolithic alternative. Unless stated otherwise, the
+-timings below are obtained on $16$ MPI processes on a workstation
+-with $64\,\mathrm{GB}$ of memory, using the two-dimensional extruded
+-vertical-slice mesh of Section~\ref{sec:discretisation}.
++relative to a monolithic alternative. The timings below are obtained
++on a workstation with $64\,\mathrm{GB}$ of memory, on $2$ MPI processes
++for Table~\ref{tab:rcm} and on $16$ for Table~\ref{tab:monolithic},
++using the two-dimensional extruded vertical-slice mesh of
++Section~\ref{sec:discretisation}.
+ 
+ Each column-patch subproblem~\eqref{eq:patch-local} is solved by a
+ direct LU factorisation, and the cost of that factorisation depends
+@@ -3736,7 +3737,7 @@ reused across all FGMRES iterations and all time steps.
+ Table~\ref{tab:rcm} reports the patch matrix bandwidth and the
+ wall-clock cost of a single preconditioner application (PCApply),
+ with and without RCM reordering, for a fixed aspect ratio
+-$\varepsilon \sim 10^{-3}$, $\Delta t = 100\,\mathrm{s}$, and
++$\varepsilon = 1.3\times10^{-2}$, $\Delta t = 100\,\mathrm{s}$, and
+ $\delta = 10^{-4}$, as the number of vertical layers $N_z$ is
+ increased at fixed $N_x = 20$. Without reordering the bandwidth grows
+ with $N_z$ and the resulting PCApply cost grows worse than linearly,
+@@ -3753,15 +3754,18 @@ a dense factorisation whose cost grows with the column length.
+ \begin{table}[t]
+     \centering
+     \caption{Effect of RCM reordering on the column-patch LU
+-    factorisations. Aspect ratio $\varepsilon \sim 10^{-3}$,
++    factorisations. Aspect ratio $\varepsilon = 1.3\times10^{-2}$
++    ($L_x = 300\,\mathrm{km}$, $L_z = 4\,\mathrm{km}$),
+     $\Delta t = 100\,\mathrm{s}$, $\delta = 10^{-4}$.}
+     \label{tab:rcm} 
++    \small
++    \setlength{\tabcolsep}{4pt}
+     \begin{tabular}{c ccc ccc}
+         \toprule
+         & \multicolumn{3}{c}{RCM reordering} & \multicolumn{3}{c}{No RCM reordering} \\
+         \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+-        $(N_x, N_z)$ & Bandwidth & Time(PCApply) & Time/$N_z$
+-                      & Bandwidth & Time(PCApply) & Time/$N_z$ \\
++        $(N_x, N_z)$ & Bandwidth & PCApply & PCApply/$N_z$
++                      & Bandwidth & PCApply & PCApply/$N_z$ \\
+         \midrule
+         $(20, 10)$ & 48 & 1.685s & 0.169s & 531  & 3.005s & 0.300s \\
+         $(20, 20)$ & 48 & 2.628s & 0.131s & 1051 & 9.495s & 0.475s \\
+@@ -3782,55 +3786,72 @@ monolithic construction is the column-patch instance of the approach
+ of Farrell, Mitchell, and Wechsung~\cite{farrellMitchellWechsung2019}
+ discussed in Section~\ref{sec:inner-solvers}.
+ 
+-Table~\ref{tab:monolithic} reports, for the same parameter values as
+-Table~\ref{tab:rcm}, the number of degrees of freedom per patch, the
+-cumulative wall-clock cost spent in preconditioner application
+-(PCApply) over the full FGMRES solve, and the resulting iteration
+-count to the solution-error tolerance of
+-Section~\ref{sec:solver-config}, for both approaches across four mesh
+-resolutions. Because the monolithic patches additionally couple the
+-pressure degrees of freedom on each column, they are at least $20\%$ larger than the fieldsplit Schur patches. This is 
+-reflected in the per-iteration application cost,
+-$\mathrm{Time(PCApply)}/\mathrm{Its}$, which is lower for the
+-fieldsplit Schur approach at three of the four resolutions tested
+-(for instance $0.67\,\mathrm{s}$ versus $0.90\,\mathrm{s}$ at
+-$(40, 40)$); the exception is the coarsest mesh, where per-patch
+-overheads not reflected in the DOF count dominate. Solving each patch
+-in the full saddle-point variables, however, resolves more of the
+-pressure-velocity coupling per relaxation sweep than the Schur
+-reduction, which defers that coupling to the grad-div augmentation
+-of~\eqref{eq:graddiv-augmentation}; the monolithic approach therefore
+-converges in consistently fewer FGMRES iterations, and this advantage
+-in iteration count outweighs its larger per-iteration cost, so that
+-the cumulative PCApply time in Table~\ref{tab:monolithic} is in fact
+-lower for the monolithic approach at every resolution tested in the
+-present, untuned configuration. We do not attempt to tune the relative
+-damping factors or smoother sweeps of the two approaches against one
+-another here; we note only that the smaller, cheaper-per-application
+-patches of the Schur reduction are what make the resulting solver
+-practical at the resolutions used for the robustness study above, and
+-that closing the iteration-count gap to the monolithic approach, for
+-instance by tuning the damping factor or the number of patch sweeps
+-per level, is left for future tuning.
++Table~\ref{tab:monolithic} reports, for the geometry, time step and
++shift of Table~\ref{tab:rcm} and five mesh resolutions from
++$32\times10^{3}$ to $2.1\times10^{6}$ unknowns, the number of
++degrees of freedom per patch on the finest level, the cumulative
++wall-clock cost of the preconditioner applications (PCApply) over one
++FGMRES solve, and the iteration count to a relative residual of
++$10^{-8}$, for both approaches with one multigrid cycle per application
++and the same smoother.  The two converge in the same number of
++iterations, except at $(80, 80)$, where the monolithic cycle needs one
++fewer.  This is to be expected.  The pressure space is discontinuous,
++so its mass matrix is block diagonal, and every pressure unknown that the divergence couples to the
++velocity unknowns of a column-star patch lies in the two columns of
++that patch.  Eliminating the pressure from a monolithic patch problem
++therefore gives exactly the fieldsplit patch problem on $S$; the
++coarse-grid corrections agree for the nested spaces used here; and one
++monolithic cycle on $A_\delta$ returns the same velocity as one
++fieldsplit cycle.  The two differ only in the pressure, which the Schur
++factorisation recovers exactly from the shifted continuity equation and
++the monolithic cycle returns with a small residual.  The cost is
++therefore decided by the patches, which in the monolithic case also
++carry the pressure unknowns of their two columns, $38N_z + 8$ against
++$30N_z + 8$: an application of the monolithic cycle is $11$--$17\%$
++more expensive, and the cumulative PCApply time of the fieldsplit Schur
++approach is lower by $11$--$17\%$ at every resolution except
++$(80, 80)$, where the monolithic cycle saves an iteration and the
++difference is $1\%$.
++
++A monolithic cycle whose finest-level smoother acts on the unshifted
++operator instead, with $A_\delta$ used only for the patch
++factorisations and the coarser levels (the default when PETSc's
++multigrid is handed the outer operator, as Firedrake's auxiliary-operator
++preconditioner does), is a different
++preconditioner: it approximates the inverse of the unshifted operator
++rather than $A_\delta^{-1}$, and it needs fewer iterations on the
++coarser meshes ($6$ and $8$ at $(20, 20)$ and $(40, 40)$), fewer even
++than with the exact inverse of $A_\delta$ ($11$ and $10$), but it does
++not converge within $100$ iterations at $(80, 80)$, so it is not
++robust.
+ 
+ \begin{table}[t]
+     \centering
+     \caption{Fieldsplit Schur-complement preconditioning versus a
+-    monolithic patch solver applied directly to $A_\delta$. Aspect
+-    ratio $\varepsilon \sim 10^{-3}$, $\Delta t = 100\,\mathrm{s}$,
+-    $\delta = 10^{-4}$, $16$ MPI processes.}
++    monolithic patch smoother applied to $A_\delta$, with one multigrid
++    cycle per application in both (Chebyshev(6) smoothing with the
++    column-star patch and RCM-reordered patch factorisations on all
++    three levels).  FGMRES with right preconditioning to a relative
++    residual of $10^{-8}$; aspect ratio $\varepsilon = 1.3\times10^{-2}$,
++    $\Delta t = 100\,\mathrm{s}$, $\delta = 10^{-4}$, $16$ MPI processes.
++    $N_x$ is the number of columns of the coarsest multigrid level (the
++    finest has $4N_x$); patch DOFs are those of the finest level; times
++    are medians of three runs.}
+     \label{tab:monolithic}
+-    \begin{tabular}{c ccc ccc}
++    \small
++    \setlength{\tabcolsep}{5pt}
++    \begin{tabular}{cc ccc ccc}
+         \toprule
+-        & \multicolumn{3}{c}{Fieldsplit Schur} & \multicolumn{3}{c}{Monolithic} \\
+-        \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+-        $(N_x, N_z)$ & Patch DOFs & Time(PCApply) & Its
+-                      & Patch DOFs & Time(PCApply) & Its \\
++        & & \multicolumn{3}{c}{Fieldsplit Schur} & \multicolumn{3}{c}{Monolithic} \\
++        \cmidrule(lr){3-5} \cmidrule(lr){6-8}
++        $(N_x, N_z)$ & Unknowns & Patch DOFs & PCApply & Its
++                     & Patch DOFs & PCApply & Its \\
+         \midrule
+-        $(10, 10)$ & 308  & 1.11s  & 12 & 388  & 0.63s  & 8 \\
+-        $(20, 20)$ & 608  & 2.61s  & 13 & 768  & 1.91s  & 7 \\
+-        $(40, 40)$ & 1208 & 8.01s  & 12 & 1528 & 6.33s  & 7 \\
+-        $(40, 80)$ & 2408 & 14.70s & 12 & 3408 & 11.69s & 7 \\
++        $(20, 20)$ & 32k & 608 & 1.75s & 11 & 768 & 2.05s & 11 \\
++        $(40, 40)$ & 129k & 1208 & 5.76s & 11 & 1528 & 6.66s & 11 \\
++        $(80, 80)$ & 513k & 2408 & 23.36s & 11 & 3048 & 23.58s & 10 \\
++        $(80, 160)$ & 1.03M & 4808 & 44.60s & 10 & 6088 & 49.36s & 10 \\
++        $(160, 160)$ & 2.05M & 4808 & 94.11s & 10 & 6088 & 106.10s & 10 \\
+         \bottomrule
+     \end{tabular}
+ \end{table}
+@@ -4041,14 +4062,12 @@ deformed geometry, and supplies an independent check on the theory.
+ importance.
+ Reverse Cuthill--McKee reordering of the patch subproblems is a necessity. Without it the patch bandwidth grows with
+ the number of vertical layers and the preconditioner application cost
+-grows superlinearly, while with it the cost per layer is constant.  And
+-the comparison against a monolithic column-patch smoother applied
+-directly to $A_\delta$ is, in the present untuned configuration,
+-not in favour of the Schur reduction.
+-The fieldsplit patches are
+-about $20\%$ smaller and cheaper per iteration, but the monolithic
+-patches resolve more of the pressure--velocity coupling per sweep and
+-converge in fewer FGMRES iterations.
++grows superlinearly, while with it the cost per layer is constant.  And a
++monolithic column-patch smoother applied directly to $A_\delta$
++converges in the same number of iterations as the Schur reduction, as
++it must, since eliminating the pressure from its patches gives the
++fieldsplit patches; the fieldsplit patches are about $20\%$ smaller,
++so the Schur reduction is the cheaper of the two.
+ %  so that the cumulative
+ % preconditioner cost is lower for the monolithic solver at every
+ % resolution tested.

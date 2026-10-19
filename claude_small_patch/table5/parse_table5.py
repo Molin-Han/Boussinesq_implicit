@@ -16,8 +16,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 RUNS = os.path.join(HERE, 'runs')
 OLD = os.path.join(HERE, '..', '..', '..')          # yr2/
-TAG = re.compile(r'^(?P<set>A|Ap|B|C|D)_(?P<solver>fs|mono|monocheb|monogmres)'
-                 r'(?:_(?P<variant>right|left_rich))?(?:_inner(?P<inner>[0-9e.+-]+))?'
+TAG = re.compile(r'^(?P<set>[A-Z][a-z]?)_(?P<solver>[a-z]+)(?P<variant>(?:_[A-Za-z0-9.+-]+?)*?)'
                  r'_np(?P<np>\d+)_nx(?P<nx>\d+)_nz(?P<nz>\d+)$')
 
 
@@ -77,7 +76,12 @@ def parse_runs():
         if not m:
             print('skip', tag, file=sys.stderr); continue
         g = m.groupdict()
+        g['variant'] = g['variant'].lstrip('_')
+        mi = re.search(r'inner([0-9]+e[-+]?[0-9]+)', g['variant'])
+        g['inner'] = mi.group(1) if mi else ''
         its, patch, reasons, inner = parse_runlog(os.path.join(d, 'run.log'))
+        if not patch:   # with --timing the patch sizes are printed into the ksp_view file
+            patch = parse_runlog(os.path.join(d, 'slice3D.txt'))[1]
         inner_last = inner[-1] if inner else []
         ev = stage_events(os.path.join(d, 'log.txt'))
         st = os.path.join(d, 'status')

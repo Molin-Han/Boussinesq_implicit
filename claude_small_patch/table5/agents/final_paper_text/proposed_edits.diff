@@ -1,0 +1,262 @@
+--- /home/mh2520/molin/phd/yr2/Patch-Preconditioner-for-Boussinesq/ex_article.tex	2026-10-19 09:42:17.804094997 +0100
++++ ex_article.tex	2026-10-19 10:11:26.604131513 +0100
+@@ -271,8 +271,8 @@
+ The velocity-buoyancy block that remains after the Schur-complement reduction is solved by a multigrid method with a patch-based line smoother. 
+ The smoother relaxes over overlapping patches of vertical columns of the extruded mesh, which captures the strong vertical coupling induced by the small aspect ratio. 
+ This patch structure differs from the monolithic 
+-patch smoothers applied directly to the full saddle-point system~\cite{farrellMitchellWechsung2019}, in which each patch contains velocity and pressure degrees of freedom. 
+-Monolithic patches are robust but carry a high cost per application because of their size. 
++patch smoothers applied directly to the full saddle-point system~\cite{PCPATCH}, in which each patch contains velocity and pressure degrees of freedom. 
++Monolithic patches are robust but larger, and therefore more expensive to apply. 
+ The Schur-complement reduction used here yields smaller patches that contain only velocity-buoyancy degrees of freedom, and the efficient patch assembly available in Firedrake~\cite{firedrake2016} makes the resulting solver practical. 
+ We report timings for the preconditioner application and examine the effect of a reordering of the patch subproblems on the cost of the local factorisations.
+ 
+@@ -1184,7 +1184,8 @@
+ consists of the columns of cells sharing $v_i$, and $X_i$ is spanned
+ by all velocity-buoyancy degrees of freedom supported on those columns;
+ the corrections from all columns are added with a Richardson damping
+-factor of $\theta = 0.2$. 
++factor of $\theta = 0.2$ (the timings of Section~\ref{sec:timing} use a
++Chebyshev iteration instead; Appendix~\ref{app:petsc-options}). 
+ \begin{figure}[t]
+   \centering
+   \begin{tikzpicture}[scale=8,
+@@ -1313,7 +1314,7 @@
+ freedom on the columns forming $\omega_i$. Because $X_i$ contains a
+ complete set of vertical-velocity and buoyancy degrees of freedom on
+ those columns together with the horizontal-velocity degrees of freedom
+-on their vertical facets, problem~\eqref{eq:patch-local} is itself a small, well-posed
++on the vertical facet they share, problem~\eqref{eq:patch-local} is itself a small, well-posed
+ velocity-buoyancy problem and is solved by a direct factorisation; this
+ is the solvability property invoked above and is what makes the patch
+ act as an exact line solve in the vertical direction. The patch
+@@ -3018,10 +3019,16 @@
+ Section~\ref{sec:inner-solvers}: an exact block-diagonal solve on 
+ the pressure mass matrix, and a multigrid V-cycle on the 
+ velocity-buoyancy block with column-patch additive Schwarz 
+-smoothing via Firedrake's \texttt{ASMStarPC} 
+-(\texttt{pc\_star\_construct\_dim:0}). Reverse Cuthill--McKee 
++smoothing via Firedrake's \opt{ASMStarPC} 
++(\opt{pc_star_construct_dim:0}). Reverse Cuthill--McKee 
+ reordering is applied to the patch subproblems prior to the local 
+ LU factorisations for better ordering of the sparse matrix.
++The multigrid hierarchy has three levels: a base mesh of $N_x$
++intervals, refined twice in the horizontal direction, with $N_z$ layers
++on every level.  The mesh sizes $(N_x, N_z)$ quoted in this section
++refer to the coarsest level, so that the finest mesh, on which the
++system is solved, has $4N_x \times N_z$ cells and
++$\Delta x = L_x/(4N_x)$.
+ 
+ \subsection{Parameter robustness}
+ \label{sec:robustness}
+@@ -3732,20 +3739,22 @@
+ sparsity pattern that a column patch produces. Because the sparsity
+ pattern of a column patch depends only on the local mesh topology and
+ not on the patch data, the reordering is computed once per patch and
+-reused across all FGMRES iterations and all time steps.
++reused across all Krylov iterations and all time steps.
+ 
+ Table~\ref{tab:rcm} reports the patch matrix bandwidth and the
+-wall-clock cost of a single preconditioner application (PCApply),
+-with and without RCM reordering, for a fixed aspect ratio
++wall-clock time spent in the preconditioner (PCApply) during one GMRES
++solve, over its $14$ applications, with and without RCM reordering,
++for a fixed aspect ratio
+ $\varepsilon = 1.3\times10^{-2}$, $\Delta t = 100\,\mathrm{s}$, and
+ $\delta = 10^{-4}$, as the number of vertical layers $N_z$ is
+ increased at fixed $N_x = 20$. Without reordering the bandwidth grows
+ with $N_z$ and the resulting PCApply cost grows worse than linearly,
+ reaching $139.7\,\mathrm{s}$ at $N_z = 80$; with RCM reordering the
+-bandwidth is independent of $N_z$ and the PCApply cost per layer,
+-reported in the right-most column of each block, is essentially
+-constant, consistent with a linear-in-$N_z$ scaling of the total cost
+-(a least-squares fit of $\mathrm{Time(PCApply)}$ against $N_z$ for the
++bandwidth is independent of $N_z$ and the PCApply cost grows
++linearly in $N_z$: the cost per layer, reported in the right-most
++column of each block, falls from $0.169\,\mathrm{s}$ to
++$0.100\,\mathrm{s}$ as a fixed overhead is amortised
++(a least-squares fit of PCApply against $N_z$ for the
+ RCM-reordered solves gives $R^2 = 0.998$). RCM reordering is therefore
+ essential to realising the column-patch smoother of
+ Section~\ref{sec:inner-solvers} as a practical line solve rather than
+@@ -3754,7 +3763,10 @@
+ \begin{table}[t]
+     \centering
+     \caption{Effect of RCM reordering on the column-patch LU
+-    factorisations. Aspect ratio $\varepsilon = 1.3\times10^{-2}$
++    factorisations. PCApply is the wall-clock time of the $14$
++    preconditioner applications of one GMRES solve on $2$ MPI
++    processes, including the numerical refactorisation of the patch
++    matrices. Aspect ratio $\varepsilon = 1.3\times10^{-2}$
+     ($L_x = 300\,\mathrm{km}$, $L_z = 4\,\mathrm{km}$),
+     $\Delta t = 100\,\mathrm{s}$, $\delta = 10^{-4}$.}
+     \label{tab:rcm} 
+@@ -3782,61 +3794,23 @@
+ in which the column-patch smoother is instead applied directly to the
+ full saddle-point system $A_\delta$, with velocity, buoyancy, and
+ pressure degrees of freedom all coupled within each patch. This
+-monolithic construction is the column-patch instance of the approach
+-of Farrell, Mitchell, and Wechsung~\cite{farrellMitchellWechsung2019}
+-discussed in Section~\ref{sec:inner-solvers}.
+-
+-Table~\ref{tab:monolithic} reports, for the geometry, time step and
+-shift of Table~\ref{tab:rcm} and five mesh resolutions from
+-$32\times10^{3}$ to $2.1\times10^{6}$ unknowns, the number of
+-degrees of freedom per patch on the finest level, the cumulative
+-wall-clock cost of the preconditioner applications (PCApply) over one
+-FGMRES solve, and the iteration count to a relative residual of
+-$10^{-8}$, for both approaches with one multigrid cycle per application
+-and the same smoother.  The two converge in the same number of
+-iterations, except at $(80, 80)$, where the monolithic cycle needs one
+-fewer.  This is to be expected.  The pressure space is discontinuous,
+-so its mass matrix is block diagonal, and every pressure unknown that the divergence couples to the
+-velocity unknowns of a column-star patch lies in the two columns of
+-that patch.  Eliminating the pressure from a monolithic patch problem
+-therefore gives exactly the fieldsplit patch problem on $S$; the
+-coarse-grid corrections agree for the nested spaces used here; and one
+-monolithic cycle on $A_\delta$ returns the same velocity as one
+-fieldsplit cycle.  The two differ only in the pressure, which the Schur
+-factorisation recovers exactly from the shifted continuity equation and
+-the monolithic cycle returns with a small residual.  The cost is
+-therefore decided by the patches, which in the monolithic case also
+-carry the pressure unknowns of their two columns, $38N_z + 8$ against
+-$30N_z + 8$: an application of the monolithic cycle is $11$--$17\%$
+-more expensive, and the cumulative PCApply time of the fieldsplit Schur
+-approach is lower by $11$--$17\%$ at every resolution except
+-$(80, 80)$, where the monolithic cycle saves an iteration and the
+-difference is $1\%$.
+-
+-A monolithic cycle whose finest-level smoother acts on the unshifted
+-operator instead, with $A_\delta$ used only for the patch
+-factorisations and the coarser levels (the default when PETSc's
+-multigrid is handed the outer operator, as Firedrake's auxiliary-operator
+-preconditioner does), is a different
+-preconditioner: it approximates the inverse of the unshifted operator
+-rather than $A_\delta^{-1}$, and it needs fewer iterations on the
+-coarser meshes ($6$ and $8$ at $(20, 20)$ and $(40, 40)$), fewer even
+-than with the exact inverse of $A_\delta$ ($11$ and $10$), but it does
+-not converge within $100$ iterations at $(80, 80)$, so it is not
+-robust.
++monolithic construction is a column-patch instance of the monolithic
++patch relaxation of the PCPATCH framework~\cite{PCPATCH} of
++Section~\ref{sec:inner-solvers}.
+ 
+ \begin{table}[t]
+     \centering
+     \caption{Fieldsplit Schur-complement preconditioning versus a
+     monolithic patch smoother applied to $A_\delta$, with one multigrid
+-    cycle per application in both (Chebyshev(6) smoothing with the
+-    column-star patch and RCM-reordered patch factorisations on all
+-    three levels).  FGMRES with right preconditioning to a relative
+-    residual of $10^{-8}$; aspect ratio $\varepsilon = 1.3\times10^{-2}$,
+-    $\Delta t = 100\,\mathrm{s}$, $\delta = 10^{-4}$, $16$ MPI processes.
+-    $N_x$ is the number of columns of the coarsest multigrid level (the
+-    finest has $4N_x$); patch DOFs are those of the finest level; times
+-    are medians of three runs.}
++    cycle per application in both (three levels: Chebyshev(6) smoothing
++    with the column-star patch and RCM-reordered patch factorisations on
++    the two finer levels, a direct solve on the coarsest).  FGMRES with
++    right preconditioning to a relative residual of $10^{-8}$; aspect
++    ratio $\varepsilon = 1.3\times10^{-2}$, $\Delta t = 100\,\mathrm{s}$,
++    $\delta = 10^{-4}$ ($C_1 = \delta\,\Delta t = 10^{-2}$), $16$ MPI
++    processes.  $N_x$ is the number of columns of the coarsest multigrid
++    level (the finest has $4N_x$); the patches have the same size on
++    both smoothed levels; times are medians of three runs.}
+     \label{tab:monolithic}
+     \small
+     \setlength{\tabcolsep}{5pt}
+@@ -3856,6 +3830,55 @@
+     \end{tabular}
+ \end{table}
+ 
++Table~\ref{tab:monolithic} reports, for the geometry, time step and
++shift of Table~\ref{tab:rcm} and five mesh resolutions from
++$3.2\times10^{4}$ to $2.05\times10^{6}$ unknowns, the number of
++degrees of freedom per patch, the wall-clock time spent in the
++preconditioner (PCApply) during one FGMRES solve, which includes the
++numerical refactorisation of the patch and coarse-grid matrices, and
++the iteration count to a relative residual of
++$10^{-8}$, for both approaches with one multigrid cycle per application
++and the same smoother.  The two converge in the same number of
++iterations, except at $(80, 80)$, where the monolithic cycle needs one
++fewer.  That they agree is to be expected.  The pressure space is discontinuous,
++so its mass matrix is block diagonal, and every pressure unknown that the divergence couples to the
++velocity unknowns of a column-star patch lies in the two columns of
++that patch.  Eliminating the pressure from a monolithic patch problem
++therefore gives exactly the fieldsplit patch problem on $S$; the
++coarse-grid corrections agree in the velocity, because the spaces are
++nested and the cells affine, so that the rediscretised coarse operators
++are the Galerkin ones and the divergence commutes with the
++prolongation; and, since PETSc's eigenvalue estimates give both
++smoothers the same Chebyshev interval ($[0.2, 2.2]$ to four digits),
++one monolithic cycle on $A_\delta$ returns the same velocity as one
++fieldsplit cycle.  The two differ only in the pressure, which the
++Schur factorisation recovers exactly from the shifted divergence
++equation~\eqref{eq:shifted-div} and the monolithic cycle returns with
++a small residual.  The difference in cost therefore comes from the
++larger systems the monolithic cycle works with: its patches also carry
++the pressure unknowns of their two columns, $38N_z + 8$ against
++$30N_z + 8$ unknowns, and its smoother, residuals and grid transfers
++act on the pressure as well.  An application of the monolithic cycle
++is $11$--$17\%$ more expensive, and its cumulative PCApply time is
++$11$--$17\%$ higher than that of the fieldsplit Schur approach at every
++resolution except $(80, 80)$, where the monolithic cycle saves an
++iteration and the difference is $1\%$.
++
++A monolithic cycle in which only the patch factorisations and the
++coarser levels use $A_\delta$, while the finest-level smoother and
++residual use the unshifted operator $A_0$, is a different
++preconditioner.  It is what PETSc's multigrid does by default when it
++is given $A_0$ as the operator and $A_\delta$ only as the
++preconditioning matrix, as it is inside Firedrake's auxiliary-operator
++preconditioner; the option \opt{pc_use_amat:false} makes it use
++$A_\delta$ throughout, as in Table~\ref{tab:monolithic}.  That cycle
++is a multigrid method for $A_0$ rather than an approximation of
++$A_\delta^{-1}$.  It needs fewer iterations on the two smaller meshes
++($6$ and $8$ at $(20, 20)$ and $(40, 40)$), fewer even than the exact
++inverse of $A_\delta$ ($11$ and $10$), but it does not converge within
++$100$ iterations at $(80, 80)$, so it is not robust.
++
++
+ \subsection{A smaller patch: single-column smoothing}
+ \label{sec:single-column}
+ 
+@@ -4062,15 +4085,14 @@
+ importance.
+ Reverse Cuthill--McKee reordering of the patch subproblems is a necessity. Without it the patch bandwidth grows with
+ the number of vertical layers and the preconditioner application cost
+-grows superlinearly, while with it the cost per layer is constant.  And a
++grows superlinearly, while with it the cost grows only linearly.  And a
+ monolithic column-patch smoother applied directly to $A_\delta$
+-converges in the same number of iterations as the Schur reduction, as
+-it must, since eliminating the pressure from its patches gives the
+-fieldsplit patches; the fieldsplit patches are about $20\%$ smaller,
+-so the Schur reduction is the cheaper of the two.
+-%  so that the cumulative
+-% preconditioner cost is lower for the monolithic solver at every
+-% resolution tested.
++returns the same velocity as the Schur reduction in each application,
++since eliminating the pressure from its patches gives the fieldsplit
++patches, and converges in the same number of iterations to within one;
++the fieldsplit patches are about $20\%$ smaller, and the Schur
++reduction is the cheaper of the two, by $10$--$15\%$ in preconditioner
++time at four of the five resolutions tested.
+ 
+ Several limitations should be stated plainly.  The analysis assumes an
+ exact solve on the Schur-complement block, whereas the implementation
+@@ -4353,10 +4375,11 @@
+ 
+ \emph{The relaxation.}  \opt{ksp_type:richardson} with
+ \opt{ksp_max_it:6} applies six Richardson sweeps per multigrid visit,
+-with the damping factor $\theta$.  Neither has been
+-tuned to be optimised, which is the sense in which the comparison of
+-Section~\ref{sec:timing} between the fieldsplit and monolithic
+-smoothers is untuned on both sides.  The coarse grid is solved
++with the damping factor $\theta$.  The timings of
++Section~\ref{sec:timing} use \opt{ksp_type:chebyshev} with
++\opt{ksp_max_it:6} instead, six Chebyshev steps on the interval
++estimated by PETSc, for the fieldsplit and the monolithic smoother
++alike.  Neither choice has been tuned.  The coarse grid is solved
+ directly.
+ 
+ The pressure block, by contrast, requires no iteration at all:

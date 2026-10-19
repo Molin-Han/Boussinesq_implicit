@@ -1,0 +1,475 @@
+commit 0778f01ea0cc8352a71f202cf99d91ef7867dc41
+Author: Molin Han <Molin.han@outlook.com>
+Date:   Mon Oct 19 07:24:16 2026 +0100
+
+    Short single-column patch section with new figures; restyled figures 4-12
+    
+    - Section 5.7 (single-column patch) replaced by a short section: the
+      motivation for the smaller patch, the paper's four robustness sweeps
+      re-run for both codes with the star and the single-column patch
+      (new figures Image_restyled/single_column_{linear,nonlinear}), and the
+      result: the single column converges wherever the star does and is as
+      parameter-robust at the time step of the sweeps; it needs two to three
+      times the iterations in the grad-div-dominated nonlinear regime. The
+      old fig. 14 and the two single-column tables are removed.
+    - Figures 4-12 now use the restyled drop-in versions in Image_restyled/
+      (same data, same file names).
+    - Captions of figs. 6, 10, 11, 12 follow the restyled legends; the
+      reversed C_1 intervals of figs. 11-12 are replaced by the seven values;
+      missing word in Section 5.1.
+    
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+diff --git a/ex_article.tex b/ex_article.tex
+index f387099..73e09bf 100644
+--- a/ex_article.tex
++++ b/ex_article.tex
+@@ -1134,9 +1134,8 @@ local solution and each $A_i$ is invertible.
+ 
+ The second is the parameter-robustness of the multigrid V-cycle, and
+ here the choice of a vertex-star patch is what secures it for every
+-degree $k$; for $k = 2$ a single-column patch also meets the kernel
+-condition below once the coarse level is counted, at a larger
+-constant (Section~\ref{sec:single-column}). The grad--div term
++degree $k$; for $k = 2$ a single-column patch is also found to work in
++practice (Section~\ref{sec:single-column}). The grad--div term
+ in~\eqref{eq:Schur-explicit} carries a coefficient that grows as the
+ shift $\delta \to 0$, so the velocity block approaches the
+ grad--div-dominated regime in which robustness requires that the kernel
+@@ -2984,7 +2983,7 @@ Section~\ref{sec:discretisation} is used with polynomial degree
+ $k = 2$, giving $\mathrm{RT}_2 \otimes \mathbb{W}_h^\theta \otimes 
+ \mathrm{DG}_1$. Time integration uses the implicit midpoint rule 
+ through Irksome.
+-fully discrete system at each time step is solved with FGMRES, 
++The fully discrete system at each time step is solved with FGMRES, 
+ right-preconditioned by the shifted Schur-complement 
+ preconditioner of Section~\ref{sec:precond}. The convergence criterion is reduction of the solution error norm by
+ ten orders of magnitude, where the solution error is measured against
+@@ -3044,7 +3043,7 @@ $\Delta x$ across different horizontal resolution.
+ 
+ \begin{figure}[t]
+     \centering
+-    \includegraphics[width=0.8\linewidth]{Image_new/error_dx_Robust_dt50.0}
++    \includegraphics[width=0.8\linewidth]{Image_restyled/error_dx_Robust_dt50.0}
+     \caption{Robustness in the horizontal resolution $\Delta x$.
+     FGMRES convergence history (relative solution-error norm vs
+     iteration index) for $N_x \in \{10, 20, 40, 60, 80\}$ at
+@@ -3061,7 +3060,7 @@ smoother resolves the vertical coupling exactly within each patch.
+ 
+ \begin{figure}[t]
+     \centering
+-    \includegraphics[width=0.8\linewidth]{Image_new/error_dz_Robust_dt50.0}
++    \includegraphics[width=0.8\linewidth]{Image_restyled/error_dz_Robust_dt50.0}
+     \caption{Robustness in the vertical resolution $\Delta z$.
+     FGMRES convergence history for $N_z \in \{10, 20, 40, 60, 80\}$
+     at fixed $\Delta t = 50\,\mathrm{s}$, with remaining parameters
+@@ -3185,9 +3184,11 @@ Lemma~\ref{lem:poincare-split} acting on the modes they do.
+ 
+ \begin{figure}[t]
+     \centering
+-    \includegraphics[width=0.85\linewidth]{Image_new/error_AR_Robust_dt50.0}
++    \includegraphics[width=0.85\linewidth]{Image_restyled/error_AR_Robust_dt50.0}
+     \caption{Robustness in the aspect ratio $\varepsilon = L_z/L_x$.
+-    FGMRES convergence history for seven aspect ratios at fixed
++    FGMRES convergence history for seven depths
++    $L_z \in \{12, 8, 4, 2, 1, 0.5, 0.25\}\,\mathrm{km}$
++    ($\varepsilon$ from $4\times10^{-2}$ to $8.3\times10^{-4}$) at fixed
+     $\Delta t = 50\,\mathrm{s}$. Thinner domains (smaller
+     $\varepsilon$) converge in fewer iterations.  The bound of
+     Theorem~\ref{thm:main} is uniform in $\varepsilon$; the improvement
+@@ -3287,7 +3288,7 @@ directly; the present data cannot reach either.]
+ 
+ \begin{figure}[t]
+     \centering
+-    \includegraphics[width=0.85\linewidth]{Image_new/error_shift}
++    \includegraphics[width=0.85\linewidth]{Image_restyled/error_shift}
+     \caption{Robustness in the shift parameter scaling.
+     FGMRES iteration count as a function of $\Delta t$ for
+     $C_1 \in \{10^{0}, 10^{-1}, 10^{-2}, 10^{-3}, 10^{-4}, 10^{-5}\}$
+@@ -3346,7 +3347,7 @@ Section~\ref{sec:robustness}.
+     \centering
+     \begin{minipage}{0.48\linewidth}
+         \centering
+-        \includegraphics[width=\linewidth]{Image_nonlinear/snes_error_dx_dt50.0}
++        \includegraphics[width=\linewidth]{Image_restyled/snes_error_dx_dt50.0}
+         \caption{Nonlinear robustness in $\Delta x$: relative
+         solution error vs cumulative inner KSP iterations for
+         five horizontal resolutions at $\Delta t = 50\,\mathrm{s}$.}
+@@ -3354,7 +3355,7 @@ Section~\ref{sec:robustness}.
+     \end{minipage}\hfill
+     \begin{minipage}{0.48\linewidth}
+         \centering
+-        \includegraphics[width=\linewidth]{Image_nonlinear/snes_error_dz_dt50.0}
++        \includegraphics[width=\linewidth]{Image_restyled/snes_error_dz_dt50.0}
+         \caption{Nonlinear robustness in $\Delta z$: relative
+         solution error vs cumulative inner KSP iterations for
+         five vertical resolutions at $\Delta t = 50\,\mathrm{s}$.}
+@@ -3373,17 +3374,18 @@ its aspect-ratio robustness in the nonlinear setting.
+     \centering
+     \begin{minipage}{0.48\linewidth}
+         \centering
+-        \includegraphics[width=\linewidth]{Image_nonlinear/snes_error_AR_dt100.0}
++        \includegraphics[width=\linewidth]{Image_restyled/snes_error_AR_dt100.0}
+     \end{minipage}\hfill
+     \begin{minipage}{0.48\linewidth}
+         \centering
+-        \includegraphics[width=\linewidth]{Image_nonlinear/snes_error_AR_dt5000.0}
++        \includegraphics[width=\linewidth]{Image_restyled/snes_error_AR_dt5000.0}
+     \end{minipage}
+     \caption{Nonlinear robustness in the aspect ratio
+     $\varepsilon = L_z/L_x$: relative solution error vs
+     cumulative inner KSP iterations at $\Delta t = 100\,\mathrm{s}$
+     (left) and $\Delta t = 5000\,\mathrm{s}$ (right) for five
+-    aspect ratios. The curves are tightly clustered at both time
++    aspect ratios, $L_z \in \{12, 8, 4, 2, 1\}\,\mathrm{km}$
++    ($\varepsilon$ from $4\times10^{-2}$ to $3.3\times10^{-3}$). The curves are tightly clustered at both time
+     steps.}
+     \label{fig:snes-ar}
+ \end{figure}
+@@ -3407,18 +3409,21 @@ $1/(\varepsilon N)$.
+     \centering
+     \begin{minipage}{0.48\linewidth}
+         \centering
+-        \includegraphics[width=\linewidth]{Image_nonlinear/snes_error_shift_dt500.0}
++        \includegraphics[width=\linewidth]{Image_restyled/snes_error_shift_dt500.0}
+         \caption{Nonlinear shift-parameter sensitivity: convergence
+-        history at $\Delta t = 500\,\mathrm{s}$ for
+-        $C_1 \in [10^{-3}, 10^{-6}]$.}
++        history at $\Delta t = 500\,\mathrm{s}$ for the seven values
++        $C_1 \in \{10^{-3}, 5\times10^{-4}, 10^{-4}, 5\times10^{-5},
++        10^{-5}, 5\times10^{-6}, 10^{-6}\}$, coloured as in
++        Figure~\ref{fig:snes-shift-sweep}.}
+         \label{fig:snes-shift-hist}
+     \end{minipage}\hfill
+     \begin{minipage}{0.48\linewidth}
+         \centering
+-        \includegraphics[width=\linewidth]{Image_nonlinear/error_shift_nonlinear}
++        \includegraphics[width=\linewidth]{Image_restyled/error_shift_nonlinear}
+         \caption{Nonlinear shift-parameter sweep: total KSP
+-        iteration count vs $\Delta t$ for
+-        $C_1 \in [10^{-3}, 10^{-6}]$.}
++        iterations plus the number of Newton steps vs $\Delta t$ for
++        the seven values of $C_1$ of Figure~\ref{fig:snes-shift-hist};
++        values of $100$ or more are not plotted.}
+         \label{fig:snes-shift-sweep}
+     \end{minipage}
+ \end{figure}
+@@ -3833,228 +3838,92 @@ per level, is left for future tuning.
+ \subsection{A smaller patch: single-column smoothing}
+ \label{sec:single-column}
+ 
+-The star patch of Section~\ref{sec:inner-solvers} spans two columns of
+-cells.  On thin domains one might expect a single column to suffice:
+-as $\varepsilon \to 0$ the vertical derivative dominates the
+-divergence, so the divergence-free fields that a robust smoother must
+-represent patch by patch~\cite{ArnoldHdivPC, PCPATCH} would appear to
+-become fewer.  We test this with the single-column patch built on the
+-closure of a base-mesh cell: one column of cells together with the
+-horizontal-velocity degrees of freedom on its two vertical facets
+-(\opt{firedrake.ASMVankaPC} with \opt{pc_vanka_construct_dim:1} in
+-place of \opt{firedrake.ASMStarPC} in Appendix~\ref{app:petsc-options}).
+-For $k = 2$ it has $18N_z + 4$ unknowns against $30N_z + 8$ for the
+-star ($364$ against $608$ at $N_z = 20$), and its LU factor has
+-$21\,060$ nonzeros against $53\,468$.  The question is whether this
+-patch keeps the robustness of Sections~\ref{sec:robustness}
+-and~\ref{sec:nonlinear}, and at what cost.
+-
+-The premise fails: in the Piola-mapped basis the discrete divergence
+-matrix does not depend on the geometry at all, only the mass matrices
+-do, so the kernel of the grad--div term is the same for every
+-$\varepsilon$.  On the slice that kernel is $\nabla^\perp\psi$ for
+-$\psi \in \mathrm{CG}_k(x) \otimes \mathrm{CG}_k(z)$ constant along the
+-top and along the bottom, and a single column supports only the $\psi$
+-built on the $x$-bubbles of its cell: $(k-1)(kN_z - 1)$ kernel
+-functions per patch instead of $(2k-1)(kN_z - 1)$ for the star, and
+-none for $k = 1$.  What rescues the single-column patch for $k = 2$ is
+-the coarse level: $\mathrm{CG}_2$ on the fine base mesh is the direct
+-sum of $\mathrm{CG}_2$ on the coarsened one and the fine cell bubbles,
+-so the coarse-grid kernel and the single-column kernels span the whole
+-kernel as a direct sum (on an $8 \times 3$ mesh, with Firedrake's
+-prolongation, the kernel has dimension $81$ for $k = 2$ and the two
+-parts have $41$ and $40$; for $k = 1$ they have $9$ and $0$ of $17$).
+-The price is the constant of this splitting, which bounds the
+-two-level additive method as $\delta \to 0$.  Separating vertical
+-modes, which is exact here because every patch is a whole column, a
+-divergence-free field of the $l$-th vertical mode has horizontal
+-velocity $U(x)$ times the mode profile, $U \in \mathrm{CG}_2(x)$, and
+-carries the energy $\|U\|^2 + \rho_l\,\Delta x^2\|U'\|^2$ with
+-$\rho_l = mL_z^2/(\pi^2 l^2 \Delta x^2)$ (the discrete vertical
+-wavenumber replacing $\pi l/L_z$), $m = 1 + \Delta t^2N^2/4$ as in
+-Section~\ref{sec:theory}, and $\Delta x = L_x/(4N_x)$ the cell width
+-of the finest level.  The constant of the split into coarse
+-interpolant and bubbles grows from $2.0$ for $\rho_l \to \infty$ to
+-$12.3$ for $\rho_l \to 0$ ($15.7$ with the three levels used here),
+-while the corresponding constant of the star patch stays below $1.3$.
+-Since $\rho_l$ decreases with $l$, the highest modes sit at the
+-constant $12.3$ on every mesh; the gravest mode, which carries the
+-test data (Remark~\ref{rem:thin-faster}), has
+-$\rho_1 = mL_z^2/(\pi^2\Delta x^2)$, so thin, weakly stratified
+-domains, $\rho_1 \to 0$, put that mode at the worst constant too: the
+-least favourable case, the opposite of the motivation.
+-
+-The shift fixes the regime in which this matters.  With
+-$\delta = K\,\delta_{\mathrm{thr}}$,
+-$\delta_{\mathrm{thr}} = \Delta t/(2C_M^2)$ the admissible shift of
+-Corollary~\ref{cor:dimensional}, the grad--div coefficient
+-$\Delta t/\delta$ in~\eqref{eq:Schur-explicit} equals $2C_M^2/K$.  The
+-admissible range $K \lesssim 1$ is therefore exactly the
+-grad--div-dominated regime in which the kernel condition decides the
+-robustness of the smoother, and the relevant test of the single-column
+-patch is whether its iteration count stays bounded as $K \to 0$.  For
+-$K \gg 1$ the grad--div term is weak and any smoother serves, but
+-there the outer iteration itself degrades (Section~\ref{sec:robustness}),
+-so agreement between the two patches in that range is no evidence.
+-Table~\ref{tab:single-column-block} isolates the smoother: the
+-velocity--buoyancy block alone is solved by FGMRES to a relative
+-residual of $10^{-8}$, preconditioned by the three-level V-cycle of
+-the solver (six GMRES iterations per level, preconditioned by the
+-patch operator), for a random right-hand side on the nominal
+-configuration.  With the star patch the V-cycle is close to an exact
+-solver for both degrees.  With the single-column patch and $k = 2$
+-the count is bounded as $K \to 0$ ($20$ at $K = 0.1$ against $17$ at
+-$K = 1$), as the kernel condition met by the coarse level and the
+-bubbles predicts, and it is bounded in every other parameter at
+-$K = 1$: $17$, $17$, $16$, $9$, $6$ for $\Delta t = 1$, $50$, $10^3$,
+-$10^4$, $10^5\,\mathrm{s}$; $11$ to $19$ for $N_x = 10$ to $80$; $16$
+-to $17$ for $N_z = 10$ to $80$; and $16$ to $18$ for
+-$L_z = 12\,\mathrm{km}$ down to $250\,\mathrm{m}$.  For $k = 1$, where
+-the condition fails, the count grows as $K$ decreases and the solve
+-does not converge within $200$ iterations at $K = 0.1$; in the full
+-nonlinear solver at $K = 1$ and $\Delta t = 50\,\mathrm{s}$ the $k = 1$
+-single-column patch needs $56$, $78$ and $99$ iterations for
+-$N_x = 10$, $20$, $40$ against $11$, $13$, $13$ for the star, growing
+-with the mesh.  The single-column patch is therefore a robust smoother
+-for $k = 2$ only, and about eight times weaker than the star.
+-
+-\begin{table}[t]
+-    \centering
+-    \caption{FGMRES iterations to a relative residual of $10^{-8}$ on
+-    the velocity--buoyancy block alone, preconditioned by the
+-    three-level V-cycle with the star or the single-column patch,
+-    random right-hand side, nominal configuration
+-    ($(N_x, N_z) = (20, 20)$, $\Delta t = 50\,\mathrm{s}$), serial,
+-    with $\delta = K\,\delta_{\mathrm{thr}}$.  The admissible range of
+-    Corollary~\ref{cor:dimensional} is $K \lesssim 1$.  $>200$: not
+-    converged within $200$ iterations; --: not run.}
+-    \label{tab:single-column-block}
+-    \setlength{\tabcolsep}{7pt}
+-    \begin{tabular}{ll rrrrr}
+-        \toprule
+-        & & $K = 0.1$ & $1$ & $10$ & $10^2$ & $10^3$ \\
+-        \midrule
+-        $k = 2$ & star          &    2 &  2 &  2 & 2 & 1 \\
+-                & single column &   20 & 17 &  8 & 5 & 3 \\
+-        \addlinespace
+-        $k = 1$ & star          &    3 &  3 &  2 & 2 & -- \\
+-                & single column & $>200$ & 19 & 13 & 6 & -- \\
+-        \bottomrule
+-    \end{tabular}
+-\end{table}
++The star patch of Section~\ref{sec:inner-solvers}, the column patch
++of the preceding sections, spans the two columns of cells around a
++vertex of the base mesh.  A smaller patch is suggested by the
++geometry.  A robust patch smoother needs the divergence-free fields,
++the kernel of the grad--div term, to have a basis of functions each
++supported in one patch (Section~\ref{sec:inner-solvers}); as the
++aspect ratio decreases the domain becomes thinner and the divergence
++is dominated by its vertical derivative, so this kernel is expected to
++be captured within single columns of cells.  We therefore replace the
++vertex star on the multigrid levels by a single-column patch, the
++closure of one cell of the base mesh: one column of cells together
++with the horizontal-velocity degrees of freedom on its two vertical
++facets, obtained with \opt{firedrake.ASMVankaPC} and
++\opt{pc_vanka_construct_dim:1} in place of \opt{firedrake.ASMStarPC}
++and \opt{pc_star_construct_dim:0} (Appendix~\ref{app:petsc-options}).  For $k = 2$ it has $18N_z + 4$
++unknowns against $30N_z + 8$ for the star ($364$ against $608$ at
++$N_z = 20$).
++
++Figures~\ref{fig:single-column-linear} and~\ref{fig:single-column-nonlinear}
++show the four sweeps of Sections~\ref{sec:robustness}
++and~\ref{sec:nonlinear}, with the same shifts $\delta = C_1/\Delta t$,
++meshes, aspect ratios and tolerances, for both patches.  The
++single-column patch converges in every run in which the star patch
++converges, and at $\Delta t = 50\,\mathrm{s}$, the time step of the mesh
++sweeps, its counts depend as little on $\Delta x$, $\Delta z$ and
++$\varepsilon$ as those of the star patch.  For the linear problem the
++two patches give the same counts to within one iteration in $165$ of
++the $191$ runs in which both converge, among them every run of
++Figures~\ref{fig:robust-dx}--\ref{fig:robust-ar}; the single column
++needs clearly more only for the smallest shift, $C_1 = 10^{-5}$ (at
++most $7$ against $4$), and in thin domains at large time steps
++($L_z \le 2\,\mathrm{km}$, $\Delta t \ge 100\,\mathrm{s}$), up to $2.75$
++times the iterations ($11$ against $4$ at $L_z = 250\,\mathrm{m}$,
++$\Delta t = 500$--$1000\,\mathrm{s}$).  For the nonlinear problem the
++two patches fail in the same runs.  Where the shift lies above the
++worst-case admissible bound $\delta \lesssim \Delta t/(2C_M^2)$ of
++Corollary~\ref{cor:dimensional} ($\Delta t \le 100\,\mathrm{s}$ for
++$C_1 = 10^{-5}$) their counts are equal or close (median ratio $1.0$,
++at most $2.1$); inside the admissible range
++($\Delta t \ge 500\,\mathrm{s}$) the single column needs two to three
++times the iterations (median $2.6$, at most $5.9$), and its counts grow
++under vertical refinement (median $19$ at $N_z = 10$ and $38$ at
++$N_z = 80$, against $10$ for the star).  The smaller patch is therefore
++a working alternative to the star patch: in the linear problem and at
++the time step of the parameter sweeps it is as parameter-robust as the
++star patch, while in the grad--div-dominated regime of the nonlinear
++problem it needs two to three times the iterations.  Each outer
++iteration is about $30\%$ cheaper (measured for the nonlinear solver at
++$(N_x, N_z) = (20, 20)$), so that it is also faster wherever the two
++counts are within a factor of about $1.4$.  All runs use $k = 2$; for
++$k = 1$ a single column contains no divergence-free fields and the
++star patch is required.
+ 
+ \begin{figure}[t]
+     \centering
+-    \includegraphics[width=\linewidth]{Image_patch/column_patch_sweeps}
+-    \caption{Star patch (solid lines, filled markers) against
+-    single-column patch (dashed, open markers): total FGMRES
+-    iterations over the Newton steps of one time step of the
+-    nonlinear Skamarock--Klemp runs, with
+-    $\delta = K\,\delta_{\mathrm{thr}}$,
+-    $\delta_{\mathrm{thr}} = \Delta t/(2C_M^2)$ the admissible shift
+-    of Corollary~\ref{cor:dimensional}, and $K = 1$ unless stated.
+-    (a) Aspect ratio.  (b) Mesh resolution at
+-    $\Delta t = 50\,\mathrm{s}$.  (c) Shift factor $K$ on the nominal
+-    geometry; the admissible range is $K \lesssim 1$, and runs that
+-    did not converge, the same ten for both patches and all at
+-    $K \ge 100$, are omitted.  (d) Ratio single column\,/\,star for
+-    the $170$ runs at $K = 1$ of the aspect-ratio and the two mesh
+-    sweeps, every $\Delta t$, against
+-    $\rho_1 = mL_z^2/(\pi^2\Delta x^2)$.}
+-    \label{fig:single-column}
++    \includegraphics[width=\linewidth]{Image_restyled/single_column_linear}
++    \caption{Linear problem: star patch (solid lines, filled markers)
++    against single-column patch (dashed lines, open markers) on the
++    sweeps of Section~\ref{sec:robustness}, $\delta = C_1/\Delta t$.
++    (a) Aspect ratio, $C_1 = 10^{-3}$; three of the seven values of
++    $L_z$ are labelled, the colour runs from $12\,\mathrm{km}$ (dark)
++    to $0.25\,\mathrm{km}$ (light).  (b) Mesh resolution at
++    $\Delta t = 50\,\mathrm{s}$, $C_1 = 10^{-3}$: the four curves
++    coincide at $8$ iterations.  (c) Shift sweep on the nominal
++    geometry; three of the six values of $C_1$ are labelled, the colour
++    runs from $C_1 = 1$ (dark) to $10^{-5}$ (light).  Runs that did not
++    converge within the iteration cap, the same ten for both patches,
++    are omitted.}
++    \label{fig:single-column-linear}
+ \end{figure}
+ 
+-Figure~\ref{fig:single-column} runs the four sweeps of
+-Section~\ref{sec:robustness} for the nonlinear problem of
+-Section~\ref{sec:nonlinear} again with both patches, now with
+-$\delta = K\,\delta_{\mathrm{thr}}$, $K = 1$ unless swept (FGMRES to a
+-relative residual of $10^{-6}$ and Newton to an absolute residual of
+-$10^{-9}$, no Eisenstat--Walker forcing, six GMRES iterations per
+-level preconditioned by the patch operator in place of the Richardson
+-sweeps of Appendix~\ref{app:petsc-options}, two MPI ranks).  The
+-single-column patch converges in every run in which the star patch
+-converges, with totals at $K = 1$ between $10$ and $50$ against $3$
+-to $40$: the robustness survives.  It costs iterations, and in three
+-of the four sweeps the excess follows the constant: the ratio is
+-largest for thin domains at small $\Delta t$ (panel~(a), $32$ against
+-$3$ at $L_z = 250\,\mathrm{m}$, $\Delta t = 50\,\mathrm{s}$), it
+-shrinks under horizontal refinement (panel~(b)), and over the $170$
+-runs of the three parameter sweeps at $K = 1$ the ratio of the two
+-counts falls with $\rho_1$ (panel~(d)), from a median of $5.2$ below
+-$\rho_1 = 10^{-2}$ to $1.1$ above $\rho_1 = 10^{2}$.  Within the
+-admissible range of the shift the ratio lies between $1.0$ and $3.3$
+-at $K = 1$ and between $1.4$ and $5.5$ at $K = 0.1$ (panel~(c); $44$
+-against $8$ at $\Delta t = 50\,\mathrm{s}$), so over the one decade
+-tested below the threshold the full solver does not yet show the
+-$K$-independence of Table~\ref{tab:single-column-block}; the two
+-counts coincide only for $K \gtrsim 100$, outside that range, where
+-the omitted runs show the outer iteration failing for both patches.
+-Two further drawbacks are not predicted by the constant.  The growth
+-with $N_z$ in panel~(b) ($20$ to $39$ at $\Delta t = 50\,\mathrm{s}$
+-for $N_z = 10$ to $80$) is absent from the block solve of
+-Table~\ref{tab:single-column-block}, and so must arise from the
+-interaction of the inexact inner solve with the outer Newton--Krylov
+-iteration; and, unlike the star counts, the single-column counts at
+-$\Delta t \le 100\,\mathrm{s}$ vary by about $20\%$ between identical
+-runs.  The smaller patch is a robust but markedly weaker approximation
+-of $S^{-1}$.
+-
+-\begin{table}[t]
++\begin{figure}[t]
+     \centering
+-    \caption{Wall-clock time of one time step with the star and the
+-    single-column patch: PETSc stage of the second time step (the
+-    first is warm-up), minimum of three repeats, two MPI ranks,
+-    $K = 1$, $(N_x, N_z) = (20, 20)$ and the nominal geometry unless
+-    stated.  Iterations are totals over the Newton steps of the timed
+-    repeat; the ratio is the time of the single-column patch over that
+-    of the star patch.  The last row lies outside the admissible range
+-    of the shift and is included only to show the per-iteration
+-    saving at equal counts.}
+-    \label{tab:single-column}
+-    \setlength{\tabcolsep}{5pt}
+-    \begin{tabular}{l cc rr c}
+-        \toprule
+-        Configuration & \multicolumn{2}{c}{Iterations} & \multicolumn{2}{c}{Time (s)} & Ratio \\
+-        \cmidrule(lr){2-3} \cmidrule(lr){4-5}
+-        & star & single column & star & single column & \\
+-        \midrule
+-        $\Delta t = 50\,\mathrm{s}$                           & 13 & 24 &  4.05 &  5.03 & 1.24 \\
+-        $\Delta t = 10^3\,\mathrm{s}$                         & 20 & 29 &  5.82 &  5.96 & 1.02 \\
+-        $\Delta t = 5\times10^3\,\mathrm{s}$                  & 29 & 31 &  8.12 &  6.27 & 0.77 \\
+-        $\Delta t = 10^5\,\mathrm{s}$                         & 18 & 20 &  5.30 &  4.35 & 0.82 \\
+-        $L_z = 12\,\mathrm{km}$, $\Delta t = 50\,\mathrm{s}$  & 13 & 17 &  3.98 &  3.72 & 0.93 \\
+-        $L_z = 250\,\mathrm{m}$, $\Delta t = 50\,\mathrm{s}$  &  3 & 27 &  1.35 &  5.57 & 4.12 \\
+-        $L_z = 250\,\mathrm{m}$, $\Delta t = 10^5\,\mathrm{s}$ & 40 & 44 & 11.23 &  8.94 & 0.80 \\
+-        $N_x = 80$, $\Delta t = 50\,\mathrm{s}$               & 11 & 14 & 12.93 & 11.46 & 0.89 \\
+-        $N_z = 80$, $\Delta t = 50\,\mathrm{s}$               & 11 & 38 & 13.18 & 26.34 & 2.00 \\
+-        $K = 100$, $\Delta t = 50\,\mathrm{s}$                & 62 & 62 & 16.14 & 11.81 & 0.73 \\
+-        \bottomrule
+-    \end{tabular}
+-\end{table}
+-
+-Table~\ref{tab:single-column} gives the wall-clock cost of one time
+-step.  The single-column patch saves about $30\%$ per FGMRES iteration
+-(the patch solves are $2.2$ times cheaper, the rest of the
+-preconditioner application is nearly unchanged), so it is faster only
+-where the two iteration counts are within a factor of about $1.4$: for
+-$\rho_1 \gtrsim 10$, i.e.\ $\Delta t \gtrsim 2\times10^{3}\,\mathrm{s}$
+-on the nominal geometry ($\Delta t \ge 5000\,\mathrm{s}$ in the
+-table), where it gains $18$ to $23\%$.  Elsewhere it is no faster, and
+-up to four times slower in the thinnest domain at
+-$\Delta t = 50\,\mathrm{s}$.
+-
+-For $k = 2$ the single-column patch is therefore a workable
+-alternative to the star patch: within the admissible range of the
+-shift it converges wherever the star patch does, its iteration count
+-is bounded in $K$, $\Delta t$, $\Delta x$, $\Delta z$ and
+-$\varepsilon$, and each iteration is cheaper.  Its drawbacks are a
+-larger constant, worst precisely for the thin, weakly stratified
+-domains that motivated it, where it costs up to ten times the
+-iterations and four times the wall-clock time; a growth with $N_z$
+-and a run-to-run variability in the full solver that the two-level
+-constant does not account for; and no robustness at all for $k = 1$.
+-It pays off at large time steps, $\rho_1 \gtrsim 10$ on the nominal
+-geometry; the star patch remains the robust default.
++    \includegraphics[width=\linewidth]{Image_restyled/single_column_nonlinear}
++    \caption{Nonlinear problem: the same comparison on the sweeps of
++    Section~\ref{sec:nonlinear} (total FGMRES iterations over the
++    Newton steps of one time step).  (a) Aspect ratio, $C_1 = 10^{-5}$;
++    three of the five values of $L_z$ are labelled.  (b) Mesh
++    resolution at $\Delta t = 50\,\mathrm{s}$, $C_1 = 10^{-5}$.  (c) Shift
++    sweep on the nominal geometry; three of the seven values of $C_1$
++    are labelled.  Runs that did not converge, the same thirteen for
++    both patches, are omitted.  These runs add a Newton absolute
++    tolerance of $10^{-9}$ to the settings of
++    Section~\ref{sec:nonlinear}.}
++    \label{fig:single-column-nonlinear}
++\end{figure}
+ 
+ \subsection{Discussion}
+ \label{sec:numerics-discussion}
+@@ -4079,8 +3948,7 @@ indicates that the multigrid V-cycle is a sufficiently accurate
+ approximation of the exact Schur solve to preserve the iteration 
+ counts predicted by the theory. A rigorous analysis of the 
+ multigrid approximation in the presence of the grad-div 
+-augmentation~\eqref{eq:graddiv-augmentation}, beyond the two-level
+-kernel count of Section~\ref{sec:single-column}, is beyond the scope 
++augmentation~\eqref{eq:graddiv-augmentation} is beyond the scope
+ of the present work; we note in particular that 
+ Arnold, Falk and Winther~\cite{ArnoldHdivPC} establish the spectral equivalence of 
+ the augmented mass operator with the $H(\mathrm{div})$ Riesz map, 

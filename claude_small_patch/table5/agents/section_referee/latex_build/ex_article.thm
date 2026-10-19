@@ -1,0 +1,28 @@
+\contentsline {prop}{{Proposition}{3.1}{Solvability of the Schur-reduced system}}{11}{section*.2}%
+\contentsline {proof}{{Proof}{1}{}}{11}{section*.2}%
+\contentsline {rem}{{Remark}{4.1}{}}{17}{section*.5}%
+\contentsline {lem}{{Lemma}{4.2}{Kernel coercivity and the constraint norms}}{18}{section*.5}%
+\contentsline {proof}{{Proof}{2}{}}{18}{section*.5}%
+\contentsline {lem}{{Lemma}{4.3}{Right inverse of the rescaled divergence}}{18}{section*.5}%
+\contentsline {proof}{{Proof}{3}{}}{19}{section*.5}%
+\contentsline {lem}{{Lemma}{4.4}{Inf--sup constant of $b(\cdot ,\cdot )$}}{19}{section*.5}%
+\contentsline {proof}{{Proof}{4}{}}{20}{section*.5}%
+\contentsline {lem}{{Lemma}{4.5}{Horizontal--vertical splitting of the Poincar\'e constant}}{20}{section*.5}%
+\contentsline {proof}{{Proof}{5}{}}{20}{section*.5}%
+\contentsline {cor}{{Corollary}{4.6}{Aspect-ratio robustness}}{21}{section*.5}%
+\contentsline {proof}{{Proof}{6}{}}{22}{section*.5}%
+\contentsline {cor}{{Corollary}{4.7}{Dimensional form of the constants}}{22}{section*.5}%
+\contentsline {proof}{{Proof}{7}{}}{22}{section*.5}%
+\contentsline {lem}{{Lemma}{4.8}{Operator norm of $a$}}{22}{section*.5}%
+\contentsline {proof}{{Proof}{8}{}}{22}{section*.5}%
+\contentsline {rem}{{Remark}{4.9}{}}{23}{section*.5}%
+\contentsline {thm}{{Theorem}{4.10}{Convergence bound, symmetric case}}{23}{section*.5}%
+\contentsline {proof}{{Proof}{9}{}}{23}{section*.5}%
+\contentsline {thm}{{Theorem}{4.11}{Convergence bound for the shifted preconditioner}}{24}{section*.5}%
+\contentsline {proof}{{Proof}{10}{}}{25}{section*.5}%
+\contentsline {prop}{{Proposition}{4.12}{Asymptotic shift-parameter scaling}}{26}{section*.5}%
+\contentsline {proof}{{Proof}{11}{}}{27}{section*.5}%
+\contentsline {cor}{{Corollary}{4.13}{Dimensional form of the admissible shift}}{27}{section*.5}%
+\contentsline {proof}{{Proof}{12}{}}{27}{section*.5}%
+\contentsline {rem}{{Remark}{5.1}{Why thinner domains converge faster}}{31}{figure.9}%
+\contentsline {prop}{{Proposition}{C.1}{Schur complement via auxiliary form}}{49}{section*.26}%

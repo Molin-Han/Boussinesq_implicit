@@ -1,0 +1,15 @@
+    \small
+    \begin{tabular}{cc ccc ccc}
+        \toprule
+        & & \multicolumn{3}{c}{Fieldsplit Schur} & \multicolumn{3}{c}{Monolithic} \\
+        \cmidrule(lr){3-5} \cmidrule(lr){6-8}
+        $(N_x, N_z)$ & Unknowns & Patch DOFs & PCApply & Its
+                     & Patch DOFs & PCApply & Its \\
+        \midrule
+        $(20, 20)$ & 32k & 608 & 1.75s & 11 & 768 & 2.05s & 11 \\
+        $(40, 40)$ & 129k & 1208 & 5.76s & 11 & 1528 & 6.66s & 11 \\
+        $(80, 80)$ & 513k & 2408 & 23.36s & 11 & 3048 & 23.58s & 10 \\
+        $(80, 160)$ & 1.03M & 4808 & 44.60s & 10 & 6088 & 49.36s & 10 \\
+        $(160, 160)$ & 2.05M & 4808 & 94.11s & 10 & 6088 & 106.10s & 10 \\
+        \bottomrule
+    \end{tabular}
