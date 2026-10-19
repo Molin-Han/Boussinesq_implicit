@@ -1,0 +1,1 @@
+mpiexec --bind-to none -n 2 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/Nonlinear_Boussinesq_Irk_SC.py --nx 20 --nz 20 --length 300000.0 --height 4000.0 --dt 50.0 --tmax 100.0 --shift 1.096622711232e-08 --maxit 100 --timing --no_rotation --patch star -firedrake_1_snes_atol 1e-09 -firedrake_1_ksp_converged_reason -firedrake_1_snes_converged_reason -log_view :log_view.txt

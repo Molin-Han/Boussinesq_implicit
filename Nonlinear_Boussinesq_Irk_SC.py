@@ -39,6 +39,12 @@ parser.add_argument('--timing', action='store_true', help='If true, run the code
 
 # ! Solver setting
 parser.add_argument('--U_mean', type=float, default=0.0, help='Constant horizontal mean flow in x-direction (m/s). Set to 0 for no mean flow.')
+parser.add_argument('--patch', type=str, default='star', choices=['star', 'vanka'], help='Patch of the ASM smoother on the MG levels. star: star of the base vertex (two columns of cells). vanka: closure of the base cell (a single column of cells).')
+parser.add_argument('--linear_forms', action='store_true', help='Diagnostic: replace the nonlinear forms (advection of u and b) by the linear Boussinesq forms utils.LB_*_Irk in both the equation and the auxiliary-operator preconditioner, keeping Irksome, Newton, the shift and the solver unchanged. Lets the nonlinear script be compared with the linear code like-for-like.')
+parser.add_argument('--amplitude', type=float, default=3e-4, help='Diagnostic: amplitude of the initial buoyancy perturbation (the Skamarock-Klemp data of the paper use 3e-4). The linear forms do not depend on it; the nonlinear terms scale with its square.')
+parser.add_argument('--mg_smoother', type=str, default='gmres', choices=['gmres', 'chebyshev', 'richardson'], help='Diagnostic: KSP wrapped around the patch smoother on the MG levels (6 iterations). gmres is the committed solver; chebyshev is what LB_time_slice.py --richardson uses.')
+parser.add_argument('--fs1_lu', action='store_true', help='Diagnostic: solve the velocity-buoyancy block of the auxiliary operator exactly (LU) instead of one multigrid V-cycle, to separate the effect of the shift from that of the inexact inner solve.')
+parser.add_argument('--outer_gmres_left', action='store_true', help='Diagnostic: outer KSP gmres with left preconditioning (the setting of LB_time_slice.py --richardson) instead of fgmres with right preconditioning.')
 
 args = parser.parse_known_args()
 args = args[0]
@@ -49,7 +55,7 @@ if args.show_args:
 use_rotation = not args.no_rotation
 monitor_run = not args.timing
 any_test = args.dt_test or args.ar_test or args.dx_test or args.dz_test
-solver_name = 'MG ASMStar'
+solver_name = 'MG ASMStar' if args.patch == 'star' else 'MG ASMVanka'
 
 nx=args.nx
 nz=args.nz
@@ -68,6 +74,10 @@ print(f"Shift parameter {args.shift}, proportional constant C1 {args.shift * arg
 print(f"Mean flow U_mean = {args.U_mean} m/s in x-direction "
     f"({'ON' if args.U_mean != 0.0 else 'OFF'}).")
 print(f"The code is running with {solver_name} solver for the Schur complement created.")
+if args.linear_forms:
+    print("DIAGNOSTIC: --linear_forms is set, the LINEAR Boussinesq forms are used in the equation and the preconditioner.")
+if args.amplitude != 3e-4:
+    print(f"DIAGNOSTIC: initial buoyancy amplitude {args.amplitude} instead of the paper's 3e-4.")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 def vector_3D(u, uy):
@@ -118,7 +128,7 @@ u0_slice, u0yic, b0ic, p0ic = U.subfunctions # ! subfunction for data assignment
 if args.U_mean != 0.0:
     u0_slice.project(as_vector([U_mean, 0., 0.]))
 # b0ic.project(0.01 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
-b0ic.project(3e-4 * sin(pi*z/height)/(1+((x-xc)**2)/a**2))
+b0ic.project(args.amplitude * sin(pi*z/height)/(1+((x-xc)**2)/a**2))   # ! 3e-4 by default, the paper's data.
 
 # DiricheletBC
 bc1 = DirichletBC(W.sub(0), as_vector([0., 0., 0.]), "top")
@@ -129,9 +139,15 @@ bcs = [bc1, bc2]
 u = vector_3D(uxz, uy)
 w = vector_3D(w_xz, wy)
 
-eqn = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=use_rotation)
-eqn += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
-eqn += utils.Nonlinear_pressure_Irk(u, phi)
+if args.linear_forms:
+    # ! Diagnostic: the linear Boussinesq equations in the same Irksome / Newton / shifted-Schur framework.
+    eqn = utils.LB_velocity_Irk(u, w, b, p, use_rotation=use_rotation)
+    eqn += utils.LB_buoyancy_Irk(b, q, u)
+    eqn += utils.LB_pressure_Irk(u, phi)
+else:
+    eqn = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=use_rotation)
+    eqn += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
+    eqn += utils.Nonlinear_pressure_Irk(u, phi)
 
 # Pressure Nullspace
 v_basis = VectorSpaceBasis(constant=True, comm=COMM_WORLD)
@@ -155,9 +171,14 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         # ? The pressure elimination happened here, and no more pressure equation.
         p = p - Constant(1.) / delta * div(u) # ! This gives the correct SC form and also the form needed for fieldsplit. Details in paper / notes.
 
-        F = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=rotation)
-        F += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
-        F += utils.Nonlinear_pressure_Irk(u, phi)
+        if args.linear_forms:
+            F = utils.LB_velocity_Irk(u, w, b, p, use_rotation=rotation)
+            F += utils.LB_buoyancy_Irk(b, q, u)
+            F += utils.LB_pressure_Irk(u, phi)
+        else:
+            F = utils.Nonlinear_velocity_Irk(u, w, b, p, n, use_rotation=rotation)
+            F += utils.Nonlinear_buoyancy_Irk(b, q, u, n)
+            F += utils.Nonlinear_pressure_Irk(u, phi)
         F += delta * p * phi * dx
 
         #  Boundary conditions
@@ -171,6 +192,29 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
 #     "pc_type": "lu",
 #     "pc_factor_mat_solver_type": "mumps",
 # }
+
+# ! Patch for the ASM smoother on the MG levels.
+# ! The topology_dm of the extruded mesh is the base interval mesh, so every patch is made of whole columns.
+if args.patch == 'star':
+    # ! Star of the base vertex: the vertical facets above the vertex and the two columns of cells sharing them.
+    patch_params = {
+        "pc_type": "python",
+        "pc_python_type": "firedrake.ASMStarPC",
+        "pc_star_construct_dim": 0,
+        "pc_star_sub_sub_pc_type": "lu",
+        'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
+        'pc_star_sub_sub_pc_factor_reuse_ordering': None,
+    }
+else:
+    # ! Closure of the base cell: a single column of cells and the vertical facets on its two sides.
+    patch_params = {
+        "pc_type": "python",
+        "pc_python_type": "firedrake.ASMVankaPC",
+        "pc_vanka_construct_dim": 1,
+        "pc_vanka_sub_sub_pc_type": "lu",
+        'pc_vanka_sub_sub_pc_factor_mat_ordering_type': 'rcm',
+        'pc_vanka_sub_sub_pc_factor_reuse_ordering': None,
+    }
 
 # ! The Correct IRKAuxOPPC Solver Parameter.
 shifted_schur_pc_params ={
@@ -191,6 +235,7 @@ shifted_schur_pc_params ={
     },
     'fieldsplit_1': {
         'ksp_type': 'preonly', # ! need to tune this.
+        **({'pc_type': 'lu', 'pc_factor_mat_solver_type': 'mumps'} if args.fs1_lu else {}),  # ! diagnostic exact inner solve
         # 'ksp_monitor': None,
         # 'ksp_atol': 0,
         # 'ksp_rtol': 1e-7,
@@ -198,21 +243,16 @@ shifted_schur_pc_params ={
         # 'pc_type':'lu',
         # "pc_factor_mat_solver_type": "mumps",
         # ! ASM line smoother on patch:
-        'pc_type': 'mg',
+        **({} if args.fs1_lu else {'pc_type': 'mg'}),
         'pc_mg_type': 'full',
         'pc_mg_cycle_type': 'v',
         'mg_levels': {
-            'ksp_type': 'gmres',
+            'ksp_type': args.mg_smoother,   # ! gmres (committed); chebyshev / richardson are diagnostics
             # 'ksp_type':'chebyshev',
             # 'ksp_type':'richardson', # ! Richardson iteration.
             'ksp_max_it': 6, # ? more robust for larger max_it here.
             # 'ksp_monitor':None,
-            "pc_type": "python",
-            "pc_python_type": "firedrake.ASMStarPC",
-            "pc_star_construct_dim": 0,
-            "pc_star_sub_sub_pc_type": "lu",
-            'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
-            'pc_star_sub_sub_pc_factor_reuse_ordering': None,
+            **patch_params,
         },
         'mg_coarse': {
             'ksp_type': 'preonly',
@@ -229,8 +269,8 @@ params_schur = {
     # 'snes_ksp_ew':None,
     # 'snes_ksp_ew_rtol0': 1e-2, # setting the rtol for the first snes solve.
 
-    'ksp_type': 'fgmres',
-    'ksp_pc_side': 'right', # ! this is needed for EW.
+    'ksp_type': 'gmres' if args.outer_gmres_left else 'fgmres',
+    'ksp_pc_side': 'left' if args.outer_gmres_left else 'right', # ! right is needed for EW.
     'ksp_atol': args.atol,
     'ksp_rtol': args.rtol,
     'snes_max_it': 10,

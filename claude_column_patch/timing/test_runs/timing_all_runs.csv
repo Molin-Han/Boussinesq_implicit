@@ -1,0 +1,3 @@
+config,ranks,patch,rep,newton_steps,ksp_total,ksp_per_step,stage_time,SNESSolve_count,SNESSolve,SNESJacobianEval_count,SNESJacobianEval,SNESFunctionEval_count,SNESFunctionEval,KSPSolve_count,KSPSolve,PCSetUp_count,PCSetUp,PCApply_count,PCApply,MatLUFactorNum_count,MatLUFactorNum,MatLUFactorSym_count,MatLUFactorSym,MatSolve_count,MatSolve,MatMult_count,MatMult,KSPGMRESOrthog_count,KSPGMRESOrthog,MatCreateSubMats_count,MatCreateSubMats
+nominal,2,star,1,2,13,4/9,23.504,1,23.493,2,0.0014813,3,0.089468,2,22.623,142,2.8032,13,22.139,134,0.81348,0,0.0,15366,9.6972,849,6.8754,481,0.15071,4,0.26496
+nominal,2,vanka,1,2,26,14/12,28.493,1,28.486,2,0.0011748,3,0.090202,2,27.683,138,2.2854,26,26.822,130,0.63154,0,0.0,29640,8.3342,1668,12.129,962,0.23373,4,0.15309

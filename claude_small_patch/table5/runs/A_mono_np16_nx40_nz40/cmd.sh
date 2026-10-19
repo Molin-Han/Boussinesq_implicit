@@ -1,0 +1,1 @@
+mpiexec --bind-to none -n 16 python /home/mh2520/molin/phd/yr2/Boussinesq_implicit/LB_time_slice.py --nx 40 --nz 40 --monolithic --mono_smoother chebyshev --outer_ksp gmres --pc_side left --length 300000.0 --height 4000 --dt 100.0 --tmax 200.0 --shift 1e-4 --maxit 100 --rtol 1.0e-8 --reordering --timing -firedrake_2_ksp_converged_reason -log_view :log.txt

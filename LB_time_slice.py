@@ -41,6 +41,11 @@ parser.add_argument('--reordering', action='store_true', help='If true, run the 
 parser.add_argument('--richardson', action='store_true', help='If true, run the code with Richardson iteration for the fieldsplit_1 solve for Schur complement.')
 parser.add_argument('--monolithic', action='store_true', help='If true, use a monolithic geometric-multigrid solver with an (extruded) star line patch smoother acting on the whole shifted system, instead of the fieldsplit Schur-complement approach. Takes precedence over --direct.')
 parser.add_argument('--cheb_it', type=int, default=6, help='Number of Chebyshev smoother iterations per MG level for the monolithic patch smoother.')
+parser.add_argument('--patch', type=str, default='star', choices=['star', 'vanka'], help='Patch of the ASM smoother on the MG levels of the Schur-complement solver. star: star of the base vertex (two columns of cells, the default and the patch of all earlier runs). vanka: closure of the base cell (a single column of cells with the horizontal-velocity unknowns on its two vertical facets).')
+parser.add_argument('--mono_smoother', type=str, default='gmres', choices=['gmres', 'chebyshev', 'richardson'], help='Diagnostic (Table 5 of the paper): KSP wrapped around the patch smoother on the MG levels of the monolithic solver. The runs of 2026-06-01 behind the table used chebyshev (the same as --richardson gives the fieldsplit solver); the script at HEAD defaults to gmres.')
+parser.add_argument('--inner_rtol', type=float, default=None, help='Diagnostic: iterate the inner solve (fieldsplit_1 FGMRES on the Schur block, or FGMRES around the monolithic V-cycle) to this relative tolerance instead of a single V-cycle, to compare the two solvers with (nearly) exact inner solves.')
+parser.add_argument('--pc_side', type=str, default=None, choices=['left', 'right'], help='Diagnostic: preconditioning side of the outer Krylov solver (left = convergence test on the preconditioned residual, the setting of the paper\'s linear runs; right = on the true residual).')
+parser.add_argument('--outer_ksp', type=str, default=None, choices=['gmres', 'fgmres'], help='Diagnostic: outer Krylov method (the script\'s defaults: gmres for the fieldsplit solver with --richardson, fgmres otherwise and for the monolithic solver; the 2026-06-01 monolithic runs used gmres with left preconditioning).')
 
 args = parser.parse_known_args()
 args = args[0]
@@ -56,7 +61,7 @@ if args.monolithic:
 elif args.direct:
     solver_name = 'direct'
 else:
-    solver_name = 'MG ASMStar'
+    solver_name = 'MG ASMStar' if args.patch == 'star' else 'MG ASMVanka'
 
 # if args.timing:
 #     opts = PETSc.Options()
@@ -206,6 +211,31 @@ Jp = derivative(shift_eqn, Unp1)
 v_basis = VectorSpaceBasis(constant=True, comm=COMM_WORLD)
 nullspace = MixedVectorSpaceBasis(W, [W.sub(0), W.sub(1), W.sub(2), v_basis])
 
+# ! Patch for the ASM smoother on the MG levels of the Schur-complement solver.
+# ! The topology_dm of the extruded mesh is the base interval mesh, so every patch is made of whole columns:
+# ! star  = star of a base vertex (pc_star_construct_dim 0): the vertical facets above the vertex and the two
+# !         columns of cells sharing them (the committed solver);
+# ! vanka = closure of a base cell (pc_vanka_construct_dim 1): one column of cells and the vertical facets on its
+# !         two sides (the "single-column" patch of the paper's Section 5).
+if args.patch == 'star':
+    patch_prefix = 'pc_star_'
+    patch_params = {
+        "pc_type": "python",
+        "pc_python_type": "firedrake.ASMStarPC",
+        "pc_star_construct_dim": 0,
+        "pc_star_sub_sub_pc_type": "lu",
+        "pc_star_view_patch_sizes":True,
+    }
+else:
+    patch_prefix = 'pc_vanka_'
+    patch_params = {
+        "pc_type": "python",
+        "pc_python_type": "firedrake.ASMVankaPC",
+        "pc_vanka_construct_dim": 1,
+        "pc_vanka_sub_sub_pc_type": "lu",
+        "pc_vanka_view_patch_sizes":True,
+    }
+
 if args.direct:
     helmholtz_schur_pc_params = {
         'pc_type':'ksp',
@@ -230,11 +260,7 @@ else:
                 # 'ksp_richardson_self_scale':None,
                 # 'ksp_max_it': 1, # ? more robust for larger max_it here.
                 # 'ksp_monitor':None,
-                "pc_type": "python",
-                "pc_python_type": "firedrake.ASMStarPC",
-                "pc_star_construct_dim": 0,
-                "pc_star_sub_sub_pc_type": "lu",
-                "pc_star_view_patch_sizes":True,
+                **patch_params,
                 # 'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
                 # 'pc_star_sub_sub_pc_factor_reuse_ordering': None,
                 # 'pc_star_sub_sub_pc_factor_mat_solver_type': 'mumps',
@@ -249,8 +275,8 @@ else:
         }
     if args.reordering:
         helmholtz_schur_pc_params.update({
-            'mg_levels_pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
-            'mg_levels_pc_star_sub_sub_pc_factor_reuse_ordering': None,
+            f'mg_levels_{patch_prefix}sub_sub_pc_factor_mat_ordering_type': 'rcm',
+            f'mg_levels_{patch_prefix}sub_sub_pc_factor_reuse_ordering': None,
         })
     if args.richardson:
         helmholtz_schur_pc_params.update({
@@ -303,6 +329,12 @@ params_schur = {
 }
 params_schur['ksp_type'] = 'gmres' if args.richardson else 'fgmres'
 params_schur['fieldsplit_1_ksp_type'] = 'preonly' if args.richardson else 'fgmres'
+if args.inner_rtol is not None:   # ! diagnostic: converge the Schur-block solve instead of one V-cycle
+    params_schur['ksp_type'] = 'fgmres'
+    params_schur.update({'fieldsplit_1_ksp_type': 'fgmres', 'fieldsplit_1_ksp_rtol': args.inner_rtol,
+                         'fieldsplit_1_ksp_atol': 0.0, 'fieldsplit_1_ksp_max_it': 500})
+if args.pc_side is not None:
+    params_schur['ksp_pc_side'] = args.pc_side
 
 # ! Monolithic solver: geometric multigrid applied to the *whole* shifted system Jp
 # ! (supplied via MonolithicShiftPC), with a star patch smoother, optional RCM
@@ -311,7 +343,7 @@ params_schur['fieldsplit_1_ksp_type'] = 'preonly' if args.richardson else 'fgmre
 
 mg_levels_mono = {
     # 'ksp_type': 'chebyshev',
-    'ksp_type':'gmres',     # Chebyshev iteration on the patch smoother.
+    'ksp_type': args.mono_smoother,     # gmres at HEAD; chebyshev in the 2026-06-01 runs of the paper's Table 5
     'ksp_max_it': 6,
     'pc_type': 'python',
     'pc_python_type': 'firedrake.ASMStarPC',  # switch to firedrake.ASMExtrudedStarPC for vertical line patches
@@ -348,6 +380,20 @@ params_monolithic = {
         },
     },
 }
+if args.inner_rtol is not None:   # ! diagnostic: FGMRES around the monolithic V-cycle, to the given tolerance
+    params_monolithic['monoshiftpc'] = {
+        'mat_type': 'aij',
+        'pc_type': 'ksp',
+        'ksp_ksp_type': 'fgmres', 'ksp_ksp_rtol': args.inner_rtol, 'ksp_ksp_atol': 0.0, 'ksp_ksp_max_it': 500,
+        'ksp_pc_type': 'mg', 'ksp_pc_mg_type': 'full', 'ksp_pc_mg_cycle_type': 'v',
+        'ksp_mg_levels': mg_levels_mono,
+        'ksp_mg_coarse': {'ksp_type': 'preonly', 'pc_type': 'lu'},
+    }
+if args.pc_side is not None:
+    params_monolithic['ksp_pc_side'] = args.pc_side
+if args.outer_ksp is not None:
+    params_monolithic['ksp_type'] = args.outer_ksp
+    params_schur['ksp_type'] = args.outer_ksp
 # ! Choose which solver configuration to run with. Monolithic takes precedence.
 params = params_monolithic if args.monolithic else params_schur
 

@@ -86,13 +86,18 @@ def SLB_pressure(u, phi):
         )
 
 
-def LB_velocity_Irk(u, w, b, p, twoD=False):
-    return (
-            inner(w, Dt(u)) * dx
-            + inner(w, cross(Coriolis_param(), u)) * dx
-            - div(w) * p * dx
-            - inner(w, k(twoD=twoD)) * b * dx
-        )
+def LB_velocity_Irk(u, w, b, p, twoD=False, use_rotation=True):
+    '''
+    use_rotation: keep the Coriolis term (the default, as before) or drop it (f = 0).  Added so that
+    Nonlinear_Boussinesq_Irk_SC.py --linear_forms can run the linear equations with the same f switch
+    as its nonlinear forms; the default reproduces the old behaviour exactly.
+    '''
+    eqn = inner(w, Dt(u)) * dx
+    if use_rotation:
+        eqn += inner(w, cross(Coriolis_param(), u)) * dx
+    eqn -= div(w) * p * dx
+    eqn -= inner(w, k(twoD=twoD)) * b * dx
+    return eqn
 
 def LB_buoyancy_Irk(b, q, u, twoD=False):
     return (
