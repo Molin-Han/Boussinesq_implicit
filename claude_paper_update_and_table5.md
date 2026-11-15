@@ -54,7 +54,7 @@ grad-div-dominated nonlinear regime. Two referee agents checked every number; th
   Discussion sentence are updated; Table 4 now fits the page. Commit dba9f47, pushed. Section 2.8.
 * **Every experiment** is listed with problem, mesh, shift, outer solver, preconditioner, patch and multigrid settings
   in Section 2.4. The exact command of each run is in `claude_small_patch/table5/runs/<tag>/cmd.sh`.
-* **Your decisions** (Section 4): adopting `'pc_use_amat': False` in the script; re-running at the nominal shift
+* **Your decisions** (Section 4): reviewing the `pc_use_amat` fix now in the script (uncommitted); re-running at the nominal shift
   delta = 1e-5; a likely miscitation (`farrellMitchellWechsung2019` is an augmented-Lagrangian block preconditioner,
   cited for monolithic patch smoothers); the Appendix's Richardson smoother against the Chebyshev(6) of the runs; two
   latent bugs (rotation option name in `HDivSchurPC`, advection added twice for U_mean != 0); the text corrections of
@@ -246,14 +246,38 @@ against 159 for the exact shifted inverse. But it is not robust: at (80,80) it n
 solve and does not converge in 100 for the next two with GMRES left, on 2 and on 16 ranks, and none of the three
 solves converges with FGMRES right: the residual stagnates at a relative 2e-8 to 5e-7 (Section 2.5 (e), (g)).
 
+**Your earlier runs had the same cause** (added after your question of 2026-10-19):
+
+* **2026-06-01 (the data behind the old Table 5).** The script then (commit 1e4b3d5) used GMRES left and a Chebyshev(6)
+  smoother for the monolithic solver. Your own `ksp_view` of that run, `yr2/data_firedrake26_mono/slice3D.txt`
+  lines 157-220, already shows the finest level smoothing with the unshifted operator: "linear system matrix,
+  followed by the matrix used to construct the preconditioner: Mat Object: (firedrake_2_) ... Mat Object:
+  (firedrake_2_monoshiftpc_)". Today's re-run of that configuration gives the same counts, 5/6/7/7 against
+  12/13/13/13 (Section 2.5 (a)), so the difference was never a software or parallel effect.
+* **2026-07-08 (commit 82cd238, still the script's default).** The monolithic solver was switched to FGMRES with a
+  GMRES(6) level smoother. With the same leak this configuration needs 2 iterations on every Table-5 mesh (Section
+  2.5 (b)), against 12-13 for the fieldsplit solver. I found no saved monolithic run from July, so this is what the
+  July script gives, not a log of your run.
+* In both versions the fieldsplit solver was unaffected (its Amat is the shifted Schur complement).
+
 The paper's explanation ("solving each patch in the full saddle-point variables resolves more of the
 pressure-velocity coupling per relaxation sweep than the Schur reduction") does not hold: item 2 of Section 2.2 shows
 that the velocity part of a monolithic patch solve is exactly the fieldsplit patch solve.
 
 **Fix, without changing the code:** `-firedrake_2_monoshiftpc_pc_use_amat false` (the key is not in the solver
 dictionary, so the command line works). In the script it is one line, `'pc_use_amat': False,` in
-`params_monolithic['monoshiftpc']` (`LB_time_slice.py:371-381`); I did not change the script (your decision, as for
-the nonlinear script's back-substitution). The equivalent for the fieldsplit solver,
+`params_monolithic['monoshiftpc']` (`LB_time_slice.py:371-381`).
+
+**Made permanent (2026-10-19, at your request; not committed, for your review).** `LB_time_slice.py` now sets
+`'pc_use_amat': args.mono_use_amat` in `params_monolithic['monoshiftpc']`, so the monolithic multigrid works on
+A_delta on every level by default; the `--inner_rtol` branch sets `'pc_use_amat': False` explicitly (PCKSP's default,
+unchanged behaviour); the new flag `--mono_use_amat` (default off) restores the old behaviour, to reproduce the old
+numbers. Because the key is now in the dictionary, the command-line option no longer applies to this solver; use the
+flag. Check runs (`claude_small_patch/table5/run_table5_permanent_check.sh`, runs `Z_*`, (20,20), 2 ranks, no extra
+options): Table-5 monolithic settings 11/13/13 (= fieldsplit, = the earlier runs with the option); with
+`--mono_use_amat` 7/6/6 (= 2026-06-01); the script's default monolithic configuration (GMRES(6) smoother, FGMRES)
+13/11/11 (was 2/2/2); `--inner_rtol 1e-6` 13/11/11 (unchanged); fieldsplit 11/13/13 (unchanged). The finest-level
+smoother's operator in `ksp_view` is `firedrake_2_monoshiftpc_` by default and `firedrake_2_` with the flag. The equivalent for the fieldsplit solver,
 `-firedrake_2_fieldsplit_1_helmholtzschurpc_pc_use_amat false`, replaces the matrix-free Schur complement on the
 finest level by the assembled auxiliary operator (same maths, same iterates).
 
@@ -524,9 +548,8 @@ checked the numbers and the text against the logs; their reports are in `agents/
 
 ### 2.9 Side findings (not acted on; your decision)
 
-* **The monolithic solver in `LB_time_slice.py`** needs `'pc_use_amat': False,` in `params_monolithic['monoshiftpc']`
-  (`LB_time_slice.py:371-381`) to be the shifted preconditioner; at HEAD its default configuration (GMRES(6)
-  smoother, FGMRES) is the 2-iteration hybrid of Section 2.3. Not changed in the script.
+* **The monolithic solver in `LB_time_slice.py`**: fixed at your request (Section 2.3, "Made permanent"); before the
+  fix its default configuration (GMRES(6) smoother, FGMRES) was the 2-iteration hybrid of Section 2.3.
 * **Rotation option name:** `HDivSchurPC` reads `...fieldsplit_1_helmholtzschurpc_use_rotation`
   (`LB_time_slice.py:106-107`), but the dictionary sets `fieldsplit_1_use_rotation` (`:317`), so the auxiliary
   operator never contains the Coriolis term. Harmless with rotation off (all of Table 5, and the script's default:
@@ -568,8 +591,9 @@ checked the numbers and the text against the logs; their reports are in `agents/
 
 Code: this study added four default-preserving diagnostic flags to `LB_time_slice.py` (`--mono_smoother`,
 `--inner_rtol`, `--pc_side`, `--outer_ksp`) at 06:08, before the first Table-5 run; your commit a9a20ee of 06:32
-contains them together with the `--patch` flag of 2026-10-16. Nothing changed in `LB_time_slice.py`, `utils.py` or
-`Nonlinear_Boussinesq_Irk_SC.py` after that (`git diff` empty); every variant here was selected with those flags and
+contains them together with the `--patch` flag of 2026-10-16. After the study, at your request, the monolithic fix was
+made permanent (`pc_use_amat`, flag `--mono_use_amat`; Section 2.3; uncommitted, `git diff LB_time_slice.py`).
+`utils.py` and `Nonlinear_Boussinesq_Irk_SC.py` are unchanged; during the study every variant here was selected with those flags and
 with PETSc options that add keys (`pc_use_amat`, `pc_factor_mat_solver_type mumps`, `ksp_monitor`). Nothing was
 committed in this repository by me; your commits a9a20ee/0b68318 of 06:32-06:33 contain the run folders that existed
 then.
@@ -587,7 +611,7 @@ then.
 | timings | 16 ranks on the 16-core workstation, one run at a time (one repetition overlapped a foreign 2-rank job, Section 2.7), three repetitions, scatter at most 9.7 % (median 3.7 %) |
 | why the old configuration converges faster on small meshes and stalls on large ones | a dense-spectrum explanation for the first part (theory agent, 16 x 4); the stall is not analysed |
 
-Open (your decisions): adopt `pc_use_amat False` in the script's monolithic dictionary; whether to re-run Table 5 at
+Open (your decisions): review and commit the `pc_use_amat` change in `LB_time_slice.py` (Section 2.3); whether to re-run Table 5 at
 the nominal shift delta = 1e-5 (C_1 = 1e-3) instead of 1e-4; the citation of `farrellMitchellWechsung2019`; the
 Appendix's Richardson smoother; the mesh convention; the rotation option name; the `U_mean` double advection; the
 text corrections of Sections 1.4 and 2.8; the nonlinear script's missing pressure back-substitution (2026-10-16).

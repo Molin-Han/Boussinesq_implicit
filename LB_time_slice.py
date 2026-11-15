@@ -46,6 +46,7 @@ parser.add_argument('--mono_smoother', type=str, default='gmres', choices=['gmre
 parser.add_argument('--inner_rtol', type=float, default=None, help='Diagnostic: iterate the inner solve (fieldsplit_1 FGMRES on the Schur block, or FGMRES around the monolithic V-cycle) to this relative tolerance instead of a single V-cycle, to compare the two solvers with (nearly) exact inner solves.')
 parser.add_argument('--pc_side', type=str, default=None, choices=['left', 'right'], help='Diagnostic: preconditioning side of the outer Krylov solver (left = convergence test on the preconditioned residual, the setting of the paper\'s linear runs; right = on the true residual).')
 parser.add_argument('--outer_ksp', type=str, default=None, choices=['gmres', 'fgmres'], help='Diagnostic: outer Krylov method (the script\'s defaults: gmres for the fieldsplit solver with --richardson, fgmres otherwise and for the monolithic solver; the 2026-06-01 monolithic runs used gmres with left preconditioning).')
+parser.add_argument('--mono_use_amat', action='store_true', help='Reproduce the monolithic solver before 2026-10-19: its multigrid smooths the finest level with the outer, UNSHIFTED Jacobian (PCMG useAmat), and only the patches and coarse levels use A_delta. Off by default: the multigrid works on A_delta on every level.')
 
 args = parser.parse_known_args()
 args = args[0]
@@ -370,6 +371,11 @@ params_monolithic = {
     'pc_python_type': __name__ + '.MonolithicShiftPC',
     'monoshiftpc': {
         'mat_type': 'aij',  # patch PCs need an assembled (non-nested) operator.
+        # ! Multigrid on the shifted operator A_delta on EVERY level. Firedrake's AuxiliaryOperatorPC hands its inner PC
+        # ! the outer operator (the unshifted Jacobian) as Amat, and PETSc's PCMG uses Amat by default (useAmat = TRUE)
+        # ! for the finest-level smoother and residual; without this key the finest level smoothed the unshifted
+        # ! system and only the patches and coarse levels were shifted (the pre-2026-10-19 runs; --mono_use_amat).
+        'pc_use_amat': args.mono_use_amat,
         'pc_type': 'mg',
         'pc_mg_type': 'full',
         'pc_mg_cycle_type': 'v',
@@ -383,6 +389,7 @@ params_monolithic = {
 if args.inner_rtol is not None:   # ! diagnostic: FGMRES around the monolithic V-cycle, to the given tolerance
     params_monolithic['monoshiftpc'] = {
         'mat_type': 'aij',
+        'pc_use_amat': False,   # PCKSP's default: the inner KSP and its multigrid work on A_delta only
         'pc_type': 'ksp',
         'ksp_ksp_type': 'fgmres', 'ksp_ksp_rtol': args.inner_rtol, 'ksp_ksp_atol': 0.0, 'ksp_ksp_max_it': 500,
         'ksp_pc_type': 'mg', 'ksp_pc_mg_type': 'full', 'ksp_pc_mg_cycle_type': 'v',
