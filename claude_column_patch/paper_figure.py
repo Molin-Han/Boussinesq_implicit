@@ -3,7 +3,7 @@ Figure for the paper section on the single-column patch (Patch-Preconditioner-fo
 
     python paper_figure.py            writes ../../Patch-Preconditioner-for-Boussinesq/Image_patch/column_patch_sweeps.png
 
-Panels, all from the sweep folders ../../data_claude_paper_nonlinear_<test>_patch{star,vanka}:
+Panels, all from the sweep folders ../../data/claude_paper/data_claude_paper_nonlinear_<test>_patch{star,vanka}:
   (a) aspect-ratio sweep, total FGMRES iterations against dt, star (solid) and single column (dashed);
   (b) mesh sweeps at dt = 50 s: iterations against N_x (dx sweep) and N_z (dz sweep);
   (c) shift sweep on the nominal geometry, K in {0.1, 1, 10, 100, 1000} (runs that did not converge are omitted);
@@ -29,7 +29,7 @@ GREY = '#6b6a63'
 
 
 def read(test, patch):
-    path = os.path.join(DATA, f'data_claude_paper_nonlinear_{test}_patch{patch}', 'summary_iterations.csv')
+    path = os.path.join(DATA, 'data', 'claude_paper', f'data_claude_paper_nonlinear_{test}_patch{patch}', 'summary_iterations.csv')
     with open(path) as f:
         return list(csv.DictReader(f))
 

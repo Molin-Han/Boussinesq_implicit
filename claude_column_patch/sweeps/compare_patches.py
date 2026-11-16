@@ -1,11 +1,11 @@
 '''
 Star patch versus single-column (vanka) patch: tables and figures from the sweeps
 
-    ../data_claude_paper_nonlinear_<test>_patchstar     (ASMStarPC,  construct_dim 0)
-    ../data_claude_paper_nonlinear_<test>_patchvanka    (ASMVankaPC, construct_dim 1)
+    ../data/claude_paper/data_claude_paper_nonlinear_<test>_patchstar     (ASMStarPC,  construct_dim 0)
+    ../data/claude_paper/data_claude_paper_nonlinear_<test>_patchvanka    (ASMVankaPC, construct_dim 1)
 
 made by run_claude_paper.sh (-s _patchstar / -s _patchvanka).  Optionally the earlier
-star sweeps ../data_claude_paper_nonlinear_<test> are read as a regression check of the
+star sweeps ../data/claude_paper/data_claude_paper_nonlinear_<test> are read as a regression check of the
 --patch edit (the star runs must reproduce them).
 
     python compare_patches.py [--data_root DIR] [--tests dx dz ar dt] [--out DIR]
@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 
 here = os.path.dirname(os.path.abspath(__file__))
 parser = ArgumentParser(description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter)
-parser.add_argument('--data_root', default=os.path.abspath(os.path.join(here, '..', '..', '..')), help='Folder holding the data_claude_paper_* folders.')
+parser.add_argument('--data_root', default=os.path.abspath(os.path.join(here, '..', '..', '..', 'data', 'claude_paper')), help='Folder holding the data_claude_paper_* folders.')
 parser.add_argument('--tests', nargs='+', default=['dx', 'dz', 'ar', 'dt'])
 parser.add_argument('--out', default=here, help='Where the tables and figures are written.')
 args = parser.parse_args()

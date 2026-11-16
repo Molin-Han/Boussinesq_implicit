@@ -11,9 +11,9 @@ names as in the paper so that they are drop-in replacements:
     Image_nonlinear/snes_error_shift_dt500.0.png, error_shift_nonlinear.png            (figs. 11, 12)
 
 Data sets (--set):
-    paper   the folders the paper's figures were made from: ../data_linear_<test>_deg2, ../data_nonlinear_<test>_deg2_ew
-    star    the 2026-10-16 star re-run of the same sweeps:   ../data_linear_<test>_deg2_star, ../data_nonlinear_<test>_deg2_ew_star
-    vanka   the single-column patch:                          ../data_linear_<test>_deg2_vanka, ../data_nonlinear_<test>_deg2_ew_vanka
+    paper   the folders the paper's figures were made from: ../data/paper_robustness/data_linear_<test>_deg2, ../data/paper_robustness/data_nonlinear_<test>_deg2_ew
+    star    the 2026-10-16 star re-run of the same sweeps:   ../data/paper_robustness/data_linear_<test>_deg2_star, ../data/paper_robustness/data_nonlinear_<test>_deg2_ew_star
+    vanka   the single-column patch:                          ../data/paper_robustness/data_linear_<test>_deg2_vanka, ../data/paper_robustness/data_nonlinear_<test>_deg2_ew_vanka
 
 Conventions.  By default the figures show exactly what the paper's figures show (so that only the style changes):
   * linear histories drop the last monitored point (the converged state), as plot_dx.py / plot_dz.py / plot_ar.py do;
@@ -53,7 +53,7 @@ SUFFIX = {'paper': '', 'star': '_star', 'vanka': '_vanka'}
 
 
 def folder(dataset, mode, test):
-    return f'{YR2}/data_{mode}_{test}_deg2' + ('_ew' if mode == 'nonlinear' else '') + SUFFIX[dataset]
+    return f'{YR2}/data/paper_robustness/data_{mode}_{test}_deg2' + ('_ew' if mode == 'nonlinear' else '') + SUFFIX[dataset]
 
 
 def find(d, prefix, dt, key, tgt):

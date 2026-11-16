@@ -33,7 +33,7 @@ GREY = ps.GREY
 
 
 def read(test, patch):
-    path = os.path.join(DATA, f'data_claude_paper_nonlinear_{test}_patch{patch}', 'summary_iterations.csv')
+    path = os.path.join(DATA, 'data', 'claude_paper', f'data_claude_paper_nonlinear_{test}_patch{patch}', 'summary_iterations.csv')
     with open(path) as f:
         return list(csv.DictReader(f))
 

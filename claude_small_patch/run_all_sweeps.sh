@@ -2,8 +2,8 @@
 # The paper's four robustness sweeps (delta = C_1/dt, lists of Bash/bash.py and Bash/bash_nonlinear.py),
 # re-run with the single-column (vanka) patch and, for a like-for-like baseline, with the star patch,
 # for both codes.  Data folders (next to the paper's data_nonlinear_*_deg2_ew and data_linear_*_deg2):
-#   ../data_nonlinear_<test>_deg2_ew_vanka   ../data_nonlinear_<test>_deg2_ew_star
-#   ../data_linear_<test>_deg2_vanka         ../data_linear_<test>_deg2_star
+#   ../data/paper_robustness/data_nonlinear_<test>_deg2_ew_vanka   ../data/paper_robustness/data_nonlinear_<test>_deg2_ew_star
+#   ../data/paper_robustness/data_linear_<test>_deg2_vanka         ../data/paper_robustness/data_linear_<test>_deg2_star
 # Usage: nohup claude_small_patch/run_all_sweeps.sh [NPAR] > claude_small_patch/run_all_sweeps.log 2>&1 &
 set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

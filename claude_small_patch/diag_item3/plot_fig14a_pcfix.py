@@ -1,7 +1,7 @@
 '''
 Fig. 14(a) of the paper (aspect-ratio sweep, K = 1, total FGMRES iterations against dt, star and single-column
 patch) with the committed preconditioner and with the corrected one (--pc_fix of Nonlinear_pcfix.py).
-Reads ../../../data_claude_paper_nonlinear_ar_patch{star,vanka}{,_pcfix}/summary_iterations.csv, writes
+Reads ../../../data/claude_paper/data_claude_paper_nonlinear_ar_patch{star,vanka}{,_pcfix}/summary_iterations.csv, writes
 fig14a_pcfix.png and fig14a_pcfix.md next to this file.
 '''
 import os, csv
@@ -15,7 +15,7 @@ YR2 = os.path.abspath(os.path.join(HERE, '..', '..', '..'))
 
 
 def table(folder):
-    path = f'{YR2}/{folder}/summary_iterations.csv'
+    path = f'{YR2}/data/claude_paper/{folder}/summary_iterations.csv'
     if not os.path.exists(path):
         return None
     out = {}

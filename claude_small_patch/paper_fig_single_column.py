@@ -4,7 +4,7 @@ star patch (solid, filled) and the single-column patch (dashed, open), both code
 aspect ratio, mesh resolution at dt = 50 s, shift sweep.  Writes
 ../../Patch-Preconditioner-for-Boussinesq/Image_restyled/single_column_{linear,nonlinear}.png (1 x 3 panels each).
 
-Data: ../../data_<mode>_<test>_deg2[_ew]_{star,vanka} (the 2026-10-16 re-runs with identical flags), read
+Data: ../../data/paper_robustness/data_<mode>_<test>_deg2[_ew]_{star,vanka} (the 2026-10-16 re-runs with identical flags), read
 through compare_paper_patches.record() so that the conventions (counts, capped runs) are the same as in
 claude_small_patch/results/.
 '''

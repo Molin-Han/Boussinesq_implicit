@@ -2,7 +2,7 @@
 Item 3: what fig. 14(a) of the paper (claude_column_patch/paper_figure.py, panel (a)) was run with, and how the
 fixed-C_1 sweeps of the paper (delta = C_1/dt) relate to the fixed-K sweeps (delta = K delta_thr(dt, eps, N)).
 
-Reads only existing data:
+Reads only existing data (since the 2026-11-15 tidy-up these folders are in yr2/data/claude_paper/ and yr2/data/paper_robustness/):
     ../../data_claude_paper_nonlinear_dt_patchstar      K sweep, star, no EW   (nonlinear, the fig. 14 setting)
     ../../data_claude_paper_nonlinear_dt_ew             K sweep, star, EW on
     ../../data_claude_paper_linear_dt                   K sweep, linear code, rtol 1e-8
@@ -45,7 +45,7 @@ out.append('# Per-Newton-step KSP counts in the fixed-K sweeps (star patch, nomi
 out.append('delta = K delta_thr(dt); numbers are KSP iterations of Newton step 1, 2, ... (sum = total plotted in fig. 14 / the summary tables).\n')
 for folder, title in [('data_claude_paper_nonlinear_dt_patchstar', 'nonlinear, no Eisenstat-Walker (the setting of fig. 14)'),
                       ('data_claude_paper_nonlinear_dt_ew', 'nonlinear, Eisenstat-Walker on (rtol0 = 1e-2)')]:
-    d = f'{YR2}/{folder}'
+    d = f'{YR2}/data/claude_paper/{folder}'
     rows = list(csv.DictReader(open(f'{d}/summary_iterations.csv')))
     Ks = sorted({float(r['K']) for r in rows})
     dts = sorted({float(r['dt']) for r in rows})
@@ -69,7 +69,7 @@ for folder, title in [('data_claude_paper_nonlinear_dt_patchstar', 'nonlinear, n
         out.append(f'| {dt:g} | {cps.group_eps_dt_N(dt, LX, LZ, N):.3g} | {g4:.3g} | {cps.rho_01(1.0, dt, LX, LZ, N):.3g} | {rho10:.3g} | ' + ' | '.join(cells) + ' |')
 
 # linear code K sweep for comparison
-d = f'{YR2}/data_claude_paper_linear_dt'
+d = f'{YR2}/data/claude_paper/data_claude_paper_linear_dt'
 rows = list(csv.DictReader(open(f'{d}/summary_iterations.csv')))
 Ks = sorted({float(r['K']) for r in rows}); dts = sorted({float(r['dt']) for r in rows})
 out.append(f'\n## linear code LB_time_slice.py, GMRES iterations to rtol 1e-8  (`data_claude_paper_linear_dt`)\n')
@@ -84,7 +84,7 @@ for dt in dts:
 
 # aspect-ratio sweep of fig 14(a): per-step counts, star and column
 for patch in ['star', 'vanka']:
-    d = f'{YR2}/data_claude_paper_nonlinear_ar_patch{patch}'
+    d = f'{YR2}/data/claude_paper/data_claude_paper_nonlinear_ar_patch{patch}'
     rows = list(csv.DictReader(open(f'{d}/summary_iterations.csv')))
     hs = sorted({float(r['height']) for r in rows}, reverse=True); dts = sorted({float(r['dt']) for r in rows})
     out.append(f'\n## fig. 14(a) data, {"star" if patch == "star" else "single-column"} patch, K = 1: per-Newton-step counts  (`{os.path.basename(d)}`)\n')
@@ -113,7 +113,7 @@ for dt in dts_all:
 
 
 def paper_sweep(folder, key, mode):
-    d = f'{YR2}/{folder}'
+    d = f'{YR2}/data/paper_robustness/{folder}'
     rows = {}
     for f in glob.glob(f'{d}/{"snes_ksp_cum" if mode == "nonlinear" else "error"}_dt*_{key}*.out'):
         m = re.search(rf'dt([^_]+)_{key}(.+)\.out$', os.path.basename(f))
@@ -156,7 +156,7 @@ open(os.path.join(HERE, 'per_step_counts_and_C1_vs_K.md'), 'w').write('\n'.join(
 fig, axs = plt.subplots(1, 2, figsize=(13, 5.2))
 for ax, (folder, title) in zip(axs, [('data_claude_paper_nonlinear_dt_patchstar', 'nonlinear code, star patch, no EW (fig. 14 setting)'),
                                       ('data_claude_paper_linear_dt', 'linear code (rtol 1e-8)')]):
-    d = f'{YR2}/{folder}'
+    d = f'{YR2}/data/claude_paper/{folder}'
     rows = list(csv.DictReader(open(f'{d}/summary_iterations.csv')))
     Ks = sorted({float(r['K']) for r in rows}); dts = sorted({float(r['dt']) for r in rows})
     Z = np.full((len(Ks), len(dts)), np.nan)
@@ -182,7 +182,7 @@ fig.savefig(os.path.join(HERE, 'fig_C1_trajectories.png'), dpi=160, bbox_inches=
 
 # ---- figure: per-step counts vs dt, K = 0.1, 1, 10 (star, no EW) and the linear code
 fig, ax = plt.subplots(figsize=(7.5, 4.8))
-d = f'{YR2}/data_claude_paper_nonlinear_dt_patchstar'
+d = f'{YR2}/data/claude_paper/data_claude_paper_nonlinear_dt_patchstar'
 rows = list(csv.DictReader(open(f'{d}/summary_iterations.csv')))
 for K, col in [(0.1, 'C0'), (1.0, 'C1'), (10.0, 'C3')]:
     dts = sorted({float(r['dt']) for r in rows}); s1, s2, tot = [], [], []
@@ -193,7 +193,7 @@ for K, col in [(0.1, 'C0'), (1.0, 'C1'), (10.0, 'C3')]:
         s1.append(per[0]); s2.append(per[1] if len(per) > 1 else np.nan); tot.append(c[-1])
     ax.plot(dts, s1, '-o', color=col, label=f'K={K:g}: Newton step 1')
     ax.plot(dts, s2, '--s', color=col, mfc='white', label=f'K={K:g}: Newton step 2')
-d = f'{YR2}/data_claude_paper_linear_dt'
+d = f'{YR2}/data/claude_paper/data_claude_paper_linear_dt'
 rows = list(csv.DictReader(open(f'{d}/summary_iterations.csv')))
 dts = sorted({float(r['dt']) for r in rows})
 ax.plot(dts, [float([x for x in rows if float(x['K']) == 1.0 and float(x['dt']) == dt][0]['ksp_its']) for dt in dts], '-^', color='k', label='linear code, K=1 (rtol 1e-8)')

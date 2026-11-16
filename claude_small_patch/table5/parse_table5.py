@@ -5,7 +5,7 @@ table, and write results.csv + results.md.
 Per run: outer iteration counts of the three solves of the run (step 1, warm-up, official; last = official),
 Official-Run stage PCApply count and time and KSPSolve time from -log_view, the largest patch size printed by
 pc_*_view_patch_sizes, the wall time of the whole run and the process count from the log header.
-Usage: python parse_table5.py [--old]   (--old: also tabulate yr2/data_firedrake26_{timing,mono}/log_view_*.txt)
+Usage: python parse_table5.py [--old]   (--old: also tabulate yr2/data/firedrake26_checks/data_firedrake26_{timing,mono}/log_view_*.txt)
 '''
 import csv
 import glob
@@ -101,7 +101,7 @@ def parse_old():
     rows = []
     for solver, folder in (('fs', 'data_firedrake26_timing'), ('mono', 'data_firedrake26_mono')):
         for nz in (10, 20, 40, 80):
-            f = os.path.join(OLD, folder, f'log_view_{nz}.txt')
+            f = os.path.join(OLD, 'data', 'firedrake26_checks', folder, f'log_view_{nz}.txt')
             ev = stage_events(f)
             n = ev.get('PCApply', (None, None))[0]
             rows.append(dict(tag=f'old_{solver}_nz{nz}', set='old', solver=solver, variant='', inner='', np=header_nprocs(f),
