@@ -5,7 +5,7 @@ analysis of the paper (delta = K * delta_thr, see ../claude_paper_shift.py).
 Prints, exactly in the style of bash.py / bash_nonlinear.py, one `mpiexec` line per
 run followed by the plotting command, so that
 
-    python ../../../Boussinesq_implicit/Bash/bash_claude_paper.py --mode linear --test ar > ../../../Boussinesq_implicit/sweeps/claude_paper/test_claude_paper_linear_ar.sh
+    python ../../../Boussinesq_implicit/Bash_Generator/bash_claude_paper.py --mode linear --test ar > ../../../Boussinesq_implicit/sweeps/claude_paper/test_claude_paper_linear_ar.sh
 
 reproduces a serial test script of the same shape as test_ar.sh.  The parallel
 driver run_claude_paper.sh calls this generator itself.

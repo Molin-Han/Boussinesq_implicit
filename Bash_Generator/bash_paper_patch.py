@@ -1,8 +1,8 @@
 '''
 Command generator for the robustness tests of the paper, re-run with a chosen ASM patch.
 
-The sweeps and the shift are EXACTLY those of Bash/bash.py (linear code) and
-Bash/bash_nonlinear.py (nonlinear code), which produced the paper's figures:
+The sweeps and the shift are EXACTLY those of Bash_Generator/bash.py (linear code) and
+Bash_Generator/bash_nonlinear.py (nonlinear code), which produced the paper's figures:
 delta = C_1 / dt with a fixed C_1, the paper's lists of dt, heights, N_x, N_z and C_1.
 Only the solver patch (--patch star | vanka) and the explicit solver flags that the
 scripts at HEAD need to reproduce the paper's runs are added:
@@ -23,12 +23,12 @@ Prints one `mpiexec` line per run followed by the paper's plotting command
 (plot_dx.py / plot_dz.py / plot_ar.py / plot_shift.py with the same arguments as the
 old generators), so that
 
-    python ../../../Boussinesq_implicit/Bash/bash_paper_patch.py --mode nonlinear --test dx --patch vanka
+    python ../../../Boussinesq_implicit/Bash_Generator/bash_paper_patch.py --mode nonlinear --test dx --patch vanka
 
 is a serial test script of the same shape as test_nonlinear_dx.sh.  run_claude_paper.sh
 runs it in parallel:
 
-    ./run_claude_paper.sh -g Bash/bash_paper_patch.py -D data -S test_paper -m nonlinear \
+    ./run_claude_paper.sh -g Bash_Generator/bash_paper_patch.py -D data -S test_paper -m nonlinear \
         -t "dx dz ar dt" -s _deg2_ew_vanka -x "--patch vanka"
 '''
 import os
@@ -59,7 +59,7 @@ parser.add_argument('--extra', type=str, default='', help='Extra text appended v
 parser.add_argument('--script_dir', type=str, default='../../../Boussinesq_implicit', help='Path prefix of the solver and plot scripts.')
 args = parser.parse_args()
 
-# ! The paper's parameter lists, copied from Bash/bash.py (linear) and Bash/bash_nonlinear.py (nonlinear).
+# ! The paper's parameter lists, copied from Bash_Generator/bash.py (linear) and Bash_Generator/bash_nonlinear.py (nonlinear).
 if args.mode == 'linear':
     dts = [1.0, 5.0, 10.0, 50.0, 100.0, 500.0, 1000.0, 5000.0, 10000.0]
     C1_fixed = 0.001

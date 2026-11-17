@@ -47,6 +47,7 @@ parser.add_argument('--inner_rtol', type=float, default=None, help='Diagnostic: 
 parser.add_argument('--pc_side', type=str, default=None, choices=['left', 'right'], help='Diagnostic: preconditioning side of the outer Krylov solver (left = convergence test on the preconditioned residual, the setting of the paper\'s linear runs; right = on the true residual).')
 parser.add_argument('--outer_ksp', type=str, default=None, choices=['gmres', 'fgmres'], help='Diagnostic: outer Krylov method (the script\'s defaults: gmres for the fieldsplit solver with --richardson, fgmres otherwise and for the monolithic solver; the 2026-06-01 monolithic runs used gmres with left preconditioning).')
 parser.add_argument('--mono_use_amat', action='store_true', help='Reproduce the monolithic solver before 2026-10-19: its multigrid smooths the finest level with the outer, UNSHIFTED Jacobian (PCMG useAmat), and only the patches and coarse levels use A_delta. Off by default: the multigrid works on A_delta on every level.')
+parser.add_argument('--mg_smoother', type=str, default=None, choices=['gmres', 'chebyshev', 'richardson'], help='KSP wrapped around the patch smoother on the MG levels of the Schur-complement solver (6 iterations; same flag as in Nonlinear_Boussinesq_Irk_SC.py). Default: chebyshev with --richardson, gmres otherwise (unchanged). gmres makes the V-cycle nonlinear, so the outer KSP is then fgmres unless --outer_ksp is given. --richardson --mg_smoother gmres = one V-cycle per outer iteration with GMRES(6) smoothing.')
 
 args = parser.parse_known_args()
 args = args[0]
@@ -291,6 +292,8 @@ else:
             'mg_levels_ksp_type': 'gmres',
             'mg_levels_ksp_max_it':6,
         })
+    if args.mg_smoother is not None:   # ! e.g. --richardson --mg_smoother gmres: fieldsplit_1 preonly, one V-cycle with GMRES(6) smoothing
+        helmholtz_schur_pc_params['mg_levels_ksp_type'] = args.mg_smoother
 
 params_schur = {
     # 'mat_type': 'aij',
@@ -330,6 +333,8 @@ params_schur = {
 }
 params_schur['ksp_type'] = 'gmres' if args.richardson else 'fgmres'
 params_schur['fieldsplit_1_ksp_type'] = 'preonly' if args.richardson else 'fgmres'
+if args.mg_smoother == 'gmres':   # ! a GMRES smoother makes the V-cycle nonlinear: flexible outer Krylov (--outer_ksp still wins)
+    params_schur['ksp_type'] = 'fgmres'
 if args.inner_rtol is not None:   # ! diagnostic: converge the Schur-block solve instead of one V-cycle
     params_schur['ksp_type'] = 'fgmres'
     params_schur.update({'fieldsplit_1_ksp_type': 'fgmres', 'fieldsplit_1_ksp_rtol': args.inner_rtol,

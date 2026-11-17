@@ -2,7 +2,7 @@
 Item 1: the paper's robustness sweeps (delta = C_1/dt) with the star and the single-column (vanka) patch.
 
 Reads
-    ../data/paper_robustness/data_<mode>_<test>_deg2[_ew]_{star,vanka}     the new sweeps (run_all_sweeps.sh / run_claude_paper.sh -g Bash/bash_paper_patch.py)
+    ../data/paper_robustness/data_<mode>_<test>_deg2[_ew]_{star,vanka}     the new sweeps (run_all_sweeps.sh / run_claude_paper.sh -g Bash_Generator/bash_paper_patch.py)
     ../data/paper_robustness/data_<mode>_<test>_deg2[_ew]                  the paper's own data (star patch, 2026-05/06)
 for mode in {linear, nonlinear}, test in {dt, ar, dx, dz}, and writes into results/:
     summary_<mode>_<test>.md            iteration counts: paper | star (re-run) | single column, per dt and member
@@ -41,7 +41,7 @@ OUT = os.path.join(HERE, 'results')
 os.makedirs(OUT, exist_ok=True)
 N_FREQ, LX, LZ = 1.0e-2, 3.0e5, 4.0e3
 
-# the paper's sweeps (Bash/bash.py, Bash/bash_nonlinear.py)
+# the paper's sweeps (Bash_Generator/bash.py, Bash_Generator/bash_nonlinear.py)
 SWEEP = {
     'linear': dict(dts=[1., 5., 10., 50., 100., 500., 1000., 5000., 10000.], C1=1e-3,
                    C1_list=[1., 0.1, 0.01, 1e-3, 1e-4, 1e-5], heights=[12000, 8000, 4000, 2000, 1000, 500, 250],

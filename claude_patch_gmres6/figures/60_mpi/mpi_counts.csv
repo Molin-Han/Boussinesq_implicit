@@ -1,0 +1,321 @@
+code,point,description,patch,np,repeat,count,newton,status,secs,folder
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,1,1,7,,ok,152,linear_star/np01_r1
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,2,1,7,,ok,75,linear_star/np02_r1
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,2,2,7,,ok,68,linear_star/np02_r2
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,2,3,7,,ok,62,linear_star/np02_r3
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,4,1,7,,ok,39,linear_star/np04_r1
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,8,1,7,,ok,36,linear_star/np08_r1
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,8,2,7,,ok,43,linear_star/np08_r2
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,8,3,7,,ok,35,linear_star/np08_r3
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,16,1,7,,ok,32,linear_star/np16_r1
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,1,1,7,,ok,115,linear_vanka/np01_r1
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,2,1,7,,ok,49,linear_vanka/np02_r1
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,2,2,7,,ok,56,linear_vanka/np02_r2
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,2,3,7,,ok,72,linear_vanka/np02_r3
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,4,1,7,,ok,38,linear_vanka/np04_r1
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,8,1,7,,ok,38,linear_vanka/np08_r1
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,8,2,7,,ok,38,linear_vanka/np08_r2
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,8,3,7,,ok,42,linear_vanka/np08_r3
+linear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,16,1,7,,ok,32,linear_vanka/np16_r1
+linear,P2,dt 1 s (C1 1e-3),star,1,1,100,,maxit,786,linear_star/np01_r1
+linear,P2,dt 1 s (C1 1e-3),star,2,1,100,,maxit,185,linear_star/np02_r1
+linear,P2,dt 1 s (C1 1e-3),star,2,2,100,,maxit,239,linear_star/np02_r2
+linear,P2,dt 1 s (C1 1e-3),star,2,3,100,,maxit,275,linear_star/np02_r3
+linear,P2,dt 1 s (C1 1e-3),star,4,1,100,,maxit,99,linear_star/np04_r1
+linear,P2,dt 1 s (C1 1e-3),star,8,1,100,,maxit,81,linear_star/np08_r1
+linear,P2,dt 1 s (C1 1e-3),star,8,2,100,,maxit,146,linear_star/np08_r2
+linear,P2,dt 1 s (C1 1e-3),star,8,3,100,,maxit,148,linear_star/np08_r3
+linear,P2,dt 1 s (C1 1e-3),star,16,1,100,,maxit,75,linear_star/np16_r1
+linear,P2,dt 1 s (C1 1e-3),vanka,1,1,100,,maxit,620,linear_vanka/np01_r1
+linear,P2,dt 1 s (C1 1e-3),vanka,2,1,100,,maxit,228,linear_vanka/np02_r1
+linear,P2,dt 1 s (C1 1e-3),vanka,2,2,100,,maxit,256,linear_vanka/np02_r2
+linear,P2,dt 1 s (C1 1e-3),vanka,2,3,100,,maxit,256,linear_vanka/np02_r3
+linear,P2,dt 1 s (C1 1e-3),vanka,4,1,100,,maxit,123,linear_vanka/np04_r1
+linear,P2,dt 1 s (C1 1e-3),vanka,8,1,100,,maxit,105,linear_vanka/np08_r1
+linear,P2,dt 1 s (C1 1e-3),vanka,8,2,100,,maxit,109,linear_vanka/np08_r2
+linear,P2,dt 1 s (C1 1e-3),vanka,8,3,100,,maxit,119,linear_vanka/np08_r3
+linear,P2,dt 1 s (C1 1e-3),vanka,16,1,100,,maxit,97,linear_vanka/np16_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",star,1,1,3,,ok,93,linear_star/np01_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",star,2,1,3,,ok,46,linear_star/np02_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",star,2,2,3,,ok,59,linear_star/np02_r2
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",star,2,3,3,,ok,47,linear_star/np02_r3
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",star,4,1,3,,ok,41,linear_star/np04_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",star,8,1,3,,ok,39,linear_star/np08_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",star,8,2,3,,ok,41,linear_star/np08_r2
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",star,8,3,3,,ok,31,linear_star/np08_r3
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",star,16,1,3,,ok,26,linear_star/np16_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",vanka,1,1,4,,ok,99,linear_vanka/np01_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",vanka,2,1,4,,ok,51,linear_vanka/np02_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",vanka,2,2,4,,ok,49,linear_vanka/np02_r2
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",vanka,2,3,4,,ok,37,linear_vanka/np02_r3
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",vanka,4,1,4,,ok,48,linear_vanka/np04_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",vanka,8,1,4,,ok,32,linear_vanka/np08_r1
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",vanka,8,2,4,,ok,32,linear_vanka/np08_r2
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",vanka,8,3,4,,ok,35,linear_vanka/np08_r3
+linear,P3,"dt 1e4 s (C1 1e-3, smallest shift)",vanka,16,1,4,,ok,29,linear_vanka/np16_r1
+linear,P4,Lz 12 km,star,1,1,17,,ok,241,linear_star/np01_r1
+linear,P4,Lz 12 km,star,2,1,17,,ok,85,linear_star/np02_r1
+linear,P4,Lz 12 km,star,2,2,17,,ok,82,linear_star/np02_r2
+linear,P4,Lz 12 km,star,2,3,17,,ok,90,linear_star/np02_r3
+linear,P4,Lz 12 km,star,4,1,17,,ok,66,linear_star/np04_r1
+linear,P4,Lz 12 km,star,8,1,17,,ok,61,linear_star/np08_r1
+linear,P4,Lz 12 km,star,8,2,17,,ok,53,linear_star/np08_r2
+linear,P4,Lz 12 km,star,8,3,17,,ok,54,linear_star/np08_r3
+linear,P4,Lz 12 km,star,16,1,17,,ok,50,linear_star/np16_r1
+linear,P4,Lz 12 km,vanka,1,1,17,,ok,175,linear_vanka/np01_r1
+linear,P4,Lz 12 km,vanka,2,1,17,,ok,78,linear_vanka/np02_r1
+linear,P4,Lz 12 km,vanka,2,2,17,,ok,71,linear_vanka/np02_r2
+linear,P4,Lz 12 km,vanka,2,3,17,,ok,81,linear_vanka/np02_r3
+linear,P4,Lz 12 km,vanka,4,1,17,,ok,73,linear_vanka/np04_r1
+linear,P4,Lz 12 km,vanka,8,1,17,,ok,47,linear_vanka/np08_r1
+linear,P4,Lz 12 km,vanka,8,2,17,,ok,45,linear_vanka/np08_r2
+linear,P4,Lz 12 km,vanka,8,3,17,,ok,55,linear_vanka/np08_r3
+linear,P4,Lz 12 km,vanka,16,1,17,,ok,37,linear_vanka/np16_r1
+linear,P5,Lz 0.25 km,star,1,1,2,,ok,95,linear_star/np01_r1
+linear,P5,Lz 0.25 km,star,2,1,2,,ok,29,linear_star/np02_r1
+linear,P5,Lz 0.25 km,star,2,2,2,,ok,60,linear_star/np02_r2
+linear,P5,Lz 0.25 km,star,2,3,2,,ok,44,linear_star/np02_r3
+linear,P5,Lz 0.25 km,star,4,1,2,,ok,39,linear_star/np04_r1
+linear,P5,Lz 0.25 km,star,8,1,2,,ok,30,linear_star/np08_r1
+linear,P5,Lz 0.25 km,star,8,2,2,,ok,35,linear_star/np08_r2
+linear,P5,Lz 0.25 km,star,8,3,2,,ok,26,linear_star/np08_r3
+linear,P5,Lz 0.25 km,star,16,1,2,,ok,32,linear_star/np16_r1
+linear,P5,Lz 0.25 km,vanka,1,1,3,,ok,99,linear_vanka/np01_r1
+linear,P5,Lz 0.25 km,vanka,2,1,3,,ok,45,linear_vanka/np02_r1
+linear,P5,Lz 0.25 km,vanka,2,2,3,,ok,63,linear_vanka/np02_r2
+linear,P5,Lz 0.25 km,vanka,2,3,3,,ok,71,linear_vanka/np02_r3
+linear,P5,Lz 0.25 km,vanka,4,1,3,,ok,29,linear_vanka/np04_r1
+linear,P5,Lz 0.25 km,vanka,8,1,3,,ok,30,linear_vanka/np08_r1
+linear,P5,Lz 0.25 km,vanka,8,2,3,,ok,30,linear_vanka/np08_r2
+linear,P5,Lz 0.25 km,vanka,8,3,3,,ok,32,linear_vanka/np08_r3
+linear,P5,Lz 0.25 km,vanka,16,1,3,,ok,28,linear_vanka/np16_r1
+linear,P6,Nx 80,star,1,1,7,,ok,364,linear_star/np01_r1
+linear,P6,Nx 80,star,2,1,7,,ok,139,linear_star/np02_r1
+linear,P6,Nx 80,star,2,2,7,,ok,153,linear_star/np02_r2
+linear,P6,Nx 80,star,2,3,7,,ok,130,linear_star/np02_r3
+linear,P6,Nx 80,star,4,1,7,,ok,75,linear_star/np04_r1
+linear,P6,Nx 80,star,8,1,7,,ok,65,linear_star/np08_r1
+linear,P6,Nx 80,star,8,2,7,,ok,65,linear_star/np08_r2
+linear,P6,Nx 80,star,8,3,7,,ok,62,linear_star/np08_r3
+linear,P6,Nx 80,star,16,1,7,,ok,48,linear_star/np16_r1
+linear,P6,Nx 80,vanka,1,1,7,,ok,362,linear_vanka/np01_r1
+linear,P6,Nx 80,vanka,2,1,7,,ok,108,linear_vanka/np02_r1
+linear,P6,Nx 80,vanka,2,2,7,,ok,96,linear_vanka/np02_r2
+linear,P6,Nx 80,vanka,2,3,7,,ok,142,linear_vanka/np02_r3
+linear,P6,Nx 80,vanka,4,1,7,,ok,83,linear_vanka/np04_r1
+linear,P6,Nx 80,vanka,8,1,7,,ok,50,linear_vanka/np08_r1
+linear,P6,Nx 80,vanka,8,2,7,,ok,49,linear_vanka/np08_r2
+linear,P6,Nx 80,vanka,8,3,7,,ok,64,linear_vanka/np08_r3
+linear,P6,Nx 80,vanka,16,1,7,,ok,44,linear_vanka/np16_r1
+linear,P7,Nx 10,star,1,1,6,,ok,82,linear_star/np01_r1
+linear,P7,Nx 10,star,2,1,6,,ok,45,linear_star/np02_r1
+linear,P7,Nx 10,star,2,2,6,,ok,54,linear_star/np02_r2
+linear,P7,Nx 10,star,2,3,6,,ok,48,linear_star/np02_r3
+linear,P7,Nx 10,star,4,1,6,,ok,35,linear_star/np04_r1
+linear,P7,Nx 10,star,8,1,6,,ok,39,linear_star/np08_r1
+linear,P7,Nx 10,star,8,2,6,,ok,40,linear_star/np08_r2
+linear,P7,Nx 10,star,8,3,6,,ok,30,linear_star/np08_r3
+linear,P7,Nx 10,vanka,1,1,6,,ok,65,linear_vanka/np01_r1
+linear,P7,Nx 10,vanka,2,1,6,,ok,42,linear_vanka/np02_r1
+linear,P7,Nx 10,vanka,2,2,6,,ok,61,linear_vanka/np02_r2
+linear,P7,Nx 10,vanka,2,3,6,,ok,36,linear_vanka/np02_r3
+linear,P7,Nx 10,vanka,4,1,6,,ok,44,linear_vanka/np04_r1
+linear,P7,Nx 10,vanka,8,1,6,,ok,32,linear_vanka/np08_r1
+linear,P7,Nx 10,vanka,8,2,6,,ok,32,linear_vanka/np08_r2
+linear,P7,Nx 10,vanka,8,3,6,,ok,29,linear_vanka/np08_r3
+linear,P8,Nz 80,star,1,1,6,,ok,376,linear_star/np01_r1
+linear,P8,Nz 80,star,2,1,6,,ok,101,linear_star/np02_r1
+linear,P8,Nz 80,star,2,2,6,,ok,145,linear_star/np02_r2
+linear,P8,Nz 80,star,2,3,6,,ok,120,linear_star/np02_r3
+linear,P8,Nz 80,star,4,1,6,,ok,74,linear_star/np04_r1
+linear,P8,Nz 80,star,8,1,6,,ok,64,linear_star/np08_r1
+linear,P8,Nz 80,star,8,2,6,,ok,69,linear_star/np08_r2
+linear,P8,Nz 80,star,8,3,6,,ok,54,linear_star/np08_r3
+linear,P8,Nz 80,star,16,1,6,,ok,52,linear_star/np16_r1
+linear,P8,Nz 80,vanka,1,1,6,,ok,307,linear_vanka/np01_r1
+linear,P8,Nz 80,vanka,2,1,6,,ok,101,linear_vanka/np02_r1
+linear,P8,Nz 80,vanka,2,2,6,,ok,108,linear_vanka/np02_r2
+linear,P8,Nz 80,vanka,2,3,6,,ok,139,linear_vanka/np02_r3
+linear,P8,Nz 80,vanka,4,1,6,,ok,84,linear_vanka/np04_r1
+linear,P8,Nz 80,vanka,8,1,6,,ok,49,linear_vanka/np08_r1
+linear,P8,Nz 80,vanka,8,2,6,,ok,51,linear_vanka/np08_r2
+linear,P8,Nz 80,vanka,8,3,6,,ok,52,linear_vanka/np08_r3
+linear,P8,Nz 80,vanka,16,1,6,,ok,44,linear_vanka/np16_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",star,1,1,2,,ok,83,linear_star/np01_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",star,2,1,2,,ok,55,linear_star/np02_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",star,2,2,2,,ok,58,linear_star/np02_r2
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",star,2,3,2,,ok,52,linear_star/np02_r3
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",star,4,1,2,,ok,41,linear_star/np04_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",star,8,1,2,,ok,36,linear_star/np08_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",star,8,2,2,,ok,36,linear_star/np08_r2
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",star,8,3,2,,ok,34,linear_star/np08_r3
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",star,16,1,2,,ok,27,linear_star/np16_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",vanka,1,1,12,,ok,135,linear_vanka/np01_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",vanka,2,1,14,,ok,70,linear_vanka/np02_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",vanka,2,2,13,,ok,82,linear_vanka/np02_r2
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",vanka,2,3,14,,ok,81,linear_vanka/np02_r3
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",vanka,4,1,14,,ok,41,linear_vanka/np04_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",vanka,8,1,12,,ok,38,linear_vanka/np08_r1
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",vanka,8,2,14,,ok,39,linear_vanka/np08_r2
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",vanka,8,3,14,,ok,51,linear_vanka/np08_r3
+linear,P9,"stress: Lz 0.25 km, dt 1000 s",vanka,16,1,14,,ok,38,linear_vanka/np16_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,1,1,22,3,ok,293,nonlinear_star/np01_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,2,1,22,3,ok,160,nonlinear_star/np02_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,2,2,22,3,ok,143,nonlinear_star/np02_r2
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,2,3,22,3,ok,122,nonlinear_star/np02_r3
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,4,1,22,3,ok,92,nonlinear_star/np04_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,8,1,22,3,ok,90,nonlinear_star/np08_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,8,2,22,3,ok,133,nonlinear_star/np08_r2
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,8,3,22,3,ok,126,nonlinear_star/np08_r3
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",star,16,1,22,3,ok,60,nonlinear_star/np16_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,1,1,26,3,ok,323,nonlinear_vanka/np01_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,2,1,26,3,ok,122,nonlinear_vanka/np02_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,2,2,26,3,ok,120,nonlinear_vanka/np02_r2
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,2,3,26,3,ok,119,nonlinear_vanka/np02_r3
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,4,1,26,3,ok,80,nonlinear_vanka/np04_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,8,1,26,3,ok,74,nonlinear_vanka/np08_r1
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,8,2,26,3,ok,70,nonlinear_vanka/np08_r2
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,8,3,26,3,ok,65,nonlinear_vanka/np08_r3
+nonlinear,P1,"nominal (20x20 coarse, Lz 4 km, dt 50 s)",vanka,16,1,26,3,ok,51,nonlinear_vanka/np16_r1
+nonlinear,P2,dt 1 s (C1 1e-5),star,1,1,90,3,ok,919,nonlinear_star/np01_r1
+nonlinear,P2,dt 1 s (C1 1e-5),star,2,1,90,3,ok,348,nonlinear_star/np02_r1
+nonlinear,P2,dt 1 s (C1 1e-5),star,2,2,90,3,ok,383,nonlinear_star/np02_r2
+nonlinear,P2,dt 1 s (C1 1e-5),star,2,3,90,3,ok,332,nonlinear_star/np02_r3
+nonlinear,P2,dt 1 s (C1 1e-5),star,4,1,90,3,ok,244,nonlinear_star/np04_r1
+nonlinear,P2,dt 1 s (C1 1e-5),star,8,1,90,3,ok,159,nonlinear_star/np08_r1
+nonlinear,P2,dt 1 s (C1 1e-5),star,8,2,90,3,ok,237,nonlinear_star/np08_r2
+nonlinear,P2,dt 1 s (C1 1e-5),star,8,3,90,3,ok,310,nonlinear_star/np08_r3
+nonlinear,P2,dt 1 s (C1 1e-5),star,16,1,90,3,ok,120,nonlinear_star/np16_r1
+nonlinear,P2,dt 1 s (C1 1e-5),vanka,1,1,90,3,ok,583,nonlinear_vanka/np01_r1
+nonlinear,P2,dt 1 s (C1 1e-5),vanka,2,1,90,3,ok,257,nonlinear_vanka/np02_r1
+nonlinear,P2,dt 1 s (C1 1e-5),vanka,2,2,90,3,ok,278,nonlinear_vanka/np02_r2
+nonlinear,P2,dt 1 s (C1 1e-5),vanka,2,3,90,3,ok,261,nonlinear_vanka/np02_r3
+nonlinear,P2,dt 1 s (C1 1e-5),vanka,4,1,90,3,ok,178,nonlinear_vanka/np04_r1
+nonlinear,P2,dt 1 s (C1 1e-5),vanka,8,1,90,3,ok,138,nonlinear_vanka/np08_r1
+nonlinear,P2,dt 1 s (C1 1e-5),vanka,8,2,90,3,ok,135,nonlinear_vanka/np08_r2
+nonlinear,P2,dt 1 s (C1 1e-5),vanka,8,3,90,3,ok,138,nonlinear_vanka/np08_r3
+nonlinear,P2,dt 1 s (C1 1e-5),vanka,16,1,90,3,ok,108,nonlinear_vanka/np16_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",star,1,1,8,2,ok,169,nonlinear_star/np01_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",star,2,1,8,2,ok,87,nonlinear_star/np02_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",star,2,2,8,2,ok,108,nonlinear_star/np02_r2
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",star,2,3,8,2,ok,85,nonlinear_star/np02_r3
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",star,4,1,8,2,ok,82,nonlinear_star/np04_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",star,8,1,8,2,ok,65,nonlinear_star/np08_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",star,8,2,8,2,ok,79,nonlinear_star/np08_r2
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",star,8,3,8,2,ok,92,nonlinear_star/np08_r3
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",star,16,1,8,2,ok,45,nonlinear_star/np16_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",vanka,1,1,22,3,ok,352,nonlinear_vanka/np01_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",vanka,2,1,24,3,ok,127,nonlinear_vanka/np02_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",vanka,2,2,27,3,ok,145,nonlinear_vanka/np02_r2
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",vanka,2,3,24,3,ok,115,nonlinear_vanka/np02_r3
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",vanka,4,1,22,3,ok,82,nonlinear_vanka/np04_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",vanka,8,1,23,3,ok,77,nonlinear_vanka/np08_r1
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",vanka,8,2,22,3,ok,76,nonlinear_vanka/np08_r2
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",vanka,8,3,24,3,ok,62,nonlinear_vanka/np08_r3
+nonlinear,P3,"dt 5e4 s (C1 1e-5, smallest shift)",vanka,16,1,27,3,ok,73,nonlinear_vanka/np16_r1
+nonlinear,P4,Lz 12 km,star,1,1,24,2,ok,344,nonlinear_star/np01_r1
+nonlinear,P4,Lz 12 km,star,2,1,24,2,ok,156,nonlinear_star/np02_r1
+nonlinear,P4,Lz 12 km,star,2,2,24,2,ok,148,nonlinear_star/np02_r2
+nonlinear,P4,Lz 12 km,star,2,3,24,2,ok,167,nonlinear_star/np02_r3
+nonlinear,P4,Lz 12 km,star,4,1,24,2,ok,119,nonlinear_star/np04_r1
+nonlinear,P4,Lz 12 km,star,8,1,24,2,ok,137,nonlinear_star/np08_r1
+nonlinear,P4,Lz 12 km,star,8,2,24,2,ok,143,nonlinear_star/np08_r2
+nonlinear,P4,Lz 12 km,star,8,3,24,2,ok,132,nonlinear_star/np08_r3
+nonlinear,P4,Lz 12 km,star,16,1,24,2,ok,69,nonlinear_star/np16_r1
+nonlinear,P4,Lz 12 km,vanka,1,1,24,2,ok,397,nonlinear_vanka/np01_r1
+nonlinear,P4,Lz 12 km,vanka,2,1,24,2,ok,133,nonlinear_vanka/np02_r1
+nonlinear,P4,Lz 12 km,vanka,2,2,24,2,ok,143,nonlinear_vanka/np02_r2
+nonlinear,P4,Lz 12 km,vanka,2,3,24,2,ok,115,nonlinear_vanka/np02_r3
+nonlinear,P4,Lz 12 km,vanka,4,1,24,2,ok,109,nonlinear_vanka/np04_r1
+nonlinear,P4,Lz 12 km,vanka,8,1,24,2,ok,76,nonlinear_vanka/np08_r1
+nonlinear,P4,Lz 12 km,vanka,8,2,24,2,ok,70,nonlinear_vanka/np08_r2
+nonlinear,P4,Lz 12 km,vanka,8,3,24,2,ok,72,nonlinear_vanka/np08_r3
+nonlinear,P4,Lz 12 km,vanka,16,1,24,2,ok,57,nonlinear_vanka/np16_r1
+nonlinear,P5,Lz 1 km,star,1,1,10,2,ok,194,nonlinear_star/np01_r1
+nonlinear,P5,Lz 1 km,star,2,1,10,2,ok,108,nonlinear_star/np02_r1
+nonlinear,P5,Lz 1 km,star,2,2,10,2,ok,79,nonlinear_star/np02_r2
+nonlinear,P5,Lz 1 km,star,2,3,10,2,ok,100,nonlinear_star/np02_r3
+nonlinear,P5,Lz 1 km,star,4,1,10,2,ok,74,nonlinear_star/np04_r1
+nonlinear,P5,Lz 1 km,star,8,1,10,2,ok,67,nonlinear_star/np08_r1
+nonlinear,P5,Lz 1 km,star,8,2,10,2,ok,91,nonlinear_star/np08_r2
+nonlinear,P5,Lz 1 km,star,8,3,10,2,ok,72,nonlinear_star/np08_r3
+nonlinear,P5,Lz 1 km,star,16,1,10,2,ok,49,nonlinear_star/np16_r1
+nonlinear,P5,Lz 1 km,vanka,1,1,14,2,ok,194,nonlinear_vanka/np01_r1
+nonlinear,P5,Lz 1 km,vanka,2,1,14,2,ok,101,nonlinear_vanka/np02_r1
+nonlinear,P5,Lz 1 km,vanka,2,2,14,2,ok,95,nonlinear_vanka/np02_r2
+nonlinear,P5,Lz 1 km,vanka,2,3,14,2,ok,88,nonlinear_vanka/np02_r3
+nonlinear,P5,Lz 1 km,vanka,4,1,14,2,ok,89,nonlinear_vanka/np04_r1
+nonlinear,P5,Lz 1 km,vanka,8,1,14,2,ok,51,nonlinear_vanka/np08_r1
+nonlinear,P5,Lz 1 km,vanka,8,2,14,2,ok,50,nonlinear_vanka/np08_r2
+nonlinear,P5,Lz 1 km,vanka,8,3,14,2,ok,59,nonlinear_vanka/np08_r3
+nonlinear,P5,Lz 1 km,vanka,16,1,14,2,ok,44,nonlinear_vanka/np16_r1
+nonlinear,P6,Nx 80,star,1,1,22,3,ok,1035,nonlinear_star/np01_r1
+nonlinear,P6,Nx 80,star,2,1,22,3,ok,387,nonlinear_star/np02_r1
+nonlinear,P6,Nx 80,star,2,2,22,3,ok,402,nonlinear_star/np02_r2
+nonlinear,P6,Nx 80,star,2,3,22,3,ok,375,nonlinear_star/np02_r3
+nonlinear,P6,Nx 80,star,4,1,22,3,ok,231,nonlinear_star/np04_r1
+nonlinear,P6,Nx 80,star,8,1,22,3,ok,194,nonlinear_star/np08_r1
+nonlinear,P6,Nx 80,star,8,2,22,3,ok,224,nonlinear_star/np08_r2
+nonlinear,P6,Nx 80,star,8,3,22,3,ok,183,nonlinear_star/np08_r3
+nonlinear,P6,Nx 80,star,16,1,,,crash,24,nonlinear_star/np16_r1
+nonlinear,P6,Nx 80,vanka,1,1,24,3,ok,883,nonlinear_vanka/np01_r1
+nonlinear,P6,Nx 80,vanka,2,1,24,3,ok,233,nonlinear_vanka/np02_r1
+nonlinear,P6,Nx 80,vanka,2,2,24,3,ok,299,nonlinear_vanka/np02_r2
+nonlinear,P6,Nx 80,vanka,2,3,24,3,ok,267,nonlinear_vanka/np02_r3
+nonlinear,P6,Nx 80,vanka,4,1,24,3,ok,177,nonlinear_vanka/np04_r1
+nonlinear,P6,Nx 80,vanka,8,1,24,3,ok,136,nonlinear_vanka/np08_r1
+nonlinear,P6,Nx 80,vanka,8,2,24,3,ok,122,nonlinear_vanka/np08_r2
+nonlinear,P6,Nx 80,vanka,8,3,24,3,ok,116,nonlinear_vanka/np08_r3
+nonlinear,P6,Nx 80,vanka,16,1,,,crash,25,nonlinear_vanka/np16_r1
+nonlinear,P7,Nx 10,star,1,1,25,3,ok,216,nonlinear_star/np01_r1
+nonlinear,P7,Nx 10,star,2,1,25,3,ok,102,nonlinear_star/np02_r1
+nonlinear,P7,Nx 10,star,2,2,25,3,ok,132,nonlinear_star/np02_r2
+nonlinear,P7,Nx 10,star,2,3,25,3,ok,108,nonlinear_star/np02_r3
+nonlinear,P7,Nx 10,star,4,1,25,3,ok,101,nonlinear_star/np04_r1
+nonlinear,P7,Nx 10,star,8,1,25,3,ok,85,nonlinear_star/np08_r1
+nonlinear,P7,Nx 10,star,8,2,25,3,ok,117,nonlinear_star/np08_r2
+nonlinear,P7,Nx 10,star,8,3,25,3,ok,96,nonlinear_star/np08_r3
+nonlinear,P7,Nx 10,vanka,1,1,24,3,ok,149,nonlinear_vanka/np01_r1
+nonlinear,P7,Nx 10,vanka,2,1,24,3,ok,98,nonlinear_vanka/np02_r1
+nonlinear,P7,Nx 10,vanka,2,2,24,3,ok,83,nonlinear_vanka/np02_r2
+nonlinear,P7,Nx 10,vanka,2,3,24,3,ok,65,nonlinear_vanka/np02_r3
+nonlinear,P7,Nx 10,vanka,4,1,24,3,ok,64,nonlinear_vanka/np04_r1
+nonlinear,P7,Nx 10,vanka,8,1,24,3,ok,68,nonlinear_vanka/np08_r1
+nonlinear,P7,Nx 10,vanka,8,2,24,3,ok,71,nonlinear_vanka/np08_r2
+nonlinear,P7,Nx 10,vanka,8,3,24,3,ok,54,nonlinear_vanka/np08_r3
+nonlinear,P8,Nz 80,star,1,1,22,3,ok,1022,nonlinear_star/np01_r1
+nonlinear,P8,Nz 80,star,2,1,22,3,ok,322,nonlinear_star/np02_r1
+nonlinear,P8,Nz 80,star,2,2,22,3,ok,318,nonlinear_star/np02_r2
+nonlinear,P8,Nz 80,star,2,3,22,3,ok,370,nonlinear_star/np02_r3
+nonlinear,P8,Nz 80,star,4,1,22,3,ok,237,nonlinear_star/np04_r1
+nonlinear,P8,Nz 80,star,8,1,22,3,ok,162,nonlinear_star/np08_r1
+nonlinear,P8,Nz 80,star,8,2,22,3,ok,201,nonlinear_star/np08_r2
+nonlinear,P8,Nz 80,star,8,3,22,3,ok,193,nonlinear_star/np08_r3
+nonlinear,P8,Nz 80,star,16,1,22,3,ok,112,nonlinear_star/np16_r1
+nonlinear,P8,Nz 80,vanka,1,1,27,3,ok,911,nonlinear_vanka/np01_r1
+nonlinear,P8,Nz 80,vanka,2,1,27,3,ok,315,nonlinear_vanka/np02_r1
+nonlinear,P8,Nz 80,vanka,2,2,27,3,ok,322,nonlinear_vanka/np02_r2
+nonlinear,P8,Nz 80,vanka,2,3,27,3,ok,292,nonlinear_vanka/np02_r3
+nonlinear,P8,Nz 80,vanka,4,1,27,3,ok,191,nonlinear_vanka/np04_r1
+nonlinear,P8,Nz 80,vanka,8,1,27,3,ok,127,nonlinear_vanka/np08_r1
+nonlinear,P8,Nz 80,vanka,8,2,27,3,ok,134,nonlinear_vanka/np08_r2
+nonlinear,P8,Nz 80,vanka,8,3,27,3,ok,121,nonlinear_vanka/np08_r3
+nonlinear,P8,Nz 80,vanka,16,1,27,3,ok,96,nonlinear_vanka/np16_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",star,1,1,10,3,ok,577,nonlinear_star/np01_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",star,2,1,10,3,ok,262,nonlinear_star/np02_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",star,2,2,10,3,ok,259,nonlinear_star/np02_r2
+nonlinear,P9,"stress: Nz 80, dt 5000 s",star,2,3,10,3,ok,234,nonlinear_star/np02_r3
+nonlinear,P9,"stress: Nz 80, dt 5000 s",star,4,1,10,3,ok,133,nonlinear_star/np04_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",star,8,1,10,3,ok,133,nonlinear_star/np08_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",star,8,2,10,3,ok,162,nonlinear_star/np08_r2
+nonlinear,P9,"stress: Nz 80, dt 5000 s",star,8,3,10,3,ok,134,nonlinear_star/np08_r3
+nonlinear,P9,"stress: Nz 80, dt 5000 s",star,16,1,10,3,ok,82,nonlinear_star/np16_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",vanka,1,1,31,3,ok,1000,nonlinear_vanka/np01_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",vanka,2,1,43,3,ok,438,nonlinear_vanka/np02_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",vanka,2,2,34,3,ok,319,nonlinear_vanka/np02_r2
+nonlinear,P9,"stress: Nz 80, dt 5000 s",vanka,2,3,31,3,ok,350,nonlinear_vanka/np02_r3
+nonlinear,P9,"stress: Nz 80, dt 5000 s",vanka,4,1,32,3,ok,250,nonlinear_vanka/np04_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",vanka,8,1,30,3,ok,204,nonlinear_vanka/np08_r1
+nonlinear,P9,"stress: Nz 80, dt 5000 s",vanka,8,2,49,3,ok,176,nonlinear_vanka/np08_r2
+nonlinear,P9,"stress: Nz 80, dt 5000 s",vanka,8,3,32,3,ok,157,nonlinear_vanka/np08_r3
+nonlinear,P9,"stress: Nz 80, dt 5000 s",vanka,16,1,33,3,ok,122,nonlinear_vanka/np16_r1

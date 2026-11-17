@@ -13,8 +13,8 @@
 #     -s  suffix appended to the data directory / .sh names, for side experiments
 #         (e.g. -s _paperK), default none
 #     -x  extra arguments handed to the generator, e.g. -x "--K 1823.8 --dts 50.0"
-#     -g  command generator (relative to this directory), default Bash/bash_claude_paper.py
-#         (delta = K delta_thr); Bash/bash_paper_patch.py gives the paper's own sweeps
+#     -g  command generator (relative to this directory), default Bash_Generator/bash_claude_paper.py
+#         (delta = K delta_thr); Bash_Generator/bash_paper_patch.py gives the paper's own sweeps
 #         (delta = C_1/dt, the lists of bash.py / bash_nonlinear.py) for a chosen patch.
 #     -D  prefix of the data directories, default data_claude_paper
 #         -> ../data/<CATEGORY>/<DATA_PREFIX>_<mode>_<test><SUFFIX>/   (e.g. -D data -s _deg2_ew_vanka
@@ -53,7 +53,7 @@ DRY=0
 PLOT_ONLY=0
 SUFFIX=""
 EXTRA=""
-GENERATOR="Bash/bash_claude_paper.py"
+GENERATOR="Bash_Generator/bash_claude_paper.py"
 DATA_PREFIX="data_claude_paper"
 SH_PREFIX="test_claude_paper"
 CATEGORY=""

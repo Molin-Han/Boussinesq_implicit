@@ -2,7 +2,7 @@
 Shift parameter chosen from the analysis of the paper (Section "Asymptotic
 shift-parameter scaling", Proposition prop:asymptotic and its dimensional form
 Corollary cor:dimensional).  This module is the single source of truth for the
-formula: both the command generator (Bash/bash_claude_paper.py) and the plotting
+formula: both the command generator (Bash_Generator/bash_claude_paper.py) and the plotting
 script (plot_claude_paper.py) import it, so a run and its plot can never disagree
 about which delta was used.
 

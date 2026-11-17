@@ -22,7 +22,7 @@ where needed; nothing was deleted. The old → new path table and the full recor
 | `plot_ar.py`, `plot_dx.py`, `plot_dz.py`, `plot_shift.py` | Plots for the paper's sweeps (δ = C1/dt); run inside a data folder |
 | `plot_claude_paper.py` | Plots and `summary_iterations.csv` for the K sweeps; run inside a data folder |
 | `run_claude_paper.sh`, `claude_paper_run_one.sh` | Parallel sweep driver and its per-job runner |
-| `Bash/` | Command generators that print the sweeps: `bash.py` / `bash_nonlinear.py` (the paper's original linear / nonlinear sweeps), `bash_paper_patch.py` (the same sweeps with `--patch star\|vanka`), `bash_claude_paper.py` (K sweeps), `Colin_bash.py` (unrelated template) |
+| `Bash_Generator/` | Command generators that print the sweeps: `bash.py` / `bash_nonlinear.py` (the paper's original linear / nonlinear sweeps), `bash_paper_patch.py` (the same sweeps with `--patch star\|vanka`), `bash_claude_paper.py` (K sweeps), `Colin_bash.py` (unrelated template) |
 | `sweeps/<category>/test_*.sh` | Serial sweep scripts, each a list of `mpiexec` commands plus a plot command, sorted by the data folder they produce: `paper_robustness/` (26), `claude_paper/` (30), `early_prototypes/` (1) |
 | `docs/` | Notes: `Bug_advection_operator.md`, the mountain and lock-exchange summaries; `docs/claude_studies/` has the four Claude study records (K-shift tests, column patch, small patch / pcfix, paper update and Table 5) |
 | `claude_column_patch/`, `claude_small_patch/` | Claude studies with their code and results (star vs single-column patch; small patch, pcfix diagnostics, Table 5 runs, paper figure scripts) |
@@ -55,7 +55,7 @@ bash ../../../Boussinesq_implicit/sweeps/<category>/test_<...>.sh
 #   data -> ../data/<category>/<prefix>_<mode>_<test><suffix>/, serial form -> sweeps/<category>/,
 #   finished jobs (same command) are skipped
 ./run_claude_paper.sh -m <linear|nonlinear> -t "<dt ar dx dz>" [-s <suffix>] [-x "<generator args>"]   # K sweeps -> data/claude_paper/
-./run_claude_paper.sh -g Bash/bash_paper_patch.py -D data -S test_paper ...                              # paper sweeps -> data/paper_robustness/
+./run_claude_paper.sh -g Bash_Generator/bash_paper_patch.py -D data -S test_paper ...                              # paper sweeps -> data/paper_robustness/
 #   -n: only write the command lists and job folders; -p: only re-plot; -C <category>: another data/ sub-folder
 #   (the exact commands used for the existing sweeps are in claude_small_patch/run_all_sweeps.sh and
 #    docs/claude_studies/claude_paper_tests_README.md)
