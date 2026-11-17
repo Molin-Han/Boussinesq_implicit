@@ -38,14 +38,15 @@ parser.add_argument('--U_mean', type=float, default=0.0, help='Constant horizont
 parser.add_argument('--direct', action='store_true', help='If true, solve the Schur complement using direct LU.')
 parser.add_argument('--timing', action='store_true', help='If true, run the code without monitoring and test for the time.')
 parser.add_argument('--reordering', action='store_true', help='If true, run the code with RCM reordering.')
-parser.add_argument('--richardson', action='store_true', help='If true, run the code with Richardson iteration for the fieldsplit_1 solve for Schur complement.')
+parser.add_argument('--richardson', action='store_true', help='If true, precondition the Schur-complement block (fieldsplit_1) by one full multigrid cycle (preonly) whose levels are smoothed by --mg_smoother. The name is historical: no Richardson iteration is used.')
+parser.add_argument('--mg_smoother', type=str, default='gmres', choices=['gmres', 'chebyshev'], help='With --richardson: KSP wrapped around the patch smoother on the multigrid levels (6 iterations). gmres (default, the paper\'s configuration since 2026-11-16): the cycle is then a nonlinear operator, so the outer solver is FGMRES (right preconditioning). chebyshev: the configuration of the paper\'s linear runs before 2026-11-16 (outer GMRES, left preconditioning).')
 parser.add_argument('--monolithic', action='store_true', help='If true, use a monolithic geometric-multigrid solver with an (extruded) star line patch smoother acting on the whole shifted system, instead of the fieldsplit Schur-complement approach. Takes precedence over --direct.')
 parser.add_argument('--cheb_it', type=int, default=6, help='Number of Chebyshev smoother iterations per MG level for the monolithic patch smoother.')
 parser.add_argument('--patch', type=str, default='star', choices=['star', 'vanka'], help='Patch of the ASM smoother on the MG levels of the Schur-complement solver. star: star of the base vertex (two columns of cells, the default and the patch of all earlier runs). vanka: closure of the base cell (a single column of cells with the horizontal-velocity unknowns on its two vertical facets).')
-parser.add_argument('--mono_smoother', type=str, default='gmres', choices=['gmres', 'chebyshev', 'richardson'], help='Diagnostic (Table 5 of the paper): KSP wrapped around the patch smoother on the MG levels of the monolithic solver. The runs of 2026-06-01 behind the table used chebyshev (the same as --richardson gives the fieldsplit solver); the script at HEAD defaults to gmres.')
+parser.add_argument('--mono_smoother', type=str, default='gmres', choices=['gmres', 'chebyshev', 'richardson'], help='Diagnostic (the paper\'s tab:monolithic, now Table 3): KSP wrapped around the patch smoother on the MG levels of the monolithic solver. The runs of 2026-06-01 behind the table used chebyshev (the same as --richardson gives the fieldsplit solver); the script at HEAD defaults to gmres.')
 parser.add_argument('--inner_rtol', type=float, default=None, help='Diagnostic: iterate the inner solve (fieldsplit_1 FGMRES on the Schur block, or FGMRES around the monolithic V-cycle) to this relative tolerance instead of a single V-cycle, to compare the two solvers with (nearly) exact inner solves.')
-parser.add_argument('--pc_side', type=str, default=None, choices=['left', 'right'], help='Diagnostic: preconditioning side of the outer Krylov solver (left = convergence test on the preconditioned residual, the setting of the paper\'s linear runs; right = on the true residual).')
-parser.add_argument('--outer_ksp', type=str, default=None, choices=['gmres', 'fgmres'], help='Diagnostic: outer Krylov method (the script\'s defaults: gmres for the fieldsplit solver with --richardson, fgmres otherwise and for the monolithic solver; the 2026-06-01 monolithic runs used gmres with left preconditioning).')
+parser.add_argument('--pc_side', type=str, default=None, choices=['left', 'right'], help='Diagnostic: preconditioning side of the outer Krylov solver (left = convergence test on the preconditioned residual, the setting of the paper\'s linear runs before 2026-11-16 (GMRES with the Chebyshev smoother); right = on the true residual, the side of FGMRES and of the paper\'s runs since 2026-11-16).')
+parser.add_argument('--outer_ksp', type=str, default=None, choices=['gmres', 'fgmres'], help='Diagnostic: outer Krylov method (the script\'s defaults: gmres for the fieldsplit solver with --richardson --mg_smoother chebyshev, fgmres otherwise and for the monolithic solver; the 2026-06-01 monolithic runs used gmres with left preconditioning).')
 parser.add_argument('--mono_use_amat', action='store_true', help='Reproduce the monolithic solver before 2026-10-19: its multigrid smooths the finest level with the outer, UNSHIFTED Jacobian (PCMG useAmat), and only the patches and coarse levels use A_delta. Off by default: the multigrid works on A_delta on every level.')
 parser.add_argument('--mg_smoother', type=str, default=None, choices=['gmres', 'chebyshev', 'richardson'], help='KSP wrapped around the patch smoother on the MG levels of the Schur-complement solver (6 iterations; same flag as in Nonlinear_Boussinesq_Irk_SC.py). Default: chebyshev with --richardson, gmres otherwise (unchanged). gmres makes the V-cycle nonlinear, so the outer KSP is then fgmres unless --outer_ksp is given. --richardson --mg_smoother gmres = one V-cycle per outer iteration with GMRES(6) smoothing.')
 
@@ -79,8 +80,8 @@ length=args.length
 height=args.height
 deg = args.degree
 ar = height / length
-deltax = length / nx
-deltaz = height / nz
+deltax = length / (nx * 2**args.refinement)   # finest level: the base mesh of nx cells is refined args.refinement times
+deltaz = height / nz                           # the layers are not refined
 appctx = {
     "dt": dt,
     "shift":shift,
@@ -91,7 +92,7 @@ print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print(f"Physical domain with length{length} and height {height}, aspect ratio {ar}.")
 print(f"Number of elements in x direction {nx} and z direction {nz}.")
 print(f"Time stepping parameters dt {args.dt}, total time {tmax}")
-print(f"Shift parameter {args.shift}, proportional constant C1 {args.shift * args.dt**1.5}.")
+print(f"Shift parameter delta = {args.shift}, C1 = delta*dt = {args.shift * args.dt}.")
 print(f"The code is running with {solver_name} solver for the Schur complement created.")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
@@ -225,6 +226,7 @@ if args.patch == 'star':
         "pc_type": "python",
         "pc_python_type": "firedrake.ASMStarPC",
         "pc_star_construct_dim": 0,
+        "pc_star_column": 1,   # whole-column patches; explicit because Firedrake's default will change (FutureWarning)
         "pc_star_sub_sub_pc_type": "lu",
         "pc_star_view_patch_sizes":True,
     }
@@ -234,6 +236,7 @@ else:
         "pc_type": "python",
         "pc_python_type": "firedrake.ASMVankaPC",
         "pc_vanka_construct_dim": 1,
+        "pc_vanka_column": 1,   # whole-column patches; explicit because Firedrake's default will change (FutureWarning)
         "pc_vanka_sub_sub_pc_type": "lu",
         "pc_vanka_view_patch_sizes":True,
     }
@@ -283,8 +286,7 @@ else:
     if args.richardson:
         helmholtz_schur_pc_params.update({
             # 'mg_levels_ksp_type': 'richardson',
-            'mg_levels_ksp_type':'chebyshev', # ! chebyshev smoother is working.
-            # 'mg_levels_ksp_type': 'gmres',
+            'mg_levels_ksp_type': args.mg_smoother, # ! gmres: the paper's smoother; chebyshev: the runs before 2026-11-16.
             'mg_levels_ksp_max_it':6,
         })
     else:
@@ -331,7 +333,9 @@ params_schur = {
         'helmholtzschurpc': helmholtz_schur_pc_params,
     },
 }
-params_schur['ksp_type'] = 'gmres' if args.richardson else 'fgmres'
+# ! A Krylov (GMRES) level smoother makes the multigrid cycle a nonlinear operator, so the outer method must be
+# ! FGMRES (right preconditioning); with the Chebyshev smoother the cycle is linear and plain GMRES was used.
+params_schur['ksp_type'] = 'gmres' if (args.richardson and args.mg_smoother == 'chebyshev') else 'fgmres'
 params_schur['fieldsplit_1_ksp_type'] = 'preonly' if args.richardson else 'fgmres'
 if args.mg_smoother == 'gmres':   # ! a GMRES smoother makes the V-cycle nonlinear: flexible outer Krylov (--outer_ksp still wins)
     params_schur['ksp_type'] = 'fgmres'
@@ -349,11 +353,12 @@ if args.pc_side is not None:
 
 mg_levels_mono = {
     # 'ksp_type': 'chebyshev',
-    'ksp_type': args.mono_smoother,     # gmres at HEAD; chebyshev in the 2026-06-01 runs of the paper's Table 5
+    'ksp_type': args.mono_smoother,     # gmres (the paper's runs since 2026-11-16); chebyshev in the 2026-06-01 runs behind the paper's tab:monolithic
     'ksp_max_it': 6,
     'pc_type': 'python',
     'pc_python_type': 'firedrake.ASMStarPC',  # switch to firedrake.ASMExtrudedStarPC for vertical line patches
     'pc_star_construct_dim': 0,
+    'pc_star_column': 1,   # whole-column patches; explicit because Firedrake's default will change (FutureWarning)
     'pc_star_sub_sub_pc_type': 'lu',
     'pc_star_view_patch_sizes': True,
 }

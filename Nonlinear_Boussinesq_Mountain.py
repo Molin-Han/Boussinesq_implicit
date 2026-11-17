@@ -36,6 +36,7 @@ print = PETSc.Sys.Print
 import utils
 from argparse import ArgumentParser
 from argparse import ArgumentDefaultsHelpFormatter
+from firedrake.dmhooks import get_appctx as get_snesctx
 
 # ! Cotter & Shipton (2023) section 3.3 describes two mountain wave regimes.  The
 # ! argparse defaults below are the NONHYDROSTATIC case; passing --hydrostatic swaps in
@@ -83,9 +84,10 @@ parser.add_argument('--dt', type=float, default=5.0, help='Time stepping paramet
 parser.add_argument('--tmax', type=float, default=9000.0, help='Time period that we solve.')
 # parser.add_argument('--dumpt', type=float, default=500.0, help='Time between two vtk dumps.')
 parser.add_argument('--shift', type=float, default=None,
-                    help='Shift parameter delta for the shift preconditioner. delta has units of '
-                         '1/(velocity*length) = s/m^2, so by default it is set to '
-                         'shift_scale/(U_mean*length), which reproduces delta=1e-4 on the unit box.')
+                    help='Stage shift delta\' of the shift preconditioner (s/m^2). Irksome\'s stage equations carry dt/2, '
+                         'so the shift of the paper\'s A_delta is delta = 2 delta\' (the paper\'s ridge run passes '
+                         '--shift 3.47e-11 for delta = 6.9e-11). By default delta\' = shift_scale/(U_mean*length), '
+                         'which reproduces delta\' = 1e-4 on the unit box.')
 parser.add_argument('--shift_scale', type=float, default=1.0e-4,
                     help='Dimensionless shift delta*U_mean*length, only used when --shift is not given.')
 
@@ -110,6 +112,7 @@ parser.add_argument('--atol', type=float, default=1.0e-30,
                          'absolute terms and the ksp has to be driven by the relative tolerance.')
 parser.add_argument('--maxit', type=int, default=150, help='Max iteration number for the first ksp of the linear solve.')
 parser.add_argument('--timing', action='store_true', help='If true, run the code without monitoring and test for the time.')
+parser.add_argument('--no_backsub', action='store_true', help='Diagnostic: the auxiliary-operator preconditioner of the runs before 2026-11-16, without the pressure back-substitution (see HDivSchurPCBacksub in Nonlinear_Boussinesq_Irk_SC.py).')
 
 if hydrostatic:
     parser.set_defaults(**HYDROSTATIC_PRESET)
@@ -210,6 +213,10 @@ def mountain_mesh_hierarchy(mh, xc, a, hm, H, dim=3):
         coord_fs = VectorFunctionSpace(m, "DG", 1, dim=dim, variant='equispaced')
         new_coord = assemble(interpolate(as_vector([x, 0, z + zs * (H - z) / H]), coord_fs))
         new_mesh = Mesh(new_coord)
+        # Firedrake >= 2026-10-21 (pyop3) builds the column patches of ASMStarPC from mesh._base_mesh, which only
+        # ExtrudedMesh() sets; the deformed copy shares the base mesh of the extruded slice (as in utils.py).
+        if getattr(new_mesh, '_base_mesh', None) is None and getattr(m, '_base_mesh', None) is not None:
+            new_mesh._base_mesh = m._base_mesh
         new_mesh.init_cell_orientations(utils.j())
         meshes.append(new_mesh)
 
@@ -364,6 +371,35 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         return (F, bcs)
 
 
+class HDivSchurPCBacksub(HDivSchurPC):
+    """HDivSchurPC followed by the pressure back-substitution k_p <- k_p - Pi(div k_u) / delta, as in
+    Nonlinear_Boussinesq_Irk_SC.py (see the docstring there). The substitution of getNewForm removes the divergence
+    from the shifted pressure equation, so without this step the preconditioner omits the pressure back-substitution.
+    On this terrain-following mesh the cells are not affine, so div V_h is not contained in the pressure space and
+    the velocity-buoyancy block of the auxiliary operator exceeds the exact Schur complement by
+    (dt/(2 delta)) <(I - Pi) div w, (I - Pi) div u>; negligible here (h_m / H ~ 3e-5)."""
+    def initialize(self, pc):
+        super().initialize(pc)
+        ctx = get_snesctx(pc.getDM())
+        Ws = ctx._x.function_space()
+        assert len(Ws) == 4, "one stage expected (GaussLegendre(1))"
+        self._y = Function(Ws)
+        self._pcorr = Function(Ws.sub(3))
+        self._delta = self.get_appctx(pc)["shift"]
+        kuxz, kuy = self._y.sub(0), self._y.sub(1)
+        self._proj = Projector(div(vector_3D(kuxz, kuy)), self._pcorr,
+                               solver_parameters={'ksp_type': 'preonly', 'pc_type': 'lu'})
+
+    def apply(self, pc, x, y):
+        super().apply(pc, x, y)
+        with self._y.dat.vec_wo as v:
+            y.copy(v)
+        self._proj.project()
+        self._y.sub(3).assign(self._y.sub(3) - Constant(1.0) / self._delta * self._pcorr)
+        with self._y.dat.vec_ro as v:
+            v.copy(y)
+
+
 # ! The Correct IRKAuxOPPC Solver Parameter.
 shifted_schur_pc_params = {
     'use_rotation': use_rotation,
@@ -393,6 +429,7 @@ shifted_schur_pc_params = {
             "pc_type": "python",
             "pc_python_type": "firedrake.ASMStarPC",
             "pc_star_construct_dim": 0,
+            "pc_star_column": 1,   # whole-column patches; explicit because Firedrake's default will change (FutureWarning)
             "pc_star_sub_sub_pc_type": "lu",
             'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
             'pc_star_sub_sub_pc_factor_reuse_ordering': None,
@@ -418,7 +455,7 @@ params_schur = {
     'ksp_max_it': args.maxit,
     'ksp_converged_maxits': None,
     'pc_type': 'python',
-    'pc_python_type': __name__ + '.HDivSchurPC',
+    'pc_python_type': __name__ + ('.HDivSchurPC' if args.no_backsub else '.HDivSchurPCBacksub'),
     'shiftedschurpc': shifted_schur_pc_params,
 }
 

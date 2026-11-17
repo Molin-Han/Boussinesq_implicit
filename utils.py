@@ -43,6 +43,10 @@ def high_dim_mesh_hierarchy(mh, dim=3):
         coord_fs = VectorFunctionSpace(m, "DG", 1, dim=dim)
         new_coord = assemble(interpolate(as_vector([x, 0, z]), coord_fs))
         new_mesh = Mesh(new_coord)
+        # Firedrake >= 2026-10-21 (pyop3) builds the column patches of ASMStarPC/ASMVankaPC from mesh._base_mesh,
+        # which only ExtrudedMesh() sets; the embedded copy shares the base mesh of the extruded slice.
+        if getattr(new_mesh, '_base_mesh', None) is None and getattr(m, '_base_mesh', None) is not None:
+            new_mesh._base_mesh = m._base_mesh
         new_mesh.init_cell_orientations(j())
         meshes.append(new_mesh)
     

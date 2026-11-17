@@ -42,9 +42,12 @@ parser.add_argument('--U_mean', type=float, default=0.0, help='Constant horizont
 parser.add_argument('--patch', type=str, default='star', choices=['star', 'vanka'], help='Patch of the ASM smoother on the MG levels. star: star of the base vertex (two columns of cells). vanka: closure of the base cell (a single column of cells).')
 parser.add_argument('--linear_forms', action='store_true', help='Diagnostic: replace the nonlinear forms (advection of u and b) by the linear Boussinesq forms utils.LB_*_Irk in both the equation and the auxiliary-operator preconditioner, keeping Irksome, Newton, the shift and the solver unchanged. Lets the nonlinear script be compared with the linear code like-for-like.')
 parser.add_argument('--amplitude', type=float, default=3e-4, help='Diagnostic: amplitude of the initial buoyancy perturbation (the Skamarock-Klemp data of the paper use 3e-4). The linear forms do not depend on it; the nonlinear terms scale with its square.')
-parser.add_argument('--mg_smoother', type=str, default='gmres', choices=['gmres', 'chebyshev', 'richardson'], help='Diagnostic: KSP wrapped around the patch smoother on the MG levels (6 iterations). gmres is the committed solver; chebyshev is what LB_time_slice.py --richardson uses.')
+parser.add_argument('--mg_smoother', type=str, default='gmres', choices=['gmres', 'chebyshev', 'richardson'], help='Diagnostic: KSP wrapped around the patch smoother on the MG levels (6 iterations). gmres is the paper\'s smoother (and since 2026-11-16 the default of LB_time_slice.py --richardson); chebyshev is what LB_time_slice.py --richardson --mg_smoother chebyshev uses (the linear runs before 2026-11-16).')
 parser.add_argument('--fs1_lu', action='store_true', help='Diagnostic: solve the velocity-buoyancy block of the auxiliary operator exactly (LU) instead of one multigrid V-cycle, to separate the effect of the shift from that of the inexact inner solve.')
-parser.add_argument('--outer_gmres_left', action='store_true', help='Diagnostic: outer KSP gmres with left preconditioning (the setting of LB_time_slice.py --richardson) instead of fgmres with right preconditioning.')
+parser.add_argument('--outer_gmres_left', action='store_true', help='Diagnostic: outer KSP gmres with left preconditioning (the setting of LB_time_slice.py --richardson --mg_smoother chebyshev, i.e. the linear runs before 2026-11-16) instead of fgmres with right preconditioning.')
+parser.add_argument('--ew', action='store_true', help='Eisenstat-Walker forcing terms for the Krylov tolerance of each Newton step (initial relative tolerance 1e-2), as in the paper\'s nonlinear runs.')
+parser.add_argument('--snes_atol', type=float, default=None, help='Absolute tolerance of the Newton iteration (PETSc default if not given). The paper\'s nonlinear runs use 1e-9, the absolute Krylov tolerance.')
+parser.add_argument('--no_backsub', action='store_true', help='Diagnostic: the auxiliary-operator preconditioner of the runs before 2026-11-16, without the pressure back-substitution. Its substitution p -> p - div(u)/delta also removes the divergence from the shifted pressure equation, so the operator handed to PETSc is A_delta T and the preconditioner applies T^{-1} A_delta^{-1}, about twice the iterations of A_delta^{-1}.')
 
 args = parser.parse_known_args()
 args = args[0]
@@ -63,14 +66,14 @@ length=args.length
 height=args.height
 deg = args.degree
 ar = height / length
-deltax = length / nx
-deltaz = height / nz
+deltax = length / (nx * 2**args.refinement)   # finest level: the base mesh of nx cells is refined args.refinement times
+deltaz = height / nz                           # the layers are not refined
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 print(f"Physical domain with length{length} and height {height}, aspect ratio {ar}.")
 print(f"Number of elements in x direction {nx} and z direction {nz}.")
 print(f"Time stepping parameters dt {args.dt}, total time {args.tmax}")
-print(f"Shift parameter {args.shift}, proportional constant C1 {args.shift * args.dt**1.5}.")
+print(f"Stage shift delta' = {args.shift}: in the paper's convention delta = 2 delta' = {2 * args.shift}, C1 = delta*dt = {2 * args.shift * args.dt}.")
 print(f"Mean flow U_mean = {args.U_mean} m/s in x-direction "
     f"({'ON' if args.U_mean != 0.0 else 'OFF'}).")
 print(f"The code is running with {solver_name} solver for the Schur complement created.")
@@ -187,6 +190,42 @@ class HDivSchurPC(IRKAuxiliaryOperatorPC):
         bcs = [bc1, bc2]
         return (F, bcs)
 
+
+class HDivSchurPCBacksub(HDivSchurPC):
+    """HDivSchurPC followed by the pressure back-substitution (the preconditioner of the paper since 2026-11-16).
+
+    getNewForm substitutes p -> p - div(u)/delta everywhere, also in the shifted pressure equation, where the
+    divergence then cancels. The operator handed to PETSc is therefore P_aux = A_delta T, with
+    T = [[I, -M_p^{-1} D / delta], [0, I]] in (pressure, velocity) ordering: block lower triangular, with the exact
+    Schur complement S as its velocity-buoyancy block (so PETSc's implicit Schur complement is S as well).
+    The fieldsplit factorisation of P_aux applies P_aux^{-1} = T^{-1} A_delta^{-1}: the velocity-buoyancy part of
+    the shifted solve, but the pressure without its back-substitution. Applying T afterwards,
+    k_p <- k_p - Pi(div k_u) / delta (Pi: L^2 projection onto the pressure space; the dt/2 of the stage form
+    cancels), gives A_delta^{-1}, with one multigrid cycle in place of S^{-1}.
+    Tested on 2026-10-16 as --pc_fix (claude_small_patch/diag_item3/Nonlinear_pcfix.py, docs/claude_studies/
+    claude_small_patch_robustness.md, Section 4.4)."""
+    def initialize(self, pc):
+        super().initialize(pc)
+        ctx = get_snesctx(pc.getDM())
+        Ws = ctx._x.function_space()
+        assert len(Ws) == 4, "one stage expected (GaussLegendre(1))"
+        self._y = Function(Ws)
+        self._pcorr = Function(Ws.sub(3))
+        self._delta = self.get_appctx(pc)["shift"]
+        kuxz, kuy = self._y.sub(0), self._y.sub(1)
+        self._proj = Projector(div(vector_3D(kuxz, kuy)), self._pcorr,
+                               solver_parameters={'ksp_type': 'preonly', 'pc_type': 'lu'})
+
+    def apply(self, pc, x, y):
+        super().apply(pc, x, y)
+        with self._y.dat.vec_wo as v:
+            y.copy(v)
+        self._proj.project()
+        self._y.sub(3).assign(self._y.sub(3) - Constant(1.0) / self._delta * self._pcorr)
+        with self._y.dat.vec_ro as v:
+            v.copy(y)
+
+
 # shifted_schur_pc_params = {
 #     'use_rotation':use_rotation,
 #     "pc_type": "lu",
@@ -201,6 +240,7 @@ if args.patch == 'star':
         "pc_type": "python",
         "pc_python_type": "firedrake.ASMStarPC",
         "pc_star_construct_dim": 0,
+        "pc_star_column": 1,   # whole-column patches; explicit because Firedrake's default will change (FutureWarning)
         "pc_star_sub_sub_pc_type": "lu",
         'pc_star_sub_sub_pc_factor_mat_ordering_type': 'rcm',
         'pc_star_sub_sub_pc_factor_reuse_ordering': None,
@@ -211,6 +251,7 @@ else:
         "pc_type": "python",
         "pc_python_type": "firedrake.ASMVankaPC",
         "pc_vanka_construct_dim": 1,
+        "pc_vanka_column": 1,   # whole-column patches; explicit because Firedrake's default will change (FutureWarning)
         "pc_vanka_sub_sub_pc_type": "lu",
         'pc_vanka_sub_sub_pc_factor_mat_ordering_type': 'rcm',
         'pc_vanka_sub_sub_pc_factor_reuse_ordering': None,
@@ -279,9 +320,13 @@ params_schur = {
     # "ksp_error_if_not_converged": False,
     # "snes_error_if_not_converged": False,
     'pc_type': 'python',
-    'pc_python_type': __name__ + '.HDivSchurPC',
+    'pc_python_type': __name__ + ('.HDivSchurPC' if args.no_backsub else '.HDivSchurPCBacksub'),
     'shiftedschurpc': shifted_schur_pc_params,
 }
+if args.ew:
+    params_schur.update({'snes_ksp_ew': None, 'snes_ksp_ew_rtol0': 1e-2})
+if args.snes_atol is not None:
+    params_schur['snes_atol'] = args.snes_atol
 
 if args.timing:
     params_schur['ksp_view'] = ':Nonlinear_slice3D.txt'
