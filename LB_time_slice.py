@@ -39,7 +39,7 @@ parser.add_argument('--direct', action='store_true', help='If true, solve the Sc
 parser.add_argument('--timing', action='store_true', help='If true, run the code without monitoring and test for the time.')
 parser.add_argument('--reordering', action='store_true', help='If true, run the code with RCM reordering.')
 parser.add_argument('--richardson', action='store_true', help='If true, precondition the Schur-complement block (fieldsplit_1) by one full multigrid cycle (preonly) whose levels are smoothed by --mg_smoother. The name is historical: no Richardson iteration is used.')
-parser.add_argument('--mg_smoother', type=str, default='gmres', choices=['gmres', 'chebyshev'], help='With --richardson: KSP wrapped around the patch smoother on the multigrid levels (6 iterations). gmres (default, the paper\'s configuration since 2026-11-16): the cycle is then a nonlinear operator, so the outer solver is FGMRES (right preconditioning). chebyshev: the configuration of the paper\'s linear runs before 2026-11-16 (outer GMRES, left preconditioning).')
+parser.add_argument('--mg_smoother', type=str, default='gmres', choices=['gmres', 'chebyshev', 'richardson'], help='With --richardson: KSP wrapped around the patch smoother on the multigrid levels (6 iterations). gmres (default, the paper\'s configuration since 2026-11-16): the cycle is then a nonlinear operator, so the outer solver is FGMRES (right preconditioning). chebyshev: the configuration of the paper\'s linear runs before 2026-11-16 (outer GMRES, left preconditioning). richardson: also a linear cycle, outer GMRES.')
 parser.add_argument('--monolithic', action='store_true', help='If true, use a monolithic geometric-multigrid solver with an (extruded) star line patch smoother acting on the whole shifted system, instead of the fieldsplit Schur-complement approach. Takes precedence over --direct.')
 parser.add_argument('--cheb_it', type=int, default=6, help='Number of Chebyshev smoother iterations per MG level for the monolithic patch smoother.')
 parser.add_argument('--patch', type=str, default='star', choices=['star', 'vanka'], help='Patch of the ASM smoother on the MG levels of the Schur-complement solver. star: star of the base vertex (two columns of cells, the default and the patch of all earlier runs). vanka: closure of the base cell (a single column of cells with the horizontal-velocity unknowns on its two vertical facets).')
@@ -48,7 +48,6 @@ parser.add_argument('--inner_rtol', type=float, default=None, help='Diagnostic: 
 parser.add_argument('--pc_side', type=str, default=None, choices=['left', 'right'], help='Diagnostic: preconditioning side of the outer Krylov solver (left = convergence test on the preconditioned residual, the setting of the paper\'s linear runs before 2026-11-16 (GMRES with the Chebyshev smoother); right = on the true residual, the side of FGMRES and of the paper\'s runs since 2026-11-16).')
 parser.add_argument('--outer_ksp', type=str, default=None, choices=['gmres', 'fgmres'], help='Diagnostic: outer Krylov method (the script\'s defaults: gmres for the fieldsplit solver with --richardson --mg_smoother chebyshev, fgmres otherwise and for the monolithic solver; the 2026-06-01 monolithic runs used gmres with left preconditioning).')
 parser.add_argument('--mono_use_amat', action='store_true', help='Reproduce the monolithic solver before 2026-10-19: its multigrid smooths the finest level with the outer, UNSHIFTED Jacobian (PCMG useAmat), and only the patches and coarse levels use A_delta. Off by default: the multigrid works on A_delta on every level.')
-parser.add_argument('--mg_smoother', type=str, default=None, choices=['gmres', 'chebyshev', 'richardson'], help='KSP wrapped around the patch smoother on the MG levels of the Schur-complement solver (6 iterations; same flag as in Nonlinear_Boussinesq_Irk_SC.py). Default: chebyshev with --richardson, gmres otherwise (unchanged). gmres makes the V-cycle nonlinear, so the outer KSP is then fgmres unless --outer_ksp is given. --richardson --mg_smoother gmres = one V-cycle per outer iteration with GMRES(6) smoothing.')
 
 args = parser.parse_known_args()
 args = args[0]
@@ -334,8 +333,8 @@ params_schur = {
     },
 }
 # ! A Krylov (GMRES) level smoother makes the multigrid cycle a nonlinear operator, so the outer method must be
-# ! FGMRES (right preconditioning); with the Chebyshev smoother the cycle is linear and plain GMRES was used.
-params_schur['ksp_type'] = 'gmres' if (args.richardson and args.mg_smoother == 'chebyshev') else 'fgmres'
+# ! FGMRES (right preconditioning); with a Chebyshev or Richardson smoother the cycle is linear and plain GMRES is used.
+params_schur['ksp_type'] = 'gmres' if (args.richardson and args.mg_smoother != 'gmres') else 'fgmres'
 params_schur['fieldsplit_1_ksp_type'] = 'preonly' if args.richardson else 'fgmres'
 if args.mg_smoother == 'gmres':   # ! a GMRES smoother makes the V-cycle nonlinear: flexible outer Krylov (--outer_ksp still wins)
     params_schur['ksp_type'] = 'fgmres'

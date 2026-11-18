@@ -55,6 +55,9 @@ if [ "${SKIP_PREFLIGHT:-0}" != 1 ]; then
   grep -q "HDivSchurPCBacksub" "$NLPY" || fail "$NLPY has no HDivSchurPCBacksub: the code of 2026-11-16 is not here"
   grep -q -- "--snes_atol" "$NLPY" || fail "$NLPY has no --snes_atol option: the code of 2026-11-16 is not here"
   "$VENV/bin/python" -c "import firedrake, irksome" > /dev/null 2>&1 || fail "'import firedrake, irksome' fails with $VENV/bin/python"
+  for script in "$PY" "$NLPY"; do      # the scripts must at least start (e.g. no conflicting command-line options)
+    "$VENV/bin/python" "$script" --help > /dev/null 2>&1 || fail "'python $script --help' fails: run it by hand to see the error, and report it to Molin (do not edit the solver code)"
+  done
   command -v mpiexec > /dev/null || fail "no mpiexec on PATH"
   busy=$(pgrep -f "mpiexec|prterun|mpirun" 2>/dev/null | wc -l | tr -d ' ')
   load=$(cut -d' ' -f1 /proc/loadavg 2>/dev/null || uptime | sed -E 's/.*load averages?: *([0-9.]+).*/\1/')

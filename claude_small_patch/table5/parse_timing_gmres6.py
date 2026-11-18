@@ -82,6 +82,15 @@ def outer_counts(runlog, prefix):
     return its, reasons
 
 
+def expected_tags():
+    '''the 64 runs of run_timing_tables_gmres6.sh R T B C'''
+    t = [f'R_{v}_rep{k}_np2_nx20_nz{nz}' for k in (1, 2, 3) for nz in NZ_R for v in ('rcm', 'norcm')]
+    t += [f'T_{v}_rep{k}_np16_nx{nx}_nz{nz}' for k in (1, 2, 3) for nx, nz in MESHES_T for v in ('fs', 'mono')]
+    t += [f'B_{v}_inner1e-10_np2_nx{nx}_nz{nz}' for nx, nz in ((20, 20), (40, 40)) for v in ('fs', 'mono')]
+    t += [f'C_{p}_rep{k}_np2_nx20_nz20' for k in (1, 2, 3) for p in ('star', 'vanka')]
+    return t
+
+
 def parse(runs):
     rows = []
     for d in sorted(glob.glob(os.path.join(runs, '*'))):
@@ -132,7 +141,13 @@ def sig(x, n=4):
 
 
 def group(rows, **kw):
-    return [r for r in rows if all(r[k] == v for k, v in kw.items())]
+    '''the runs with the given fields that finished successfully and have a PCApply time (the others are listed
+    under Problems and left out of every median)'''
+    return [r for r in rows if all(r[k] == v for k, v in kw.items()) and r['rc'] == '0' and r['pcapply_s'] is not None]
+
+
+def vals(g, key):
+    return sorted({r[key] for r in g if r[key] is not None})
 
 
 def affine_r2(xs, ys):
@@ -165,10 +180,21 @@ def main():
          'applications of the timed solve (stage "Official-Run"; "Second_Run" for set C), maximum over ranks, '
          'including the numerical refactorisation. Medians over the repetitions; spread = (max - min)/median.', '']
 
-    bad = [r for r in rows if r['rc'] != '0' or (r['set'] != 'C' and not r['reason'].startswith('CONVERGED'))
+    bad = [r for r in rows if r['rc'] != '0' or r['pcapply_s'] is None
+           or (r['set'] != 'C' and (not r['reason'].startswith('CONVERGED') or r['reason'] == 'CONVERGED_ITS'))
            or (r['np_log'] is not None and r['np_log'] != r['np'])]
+    missing = sorted(set(expected_tags()) - {r['tag'] for r in rows})
+    L += ['## Completeness', '',
+          f"{len(rows)} run folders; {len(expected_tags()) - len(missing)} of the {len(expected_tags())} runs of the full "
+          f"script are present." + ('' if not missing else f" Missing ({len(missing)}): " + ', '.join(f'`{t}`' for t in missing)), '']
     L += ['## Problems', '']
-    L += [f"- `{r['tag']}`: rc={r['rc'] or 'missing'}, reason={r['reason'] or '-'}, ranks in log={r['np_log']}" for r in bad] or ['- none']
+    L += [f"- `{r['tag']}`: rc={r['rc'] or 'missing (unfinished?)'}, reason={r['reason'] or '-'}, "
+          f"PCApply={'missing' if r['pcapply_s'] is None else 'ok'}, ranks in log={r['np_log']}"
+          + (' (reached the 100-iteration cap)' if r['reason'] == 'CONVERGED_ITS' else '') for r in bad] or ['- none']
+    if bad:
+        L += ['', 'Runs that failed or did not finish are left out of the medians below; a rank mismatch means the run '
+                  "was not made as intended. Rerun such runs (delete the folder, then the run script with ONLY='^<tag>$') "
+                  'before using the numbers.']
     L += ['']
 
     # ---- set R: tab:rcm -------------------------------------------------------------------------------------
@@ -184,8 +210,8 @@ def main():
             for v in ('rcm', 'norcm'):
                 g = group(R, variant=v, nz=nz)
                 t = [r['pcapply_s'] for r in g]
-                its = sorted({r['its'] for r in g if r['its'] is not None})
-                napp = sorted({r['pcapply_n'] for r in g if r['pcapply_n'] is not None})
+                its = vals(g, 'its')
+                napp = vals(g, 'pcapply_n')
                 mt = med(t)
                 cells.append((its, napp, mt, (min(t) if t else None, max(t) if t else None), (mt / nz) if mt else None))
             (ri, rn, rt, rr, rz), (ni, nn, nt, nr, nzz) = cells
@@ -204,29 +230,33 @@ def main():
     T = group(rows, set='T')
     if T:
         L += ['## Set T: tab:monolithic (16 ranks, FGMRES right, GMRES(6) + star patch + RCM)', '',
-              '| (N_x, N_z) | unknowns | fs its | fs PCApply s median [min, max] (spread) | fs s/unknown | mono its | mono PCApply s median [min, max] (spread) | mono/fs |',
-              '|---|---|---|---|---|---|---|---|']
+              '| (N_x, N_z) | unknowns | fs its | fs PCApply s median [min, max] (spread) | fs s/unknown | mono its | mono PCApply s median [min, max] (spread) | mono/fs | mono higher by | fs cheaper by |',
+              '|---|---|---|---|---|---|---|---|---|---|']
         tex = []
         for nx, nz in MESHES_T:
             out = {}
             for v in ('fs', 'mono'):
                 g = group(T, variant=v, nx=nx, nz=nz)
                 t = [r['pcapply_s'] for r in g]
-                out[v] = (sorted({r['its'] for r in g if r['its'] is not None}), med(t),
+                out[v] = (vals(g, 'its'), med(t),
                           (min(t) if t else None, max(t) if t else None), spread(t), len(g))
             (fi, ft, fr, fsp, fn), (mi, mt, mr, msp, mn) = out['fs'], out['mono']
             nu = unknowns(nx, nz)
             ratio = (mt / ft) if (mt and ft) else None
             L.append(f"| ({nx}, {nz}) | {nu} | {fi} | {sig(ft)} [{sig(fr[0])}, {sig(fr[1])}] ({fsp:.1%}) | "
-                     f"{(ft / nu):.2e} | {mi} | {sig(mt)} [{sig(mr[0])}, {sig(mr[1])}] ({msp:.1%}) | {ratio:.3f} |"
+                     f"{(ft / nu):.2e} | {mi} | {sig(mt)} [{sig(mr[0])}, {sig(mr[1])}] ({msp:.1%}) | {ratio:.3f} | "
+                     f"{ratio - 1:.1%} | {1 - 1 / ratio:.1%} |"
                      if (ft and mt and fsp is not None and msp is not None) else
-                     f"| ({nx}, {nz}) | {nu} | {fi} | {sig(ft)} ({fn} runs) | - | {mi} | {sig(mt)} ({mn} runs) | - |")
+                     f"| ({nx}, {nz}) | {nu} | {fi} | {sig(ft)} ({fn} runs) | - | {mi} | {sig(mt)} ({mn} runs) | - | - | - |")
             k = f'{nu / 1e3:.0f}k' if nu < 1e6 else f'{nu / 1e6:.2f}M'
             fits = '/'.join(map(str, fi)) or '--'
             mits = '/'.join(map(str, mi)) or '--'
             tex.append(f"        $({nx}, {nz})$ & {k} & {30 * nz + 8} & {ft:.2f}s & {fits} & {38 * nz + 8} & {mt:.2f}s & {mits} \\\\"
                        if (ft and mt) else f"        % ({nx}, {nz}): runs missing")
-        L += ['', 'Draft rows for tab:monolithic (unknowns and patch DOFs from the formulas above; check "1.03M"/"2.05M"):',
+        L += ['', '"mono higher by" (mono/fs - 1) is the comparison of the Cost subsection ("11--17% higher"); "fs cheaper by" '
+                  '(1 - fs/mono) is the one of the Conclusions ("about 10--15% cheaper"). s/unknown divides by the exact '
+                  'number of unknowns (the October text divided by the rounded 3.2e4).', '',
+              'Draft rows for tab:monolithic (unknowns and patch DOFs from the formulas above; check "1.03M"/"2.05M"):',
               '', '```latex'] + tex + ['```', '']
 
     # ---- set B: exact solve ---------------------------------------------------------------------------------
@@ -249,7 +279,7 @@ def main():
             g = group(C, variant=v)
             pa = [r['pcapply_s'] / r['pcapply_n'] for r in g if r['pcapply_s'] and r['pcapply_n']]
             per[v] = med(pa)
-            L.append(f"| {v} | {len(g)} | {sorted({r['pcapply_n'] for r in g})} | {sig(med([r['pcapply_s'] for r in g]))} | "
+            L.append(f"| {v} | {len(g)} | {vals(g, 'pcapply_n')} | {sig(med([r['pcapply_s'] for r in g]))} | "
                      f"{sig(per[v])} [{sig(min(pa) if pa else None)}, {sig(max(pa) if pa else None)}] |")
         if per.get('star') and per.get('vanka'):
             L += ['', f"One application with the single column costs {per['vanka'] / per['star']:.3f} times one with the star "
