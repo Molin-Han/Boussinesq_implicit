@@ -215,3 +215,27 @@ __marimo__/
 *.pvtu
 *.h5
 *.txt
+
+# --- Claude study bookkeeping (clean-up of 2026-11-18, see ../tidy_up_2026-11-18/) ---------------------------
+# Run folders, job lists, logs and agent scratch now live in ../data/{small_patch,column_patch,patch_gmres6}/.
+# On the workstation the old paths are symlinks to them, so the scripts' default paths still work.
+claude_small_patch/table5/runs
+claude_small_patch/table5/runs_gmres6
+claude_small_patch/table5/agents
+claude_small_patch/diag_item3/runs
+claude_column_patch/timing/runs
+claude_column_patch/code_verification/runs
+claude_column_patch/firedrake_inner_solve/scratch
+claude_column_patch/firedrake_inner_solve/logs
+claude_column_patch/firedrake_algebraic/work
+claude_column_patch/theory_kernel/solver_runs
+claude_column_patch/theory_kernel/work
+claude_column_patch/toy_model/logs
+claude_column_patch/my_checks/degree1_runs
+claude_patch_gmres6/logs
+sweeps/patch_gmres6
+# run-folder markers and binary dumps, wherever they appear
+status
+done
+finished
+*.npz

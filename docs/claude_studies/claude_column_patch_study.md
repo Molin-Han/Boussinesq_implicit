@@ -1,5 +1,10 @@
 # Single-column (Vanka) patch versus star patch
 
+> Clean-up of 2026-11-18: the run, scratch and log folders of `claude_column_patch/` (`timing/runs`,
+> `code_verification/runs`, `firedrake_inner_solve/{scratch,logs}`, `firedrake_algebraic/work`,
+> `theory_kernel/{solver_runs,work}`, `toy_model/logs`, `my_checks/degree1_runs`) now live in `yr2/data/column_patch/`
+> (record: `yr2/tidy_up_2026-11-18/`). On the workstation the old paths below are symlinks to them.
+
 Study notes for proofreading. Written 2026-09-29.
 Everything referred to below lives in `claude_column_patch/` next to this file, and in
 `../data_claude_paper_nonlinear_{dx,dz,ar,dt}_patch{star,vanka}/`.

@@ -1,5 +1,10 @@
 # Paper update (single-column section, restyled figures) and the Table 5 study
 
+> Clean-up of 2026-11-18: the run folders `claude_small_patch/table5/runs/`, `runs_gmres6/` and
+> `claude_small_patch/diag_item3/runs/` and the agent folders `claude_small_patch/table5/agents/` now live in
+> `yr2/data/small_patch/{table5_runs,table5_runs_gmres6,diag_item3_runs,table5_agents}/`
+> (record: `yr2/tidy_up_2026-11-18/`). On the workstation the old paths below are symlinks to them.
+
 Record for proofreading, 2026-10-19. Request of 05:35: (1) put the results of the previous conversation into the
 paper with the modified pictures, keep the single-column section short (only the reason for picking the smaller
 patch), push and report; (2) double-check Table 5, where the monolithic multigrid with the shifted preconditioner

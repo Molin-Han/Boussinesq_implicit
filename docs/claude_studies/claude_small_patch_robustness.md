@@ -1,5 +1,8 @@
 # Smaller (single-column) patch: the paper's robustness tests re-run, two ways to build the patch, and the dt trend of fig. 14(a)
 
+> Clean-up of 2026-11-18: `claude_small_patch/diag_item3/runs/` and the Table 5 run and agent folders now live in
+> `yr2/data/small_patch/` (record: `yr2/tidy_up_2026-11-18/`). On the workstation the old paths below are symlinks to them.
+
 Record for proofreading, written 2026-10-16 (session started 05:30). The 2026-10-19 follow-up is in `claude_paper_update_and_table5.md`. Everything below lives in
 `claude_small_patch/` next to this file and in the data folders listed in Section 2.
 The previous study of the single-column patch is `claude_column_patch_study.md` (2026-09-29, revised 2026-10-13);
