@@ -2,6 +2,10 @@
 
 This file covers how the test was run, what it shares with the earlier robustness tests, what differs, and where the
 results are. The findings themselves are in `README.md` next to this file. All paths are relative to `yr2/`.
+Since the clean-up of 2026-11-18 (`tidy_up_2026-11-18/`) the job lists and pool logs are in `data/patch_gmres6/logs/` and
+the generated serial command lists in `data/patch_gmres6/sweeps/`. On the workstation
+`Boussinesq_implicit/claude_patch_gmres6/logs` and `Boussinesq_implicit/sweeps/patch_gmres6` are symlinks to them, so
+the commands below work unchanged.
 
 ## 1. Summary
 
@@ -41,7 +45,7 @@ results are. The findings themselves are in `README.md` next to this file. All p
 | used for | the paper's figs. 4-12 | supplement SM2 (patch comparison); `Boussinesq_implicit/docs/claude_studies/claude_small_patch_robustness.md` | `README.md` next to this file |
 | data | `data/paper_robustness/data_linear_<t>_deg2/`, `data_nonlinear_<t>_deg2_ew/` | `data/paper_robustness/data_linear_<t>_deg2_<p>/`, `data_nonlinear_<t>_deg2_ew_<p>/` | `data/patch_gmres6/data_linear_<t>_deg2_gmres6_<p>/`, `data_nonlinear_<t>_deg2_ew_gmres6_<p>/` |
 | command generator | `Boussinesq_implicit/Bash_Generator/bash.py`, `bash_nonlinear.py` | `Boussinesq_implicit/Bash_Generator/bash_paper_patch.py` | `bash_paper_patch.py`, plus `--extra=--mg_smoother=gmres` for the linear code |
-| serial command lists | `Boussinesq_implicit/sweeps/paper_robustness/test_<t>.sh`, `test_nonlinear_<t>.sh` | `Boussinesq_implicit/sweeps/paper_robustness/test_paper_*_<p>.sh` | `Boussinesq_implicit/sweeps/patch_gmres6/test_paper_*_gmres6_<p>.sh` |
+| serial command lists | `Boussinesq_implicit/sweeps/paper_robustness/test_<t>.sh`, `test_nonlinear_<t>.sh` | `Boussinesq_implicit/sweeps/paper_robustness/test_paper_*_<p>.sh` | `data/patch_gmres6/sweeps/test_paper_*_gmres6_<p>.sh` |
 | runs | 207 linear + 220 nonlinear (star) | 2 x (207 + 220) | 2 x (207 + 220) = 854, + 320 MPI + 16 diagnostic |
 
 The nonlinear data folders of A also hold older files from 2026-05-02/03, from runs at shifts that are not in the
@@ -155,8 +159,32 @@ Commands are run from `Boussinesq_implicit/` unless stated otherwise. Python is 
 | raw data of the MPI study | `data/patch_gmres6/mpi/<code>_<patch>/np<NN>_r<R>/`; list of all runs with commands: `data/patch_gmres6/mpi/points.csv` |
 | noise check | `data/patch_gmres6/mpi/noise_check/` |
 | np = 16 diagnosis | `data/patch_gmres6/mpi/np16_check/` |
-| serial command lists | `Boussinesq_implicit/sweeps/patch_gmres6/test_paper_*.sh` (16 files) |
+| serial command lists | `data/patch_gmres6/sweeps/test_paper_*_gmres6_{star,vanka}.sh` (16 files) |
 | scripts | `Boussinesq_implicit/claude_patch_gmres6/`: `run_pool.sh`, `order_jobs.py`, `make_mpi_jobs.py`, `run_mpi_chain.sh`, `make_noise_jobs.py`, `make_np16_check_jobs.py`, `analyse.py` |
-| logs | `Boussinesq_implicit/claude_patch_gmres6/logs/` and `joblist_main.txt` |
-| code change | `Boussinesq_implicit/LB_time_slice.py`: option `--mg_smoother` (uncommitted) |
+| logs | `data/patch_gmres6/logs/` (job lists, `joblist_main.txt` among them, and pool logs) |
+| code change | `Boussinesq_implicit/LB_time_slice.py`: option `--mg_smoother` (now committed, default gmres since 6c4b0cf) |
 | earlier data used for the comparisons | A and B in `data/paper_robustness/` (unchanged) |
+| follow-up 2026-11-18 (Section 7): figures and tables | `figures/70_backsub_nonlinear/` (`README.md`, `counts.csv`, `paper_style/`) |
+| - raw data, back-substitution sweeps | `data/patch_gmres6/data_nonlinear_<t>_deg2_ew_gmres6_backsub_<p>/` (8 folders) |
+| - raw data, SuperLU_DIST repeats at K < 1 | `data/patch_gmres6/backsub_superlu/data_nonlinear_<t>_<p>_r<1,2>/` (16 folders) |
+| - pilot | `data/patch_gmres6/backsub/pilot/` |
+| - serial command lists | `data/patch_gmres6/sweeps/test_paper_nonlinear_*_backsub_*.sh` (8 files) |
+| - scripts, logs | `make_backsub_jobs.py`, `analyse_backsub.py`; `data/patch_gmres6/logs/joblist_backsub.txt`, `pool_backsub.log` |
+
+## 7. Follow-up of 2026-11-18: pressure back-substitution and deterministic coarse solver
+
+- **Same as C:** the nonlinear commands of C, byte for byte (`make_backsub_jobs.py` calls `run_claude_paper.sh -n` with
+  C's generator and arguments and only a new suffix `_deg2_ew_gmres6_backsub_<p>`): parameters, GMRES(6) smoothing,
+  FGMRES right, Eisenstat-Walker, MUMPS coarse LU, 2 ranks, caps and tolerances.
+- **Different from C:** the script `Nonlinear_Boussinesq_Irk_SC.py` at HEAD (commit 6c4b0cf, 2026-11-17), whose
+  auxiliary-operator preconditioner applies the pressure back-substitution k_p <- k_p - Pi(div k_u)/delta by default
+  (class `HDivSchurPCBacksub`; `--no_backsub` gives C's preconditioner). The same commit also redefines deltax (not used
+  by the solve) and printed output. A 7-run pilot confirmed: HEAD = the 2026-10-16 `--pc_fix` script (same
+  counts), `--no_backsub` = C's counts, two SuperLU_DIST repeats bitwise identical, no unused PETSc options.
+- **Step 1:** the four sweeps for both patches (440 runs). **Step 2:** every point with K < 1 (106 per patch), with
+  `-firedrake_1_shiftedschurpc_fieldsplit_1_mg_coarse_pc_factor_mat_solver_type superlu_dist` appended, run twice (424
+  runs). All 864 runs in one pool (`run_pool.sh logs/joblist_backsub.txt 12 14400`, 12 jobs x 2 ranks); the pool was
+  interrupted once after 544 runs and restarted (finished runs are skipped); all 864 exit 0.
+- **Analysis:** `python analyse_backsub.py` (Firedrake venv python) writes `figures/70_backsub_nonlinear/`. Results:
+  `README.md`, Finding 6.
+

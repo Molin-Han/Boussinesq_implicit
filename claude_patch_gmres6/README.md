@@ -13,6 +13,11 @@ by the scripts in `Boussinesq_implicit/claude_patch_gmres6/`; the figures and th
 the same as and what differs from the earlier robustness tests, and where every result is: `PROCEDURE.md` (next to this
 file).
 
+**Follow-up of 2026-11-18 (Finding 6).** Findings 1-5 use the nonlinear preconditioner as it was on 2026-11-16, without
+the pressure back-substitution (now reached with `--no_backsub`). Since commit 6c4b0cf (2026-11-17) the back-substitution
+is the default of `Nonlinear_Boussinesq_Irk_SC.py`. The four nonlinear sweeps were rerun with it for both patches, and
+every point with K < 1 was repeated twice with a deterministic coarse solver (`figures/70_backsub_nonlinear/`).
+
 ## Solver (both codes, both patches)
 
 Shifted auxiliary-operator preconditioner (shift delta = C1/dt, the paper's design) + pressure elimination + Schur
@@ -43,9 +48,13 @@ column patches (LU with RCM on each patch); outer FGMRES with right precondition
 | MPI study: 9 points per code x 2 patches x np in {1, 2, 4, 8, 16} (np <= Nx), 3 runs at np = 2 and 8 | 320; 318 exit 0, 2 aborted (Finding 4) | `data/patch_gmres6/mpi/<code>_<patch>/np<NN>_r<R>/` | `make_mpi_jobs.py`, `run_mpi_chain.sh` |
 | noise check: 2 nonlinear single-column points with K < 1, three runs each with a deterministic coarse solver (np = 1 with PETSc's LU; np = 2 with SuperLU_DIST) | 10 (+ 2 from the MPI study) | `data/patch_gmres6/mpi/noise_check/` | `make_noise_jobs.py`, `run_pool.sh` |
 | diagnosis of the 2 aborted runs (np = 16): converged-reason views; SuperLU_DIST; MUMPS with more working space | 6 | `data/patch_gmres6/mpi/np16_check/` | `make_np16_check_jobs.py`, `run_pool.sh` |
+| 2026-11-18: nonlinear sweeps {dt, ar, dx, dz} x {star, single column} with the pressure back-substitution (HEAD default), commands otherwise identical to the main sweeps | 440, all exit 0 | `data/patch_gmres6/data_nonlinear_<test>_deg2_ew_gmres6_backsub_<patch>/` | `make_backsub_jobs.py` (calls `run_claude_paper.sh -n ... -s _deg2_ew_gmres6_backsub_<p>`), `run_pool.sh` |
+| 2026-11-18: every K < 1 point of those sweeps (106 per patch) with SuperLU_DIST on the coarse level, run twice | 424, all exit 0 | `data/patch_gmres6/backsub_superlu/data_nonlinear_<test>_<patch>_r<1,2>/` | `make_backsub_jobs.py`, `run_pool.sh` |
+| 2026-11-18: pilot (HEAD against `--no_backsub` and the 2026-10-16 `--pc_fix` script; two SuperLU_DIST repeats) | 7 | `data/patch_gmres6/backsub/pilot/` | by hand |
 
 Serial command lists (the same commands as `commands.txt` in each data folder):
-`Boussinesq_implicit/sweeps/patch_gmres6/test_paper_*.sh`. While these ran the machine carried 24-32 MPI ranks on 16
+`data/patch_gmres6/sweeps/test_paper_*_gmres6_{star,vanka}.sh` (job lists and pool logs: `data/patch_gmres6/logs/`;
+both moved out of the repository on 2026-11-18 and symlinked at their old paths). While these ran the machine carried 24-32 MPI ranks on 16
 physical cores, so run times are recorded (`jobs/*/status`, CSVs) but not interpreted.
 
 ## Folder guide (`Boussinesq_implicit/claude_patch_gmres6/figures/`)
@@ -59,6 +68,7 @@ physical cores, so run times are recorded (`jobs/*/status`, CSVs) but not interp
 | `40_repeatability_nonlinear/` | nonlinear code: new runs against the identical 2026-10-16 runs (run-to-run noise) |
 | `50_paper_style/` | the paper's ten iteration figures (style and file names of figs. 4-12) for each patch, in the paper's plotting conventions and with true counts |
 | `60_mpi/` | iteration counts against the number of MPI ranks (all runs in `mpi_counts.csv`), the noise check, and the diagnosis of the two aborted np = 16 runs |
+| `70_backsub_nonlinear/` | 2026-11-18: nonlinear sweeps with the pressure back-substitution against the main sweeps (counts against dt per sweep, ratio against K, K-binned tables, Nz/Nx/Lz medians, failure sets, SuperLU_DIST reproducibility; `counts.csv`), and the paper's nonlinear figures redrawn from these runs (`paper_style/`); made by `analyse_backsub.py` |
 
 Each folder has its own `README.md` (configuration, data paths, counting conventions, key numbers). The original per-sweep
 plots of `plot_{dx,dz,ar,shift}.py` are in each data folder `data/patch_gmres6/<dir>/`; in the eight linear folders only
@@ -174,9 +184,43 @@ in the linear code: it converges at exactly the same points and needs at most a 
 very few. In the nonlinear code with the preconditioner as committed it also converges wherever the star does and costs
 about the same at K >= 1 (dt = 50-100 s at C1 = 1e-5), but for K < 1 it does not profit from the smaller shift (about
 20-30 iterations where the star needs 7-16), it grows under vertical refinement, and its counts there vary from run to
-run, while the star's are stable. Whether the missing pressure back-substitution of the nonlinear preconditioner causes
-this is untested for these sweeps (Caveats, next steps). Neither patch depends on the number of MPI ranks (1-16) beyond
+run, while the star's are stable. With the pressure back-substitution (Finding 6) this penalty shrinks to about 5
+iterations (single column about 9-11, star 3-6), the Nz growth mostly goes, both patches need about half as many
+iterations everywhere, and the failure set shrinks from 13 to 4 points (the same for both patches). Neither patch depends on the number of MPI ranks (1-16) beyond
 the noise of the parallel coarse LU; on many ranks the MUMPS coarse solve may need more working space (Finding 4).
+
+**6. Pressure back-substitution (2026-11-18): it removes most of the single column's penalty at K < 1 and halves the
+counts of both patches; the single column still needs about 2-3 times the star's (small) count there.**
+(`70_backsub_nonlinear/`; 220 points per patch, same commands as Findings 2-3 except that the preconditioner applies
+A_delta^-1 instead of T^-1 A_delta^-1; MUMPS coarse LU, 2 ranks; plus 2 x 106 SuperLU_DIST runs per patch at K < 1.)
+- Counts, medians (ranges) of total FGMRES iterations, pooled over the four sweeps, both patches converged:
+
+  | K | points | star, before -> with back-sub. | single column, before -> with back-sub. | ratio median, before -> with |
+  |---|---|---|---|---|
+  | K >= 10 | 78 / 87 | 30 (8-133) -> 15 (4-169) | 30 (8-131) -> 15 (5-169) | 1.00 -> 1.00 |
+  | 1 <= K < 10 | 23 | 14 (10-27) -> 8 (5-13) | 21 (17-28) -> 9 (7-13) | 1.36 -> 1.12 |
+  | 0.1 <= K < 1 | 21 | 10 (8-16) -> 6 (3-8) | 26 (14-38) -> 11 (8-14) | 2.60 -> 1.83 |
+  | K < 0.1 | 85 | 10 (7-14) -> 3 (3-7) | 22 (13-76) -> 9 (6-14) | 2.40 -> 2.67 |
+
+  At K < 1 the single column's excess over the star falls from a median of 13-16 iterations (max 68) to 5-6 (max 11).
+  The ratio stays at about 2-3 only because the star drops to 3 iterations (one or two per Newton step): the single
+  column now does profit from the small shift (about 9-11 iterations against 20-30 before), it just profits less than
+  the star. At K >= 10 the two patches are still identical (ratio 1.00 at the median).
+- Vertical refinement (medians over dt >= 500 s): single column 19, 24, 28, 34, 38 -> 8, 10, 11, 12, 12 for Nz = 10,
+  20, 40, 60, 80 (star 10 -> 3-4 throughout). The growth falls from a factor 2 to 1.5 and levels off from Nz = 40. The
+  Nx and Lz members of the single column are 7-12 (before 16-26); the star is 3-4.
+- Failures (no convergence within the cap): 13 points before, 4 with the back-substitution, the same 4 for both
+  patches: the dt sweep at C1 = 5e-4 (dt = 1 s) and C1 = 1e-3 (dt = 1, 10, 50 s), all with K = 2e3-5e6, i.e. the
+  over-shifted end of the sweep, not a patch effect. The 9 points that the back-substitution rescues have K = 456-5e5; they
+  need 57-169 iterations (dt sweep C1 >= 5e-5 at small dt; ar-sweep members 8000 and 12000 at dt = 1 s), nearly the same
+  for both patches (largest difference 57 against 91 at C1 = 5e-4, dt = 50 s).
+- Newton steps: median 2 (star) and 3 (single column), range 2-3 for both (before: median 3 for both).
+- Reproducibility: with SuperLU_DIST on the coarse level the two repeats are bitwise identical at all 212 point-pairs.
+  SuperLU_DIST and MUMPS give the same counts at all 106 star points and at 102 of the 106 single-column points (the
+  other 4 differ by at most 2). The run-to-run noise of Finding 3 (single column at K < 1) is therefore small once the
+  back-substitution is in; the SuperLU_DIST counts (`counts.csv`, columns `slu1_*`) are the reproducible numbers to
+  quote.
+- The paper's nonlinear figures redrawn from these runs: `70_backsub_nonlinear/paper_style/`.
 
 ## Caveats
 
@@ -196,7 +240,8 @@ the noise of the parallel coarse LU; on many ranks the MUMPS coarse solve may ne
   sweep without Eisenstat-Walker (`data/claude_paper/data_claude_paper_nonlinear_ar_patch{star,vanka}[_pcfix]`, GMRES(6),
   2 ranks). There the fix halves both patches' counts (median star 15 -> 8, single column 28 -> 13); it lowers the
   single column / star ratio at dt = 500-5000 s (median 2.36 -> 1.88, 1.94 -> 1.44, 1.30 -> 1.14) but raises it at
-  dt <= 100 s (e.g. 2.50 -> 3.33 at dt = 50 s). Whether it reduces the K < 1 penalty of the paper's sweeps is untested.
+  dt <= 100 s (e.g. 2.50 -> 3.33 at dt = 50 s). The paper's sweeps with the fix (now the script's default; Findings 1-5
+  correspond to `--no_backsub`) are Finding 6.
 - **K between the codes.** K uses the same formula for both codes; the earlier study (end of its Section 4.4) derives,
   without measuring it, that the nonlinear script's delta is worth 2 delta of the linear code (K_eff = 2K).
 - **Cost.** Not measured here. The earlier idle-machine measurement (`Boussinesq_implicit/claude_column_patch/timing/`;
@@ -224,16 +269,21 @@ the noise of the parallel coarse LU; on many ranks the MUMPS coarse solve may ne
   (K < 1) unchanged, maximum 5.9 -> 9.5 in a single run (5-10 over realisations); Nz medians 19 and 38 against the star's
   about 10, unchanged; the failure sets are the same for both patches in both data sets.
 - Prefer medians and ranges over maxima for the single column at K < 1.
+- The nonlinear counts of Findings 2-3 and of `50_paper_style/` are without the pressure back-substitution (now
+  `--no_backsub`); the paper's nonlinear figures (commit 7771540) were also made without it. With it (Finding 6,
+  `70_backsub_nonlinear/`), counts halve for both patches, the single column / star excess at K < 1 drops to about 5
+  iterations (ratio median 1.8-2.7 because the star needs only 3-6), the single column's Nz growth is 8 -> 12 instead of
+  19 -> 38, and the failure set shrinks from 13 to 4 points. Reproducible numbers at K < 1: SuperLU_DIST columns of
+  `70_backsub_nonlinear/counts.csv`.
 - MPI: the counts of both patches do not depend on the number of ranks (1-16) beyond the noise of the parallel MUMPS
   coarse LU (Finding 4); on 16 ranks the MUMPS coarse factorisation needed more working space at Nx = 80.
 
 ## Suggested next steps
 
-1. Nonlinear sweeps with the pressure back-substitution fix (`Boussinesq_implicit/claude_small_patch/diag_item3/Nonlinear_pcfix.py --pc_fix`,
-   both patches; about 4 h on this machine), to see whether the single column's K < 1 penalty and Nz growth disappear.
-2. For reproducible single-column numbers in the paper, run the nonlinear K < 1 points with a deterministic coarse
-   solver (`-firedrake_1_shiftedschurpc_fieldsplit_1_mg_coarse_pc_factor_mat_solver_type superlu_dist`, as in the noise
-   check) or report medians over repeats; consider a larger `ksp_gmres_restart` for the slowest runs.
+1. Done 2026-11-18 (Finding 6): nonlinear sweeps with the pressure back-substitution, both patches.
+2. Done 2026-11-18 (Finding 6): the K < 1 points with SuperLU_DIST on the coarse level, twice (bitwise identical).
+   Open: the remaining 4 failures (over-shifted dt-sweep points, K >= 2e3) and the 57-169-iteration points next to
+   them, e.g. with a larger `ksp_gmres_restart` or a cap on the shift.
 3. A timing arm on an idle machine (`--timing`, `-log_view`, `--bind-to core`) if the cost per iteration is needed.
 4. For runs on many ranks, pass `-firedrake_1_shiftedschurpc_fieldsplit_1_mg_coarse_mat_mumps_icntl_14 200` (or use
    SuperLU_DIST on the coarse level), and consider making the `ksp_converged_rate` entry of the nonlinear script's option

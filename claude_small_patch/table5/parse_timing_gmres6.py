@@ -31,7 +31,8 @@ TAG = re.compile(r'^(?P<set>[RTBC])_(?P<variant>[a-z]+)(?:_inner(?P<inner>[0-9.e
                  r'_np(?P<np>\d+)_nx(?P<nx>\d+)_nz(?P<nz>\d+)$')
 # Columns of the paper's tables that do not depend on the smoother (from the current tables and the formulas
 # unknowns = 20 n N_z + 4 n with n = 4 N_x, fieldsplit patch 30 N_z + 8, monolithic patch 38 N_z + 8):
-BANDWIDTH = {'rcm': {10: 48, 20: 48, 40: 48, 80: 48}, 'norcm': {10: 531, 20: 1051, 40: 1571, 80: 2091}}
+# No RCM: full bandwidth 52 N_z + 11 (corrected 2026-11-18; the October table had 1571 and 2091 for N_z = 40, 80).
+BANDWIDTH = {'rcm': {10: 48, 20: 48, 40: 48, 80: 48}, 'norcm': {10: 531, 20: 1051, 40: 2091, 80: 4171}}
 MESHES_T = [(20, 20), (40, 40), (80, 80), (80, 160), (160, 160)]
 NZ_R = [10, 20, 40, 80]
 

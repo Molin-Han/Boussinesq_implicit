@@ -135,9 +135,12 @@ Each run's outer iteration count must be the same in all three repetitions.
    continuing with the paper.
 3. Do not commit or push unless Molin asks.
    - The run folders contain logs only, a few MB.
-   - This repository's `.gitignore` excludes `*.txt` and `*.log`. If he asks for a commit, add the runs with
-     `git add -f claude_small_patch/table5/runs_gmres6 claude_small_patch/table5/run_timing_gmres6.log`,
-     together with `results_gmres6.*`.
+   - Since the clean-up of 2026-11-18 the runs are not committed: they are in `yr2/data/small_patch/table5_runs_gmres6/`,
+     and on the workstation `claude_small_patch/table5/runs_gmres6` is a git-ignored symlink to that folder. Never
+     `git add -f` it (that would commit the symlink). If he asks for a commit, add `results_gmres6.{md,csv}`.
+   - The Table 2 set was re-run on 2026-11-18 with the two ranks pinned (`mpiexec --bind-to core --map-by socket`;
+     `yr2/data/small_patch/table5_runs_gmres6_R_bound/`): unpinned, its repetitions differed by up to 37%, pinned by
+     at most 4% (11% for one small run). The paper's Table 2 uses the pinned medians.
 
 ## What the numbers mean
 
@@ -148,7 +151,8 @@ Each run's outer iteration count must be the same in all three repetitions.
   - Each linear run makes three solves (step 1, a warm-up, then the timed official solve from the same initial
     guess).
   - `its` is the official solve's count.
-- **Columns that do not change:** Table 2's bandwidths (48 with RCM; 531, 1051, 1571, 2091 without), and
+- **Columns that do not change:** Table 2's bandwidths (48 with RCM; 531, 1051, 2091, 4171 without, i.e.
+  52 N_z + 11, corrected 2026-11-18 from the October table's 1571 and 2091), and
   Table 3's unknowns and patch sizes (30 N_z + 8 fieldsplit, 38 N_z + 8 monolithic). These are properties of
   the matrices, not of the smoother.
 - **Settings of both tables:**
